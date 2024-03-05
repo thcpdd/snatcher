@@ -42,9 +42,9 @@ class SessionManager:
     def has_session(self, port) -> bool:
         return self._session_cache.hexists(self.username, port)
 
-    def get_random_session(self) -> tuple:
+    def get_random_session(self) -> tuple[str, int]:
         port = choice(self._session_cache.hkeys(self.username))
-        return self.get(port), port.decode()
+        return self.get(port), int(port.decode())
 
     def close(self):
         self._session_cache.close()

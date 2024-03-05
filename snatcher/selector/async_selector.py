@@ -1,3 +1,6 @@
+"""
+异步课程选择器
+"""
 import re
 
 import aiohttp
@@ -9,9 +12,8 @@ from .base import CourseSelector
 from ..db.mysql import (
     query_pc_course_id,
     query_pe_course_id,
-    create_failed_data
 )
-from snatcher.session import get_session_manager
+from ..session import get_session_manager
 
 
 class AsynchronousCourseSelector(CourseSelector):
@@ -25,13 +27,13 @@ class AsynchronousCourseSelector(CourseSelector):
             self.jxb_ids = json_data[0]['do_jxb_id']
         except IndexError:
             self.log.set_others('step-3_error_in_set_jxb_ids', '表单数据异常')
-            create_failed_data(self.username, self.real_name, self.log.key, '表单数据异常')
+            self.mark_failed('表单数据异常')
         except ContentTypeError:
             self.log.set_others('step-3_error_in_set_jxb_ids', 'json解码失败')
-            create_failed_data(self.username, self.real_name, self.log.key, 'json解码失败')
+            self.mark_failed('json解码失败')
         except TypeError:
             self.log.set_others('step-3_error_in_set_jxb_ids', '非法请求')
-            create_failed_data(self.username, self.real_name, self.log.key, '非法请求')
+            self.mark_failed('非法请求')
 
     async def prepare_for_selecting(self):
         await self.set_kch_id()
@@ -65,16 +67,17 @@ class AsynchronousCourseSelector(CourseSelector):
         response = await self.session.post(self.select_course_api, data=self.select_course_data)
         try:
             json_data = await response.json()
+        except ContentTypeError:
+            self.log.set_others('step-4_json_decode_error_in_select', '选课异常')
+            self.mark_failed('选课异常')
+            return 0
+        else:
             if json_data['flag'] == '1':
                 self.log.set_others('step-4', '选课成功')
                 return 1
             self.log.set_others('step-4_server_response', json_data['msg'])
-            create_failed_data(self.username, self.real_name, self.log.key, '选课失败')
+            self.mark_failed(json_data['msg'])
             return -2
-        except ContentTypeError:
-            self.log.set_others('step-4_json_decode_error_in_select', '选课异常')
-            create_failed_data(self.username, self.real_name, self.log.key, '选课异常')
-            return 0
         finally:
             response.close()
             await self.session.close()
@@ -99,7 +102,7 @@ class AsynchronousCourseSelector(CourseSelector):
             self.log.retry()
             retry += 1
         self.log.set_others('task_status', f'{self.filter_condition} 失败')
-        create_failed_data(self.username, self.real_name, self.log.key, '超出最大重试次数')
+        self.mark_failed('超出最大重试次数')
         return 0
 
     def select(self):

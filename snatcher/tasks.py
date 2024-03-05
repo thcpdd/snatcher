@@ -101,7 +101,7 @@ def select_course(
     }
     task = tasks.get(course_type)
     if not task:
-        create_failed_data(username, '', '', '选择了不支持的课程类型')
+        create_failed_data(username, '', '', '选择了不支持的课程类型', 0)
         return
     result = check_and_set_session(username, password)
     if result == -1:

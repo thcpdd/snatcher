@@ -1,3 +1,6 @@
+"""
+备份表结构：mysqldump --opt -d select_course -u root -p > db.sql;
+"""
 from functools import lru_cache
 
 from pymysql import Connection
@@ -49,7 +52,8 @@ def create_failed_data(
     username: str,
     course_name: str,
     log_key: str,
-    failed_reason: str
+    failed_reason: str,
+    port: int
 ):
     """
     创建一条选课失败数据
@@ -57,13 +61,14 @@ def create_failed_data(
     :param course_name: 课程名
     :param log_key: 日志key
     :param failed_reason: 失败原因
+    :param port: 本次发送请求的端口
     :return:
     """
     sql = """
-        INSERT INTO failed_data (`username`, `course_name`, `log_key`, `failed_reason`)
-        VALUES (%s, %s, %s, %s);
+        INSERT INTO failed_data (`username`, `course_name`, `log_key`, `failed_reason`, `port`)
+        VALUES (%s, %s, %s, %s, %s);
     """
-    execute_sql(sql, args=(username, course_name, log_key, failed_reason))
+    execute_sql(sql, args=(username, course_name, log_key, failed_reason, port))
 
 
 def query_pc_course_id(course_no: str):
@@ -72,7 +77,10 @@ def query_pc_course_id(course_no: str):
     :param course_no: 课程号
     :return:
     """
-    sql = """SELECT `course_id`, `course_name` FROM public_choice_course WHERE `course_no`=%s;"""
+    sql = """
+        SELECT `course_id`, `course_name` FROM public_choice_course 
+        WHERE `course_no`=%s;
+    """
     cursor = execute_sql(sql, args=(course_no,))
     data = cursor.fetchone()
     if not data:
@@ -87,7 +95,8 @@ def query_pe_course_id(grade: int, course_name: str):
     :param course_name: 部分课程名
     :return:
     """
-    sql = """SELECT `course_id`, `course_name` FROM physical_education_course 
+    sql = """
+        SELECT `course_id`, `course_name` FROM physical_education_course 
         WHERE `grade`=%s and `course_name` like %s;
     """
     cursor = execute_sql(sql, args=(grade, f'%{course_name}%'))

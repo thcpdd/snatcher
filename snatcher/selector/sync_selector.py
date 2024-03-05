@@ -1,3 +1,6 @@
+"""
+同步课程选择器
+"""
 import re
 
 from requests import session
@@ -6,7 +9,6 @@ from requests.exceptions import JSONDecodeError, ReadTimeout
 from ..session import get_session_manager
 from .base import CourseSelector
 from ..db.mysql import (
-    create_failed_data,
     query_pc_course_id,
     query_pe_course_id
 )
@@ -27,13 +29,13 @@ class SynchronousCourseSelector(CourseSelector):
             self.jxb_ids = json_data[0]['do_jxb_id']
         except IndexError:
             self.log.set_others('step-3_error_in_set_jxb_ids', '表单数据异常')
-            create_failed_data(self.username, self.real_name, self.log.key, '表单数据异常')
+            self.mark_failed('表单数据异常')
         except JSONDecodeError:
             self.log.set_others('step-3_error_in_set_jxb_ids', 'json解码失败')
-            create_failed_data(self.username, self.real_name, self.log.key, 'json解码失败')
+            self.mark_failed('json解码失败')
         except TypeError:
             self.log.set_others('step-3_error_in_set_jxb_ids', '非法请求')
-            create_failed_data(self.username, self.real_name, self.log.key, '非法请求')
+            self.mark_failed('非法请求')
 
     def prepare_for_selecting(self):
         self.set_kch_id()
@@ -74,11 +76,11 @@ class SynchronousCourseSelector(CourseSelector):
                 self.log.set_others('step-4', '选课成功')
                 return 1
             self.log.set_others('step-4_server_response', json_data['msg'])
-            create_failed_data(self.username, self.real_name, self.log.key, json_data['msg'])
+            self.mark_failed(json_data['msg'])
             return -2
         except JSONDecodeError:
             self.log.set_others('step-4_json_decode_error_in_select', '选课异常')
-            create_failed_data(self.username, self.real_name, self.log.key, '选课异常')
+            self.mark_failed('选课异常')
             return 0
 
     def select(self):
@@ -101,7 +103,7 @@ class SynchronousCourseSelector(CourseSelector):
             self.log.retry()
             retry += 1
         self.log.set_others('task_status', f'{self.filter_condition} 失败')
-        create_failed_data(self.username, self.real_name, self.log.key, '超出最大重试次数')
+        self.mark_failed('超出最大重试次数')
         return 0
 
 
@@ -118,7 +120,6 @@ class SynchronousPublicChoiceCourseSelector(SynchronousCourseSelector):
 
     def set_xkkz_id(self):
         html = self.session.get(self.index_url, timeout=self.timeout).text
-        # regex = re.compile('<input type="hidden" name="firstXkkzId" id="firstXkkzId" value="(.*?)"/>')
         regex = re.compile(r"""<a id="tab_kklx_10".*?"queryCourse\(.*?,'10','(.*?)','.*?','.*?'\)".*?>通识选修课</a>""")
         find_list = regex.findall(html)
         self.xkkz_id = find_list[0] if find_list else None

@@ -1,9 +1,12 @@
+"""
+课程选择器基类
+"""
 import re
-from pathlib import Path
 
 from redis import Redis
 
 from snatcher.conf import settings
+from snatcher.db.mysql import create_failed_data
 
 
 class ParseStudentID:
@@ -85,15 +88,14 @@ class BaseCourseSelector:
     term: int = settings.TERM
     select_course_year: int = settings.SELECT_COURSE_YEAR  # 选课学年码
 
-    def __init__(self, username: str, filter_condition=''):
-        self.filter_condition = filter_condition  # 过滤条件
+    def __init__(self, username: str):
         self.real_name = '空'
         self.username = username  # 学号
+        self.filter_condition = None  # 过滤条件
+        self.parser = ParseStudentID(username)  # 解析学号
         self.kch_id = None  # 课程ID
         self.jxb_ids = None  # 教学班ids
         self.xkkz_id = None
-        self.parser = ParseStudentID(username)  # 解析学号
-        self.base_dir = Path(__file__).resolve().parent.parent
         # 获取教学班ids所需的表单数据
         self.get_jxb_ids_data = {
             'bklx_id': 0,  # 补考类型id
@@ -104,12 +106,12 @@ class BaseCourseSelector:
             'bh_id': self.parser.class_id,  # 班级ID  0425221
             'xbm': 1,  # 性别 男 1  女 2
             'xslbdm': 'wlb',  # 学生类别代码 无类别
-            'mzm': 13,  # 民族码，可百度
+            'mzm': 13,  # 民族码
             'xz': 4,  # 学制
             'ccdm': 3,  # 层次代码
             'xsbj': 4,  # 学生标记，国内学生 4
             'xkxnm': self.select_course_year,  # 选课学年码
-            'xkxqm': self.term,  # 选课学期码（上下学期，上学期3，下学期12）
+            'xkxqm': self.term,  # 选课学期码（上下学期，上学期 3，下学期 12）
             'filter_list[0]': self.filter_condition,  # 过滤条件
             'kklxdm': '',  # 开课类型代码，公选课10，体育课05、主修课程01，特殊课程09
             'kch_id': '',  # 课程id
@@ -121,7 +123,6 @@ class BaseCourseSelector:
             'kch_id': '',
             'qz': 0  # 权重
         }
-        # self.log = RunningLogs(f'{username}-{filter_condition}')
         self.timeout = settings.TIMEOUT
         self.log = None
         self.session = None
@@ -130,6 +131,7 @@ class BaseCourseSelector:
         self.index_url = None
         self.jxb_ids_api = None
         self.base_url = None
+        self.port = None
 
     def set_kch_id(self):
         """设置课程ID"""
@@ -155,23 +157,38 @@ class BaseCourseSelector:
         """对外提供调用接口"""
         raise NotImplementedError('重写该方法')
 
-    def update_or_set_cookie(self, cookie_string: str, port: int | str):
+    def update_or_set_cookie(self, cookie_string: str, port: int):
         """设置或更新相关信息"""
         if not cookie_string or not port:
             return
         self.cookies = {'JSESSIONID': cookie_string}
-        base_url = 'http://10.3.132.%s/jwglxt' % port  # 请求基础路径
+        base_url = ''.join(['http:', '//10.3.132.', str(port), '/jwglxt'])
         self.select_course_api = base_url + '/xsxk/zzxkyzbjk_xkBcZyZzxkYzb.html?gnmkdm=N253512'  # 选课api
         self.index_url = base_url + '/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default'  # 选课首页
         self.jxb_ids_api = base_url + '/xsxk/zzxkyzbjk_cxJxbWithKchZzxkYzb.html?gnmkdm=N253512'  # 获取教学班ids的api
         self.base_url = base_url
+        self.port = port
 
     def update_filter_condition(self, filter_condition: str):
         """更新过滤条件"""
         self.filter_condition = filter_condition
-        self.log = RunningLogs(f'{self.username}-{filter_condition}')
         self.get_jxb_ids_data['filter_list[0]'] = filter_condition
+        self.log = RunningLogs(f'{self.username}-{filter_condition}')
+
+    def mark_failed(self, failed_reason):
+        """
+        创建一条mysql失败数据
+        :param failed_reason: 失败原因
+        :return:
+        """
+        create_failed_data(
+            self.username,
+            self.real_name,
+            self.log.key,
+            failed_reason,
+            self.port
+        )
 
 
 class CourseSelector(BaseCourseSelector):
-    """所有课程选择器的父类，异步课程选择器，同步课程选择器"""
+    """所有课程选择器的父类，异步课程选择器、同步课程选择器"""
