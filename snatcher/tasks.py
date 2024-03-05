@@ -7,12 +7,12 @@ from datetime import datetime
 
 from celery import Celery
 
-from snatcher.conf import settings
-from snatcher.mail import send_email as send_mail
-from snatcher.session import (
+from .conf import settings
+from .mail import send_email as send_mail
+from .session import (
     check_and_set_session
 )
-from snatcher.selector.sync_selector import (
+from .selector.sync_selector import (
     SynchronousPhysicalEducationCourseSelector,
     SynchronousPublicChoiceCourseSelector,
     CourseSelector
