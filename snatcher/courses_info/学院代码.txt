@@ -1,0 +1,26 @@
+<option value="104">党委学生工作部（学生工作处）</option>
+<option value="105">党委武装部（保卫处）</option>
+<option value="108">教务处</option>
+<option value="111">招生就业处</option>
+<option value="112">后勤基建处</option>
+<option value="201">海洋学院</option>
+<option value="202">海运学院</option>
+<option value="203">机械与船舶海洋工程学院（工程训练中心）</option>
+<option value="204">石油与化工学院</option>
+<option value="205">食品工程学院</option>
+<option value="206" selected="selected">电子与信息工程学院</option>
+<option value="207">资源与环境学院</option>
+<option value="208">人文学院</option>
+<option value="209">经济管理学院</option>
+<option value="210">教育学院</option>
+<option value="211">陶瓷与设计学院</option>
+<option value="212">理学院</option>
+<option value="213">建筑工程学院</option>
+<option value="214">马克思主义学院</option>
+<option value="215">体育学院</option>
+<option value="217">工程训练中心</option>
+<option value="218">创新创业学院</option>
+<option value="C4C3A9CC50EC0D4CE0530284030AA43E">北部湾大学东密歇根联合工程学院</option>
+<option value="301">图书馆</option>
+<option value="81">国际教育与外国语学院</option>
+<option value="901">后勤服务集团</option>

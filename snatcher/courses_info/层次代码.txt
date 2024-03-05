@@ -1,0 +1,8 @@
+<option value="1">博士</option>
+<option value="2">硕士</option>
+<option value="3">本科</option>
+<option value="4">专科</option>
+<option value="5">专升本</option>
+<option value="6">中专升大专</option>
+<option value="7">中升本</option>
+<option value="9">其他</option>
