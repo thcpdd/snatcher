@@ -3,7 +3,12 @@ The project settings.
 """
 
 
-class _SettingsMeta(type):
+class SingletonMetaClass(type):
+    """
+    单例元类，让一个类变成单例模式：
+        class YourClass(metaclass=SingletonMetaClass):
+            pass
+    """
     def __call__(cls, *args, **kwargs):
         if not hasattr(cls, '_instance'):
             _instance = super().__call__(*args, **kwargs)
@@ -11,7 +16,7 @@ class _SettingsMeta(type):
         return getattr(cls, '_instance')
 
 
-class Settings(metaclass=_SettingsMeta):
+class Settings(metaclass=SingletonMetaClass):
     # 数据库连接配置
     DATABASES: dict = {
         'redis': {
@@ -25,7 +30,7 @@ class Settings(metaclass=_SettingsMeta):
             }
         },
         'mysql': {
-            'database': 'snatcher',
+            'database': 'select_course',
             'host': '127.0.0.1',
             'user': 'root',
             'password': '000000',
@@ -33,10 +38,10 @@ class Settings(metaclass=_SettingsMeta):
         }
     }
 
-    # 全局请求超时时间
+    # 全局请求超时时间，单位：秒
     TIMEOUT: int = 60 * 20
 
-    # 学期设置
+    # 选课学期设置
     # 上学期 3，下学期 12
     TERM: int = 12
 
@@ -44,7 +49,7 @@ class Settings(metaclass=_SettingsMeta):
     SELECT_COURSE_YEAR: int = 2023
 
     # 选课开始时间
-    START_TIME = {
+    START_TIME: dict = {
         'year': 2024,
         'month': 3,
         'day': 5,
@@ -54,7 +59,7 @@ class Settings(metaclass=_SettingsMeta):
     }
 
     # 邮箱配置信息
-    EMAIL_CONFIG = {
+    EMAIL_CONFIG: dict = {
         'email_from': 'rainbow59216@foxmail.com',  # 邮箱用户
         'name': 'Rainbow',
         'verify_code': 'egpzpjrwjhzsdcbb',  # 邮箱验证码
@@ -63,7 +68,7 @@ class Settings(metaclass=_SettingsMeta):
     }
 
     # 所有发送请求的端口
-    PORTS = [5, 6, 9]
+    PORTS: list = [5, 6, 9]
 
 
 settings = Settings()

@@ -140,7 +140,6 @@ def update_pe_course_info():
 
         for json_data in temp_list:
             print(json_data)
-            print(json_data)
             cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], grade, study_year, term))
             db.commit()
 

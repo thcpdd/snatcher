@@ -72,16 +72,17 @@ class SynchronousCourseSelector(CourseSelector):
         )
         try:
             json_data = response.json()
+        except JSONDecodeError:
+            self.log.set_others('step-4_json_decode_error_in_select', '选课异常')
+            self.mark_failed('选课异常')
+            return 0
+        else:
             if json_data['flag'] == '1':
                 self.log.set_others('step-4', '选课成功')
                 return 1
             self.log.set_others('step-4_server_response', json_data['msg'])
             self.mark_failed(json_data['msg'])
             return -2
-        except JSONDecodeError:
-            self.log.set_others('step-4_json_decode_error_in_select', '选课异常')
-            self.mark_failed('选课异常')
-            return 0
 
     def select(self):
         manager = get_session_manager(self.username)
