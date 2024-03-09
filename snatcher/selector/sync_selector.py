@@ -1,5 +1,6 @@
 """
-同步课程选择器
+The synchronous course selector in the module.
+All synchronous course selectors will use `requests` package to send request.
 """
 import re
 
@@ -143,31 +144,3 @@ class SynchronousPhysicalEducationCourseSelector(SynchronousCourseSelector):
                            re.S)
         search_list = regex.search(html)
         self.xkkz_id = search_list.groups()[0] if search_list else None
-
-# class SynchronousEnglishCourseSelector(SynchronousCourseSelector):
-#     course_type = '01'  # 主修课程
-#
-#     def __init__(self, filter_condition: str, username: str, cookie_string, port, section='星期一第1-2'):
-#         """
-#         :param filter_condition: 查询条件
-#         :param username: 学号
-#         :param section: 第几节英语课
-#         """
-#         super().__init__(filter_condition, username, cookie_string, port)
-#         self.search_course_api = self.base_url + '/xsxk/zzxkyzb_cxZzxkYzbPartDisplay.html?gnmkdm=N253512'
-#         self.section = section
-#
-#     def search_course(self):
-#         data = self.get_jxb_ids_data.copy()
-#         data['kspage'] = 1
-#         data['jspage'] = 10
-#         data['kklxdm'] = '01'
-#         response = self.session.post(self.search_course_api, data=data)
-#         for json_data in response.json()['tmpList']:
-#             print(json_data)
-#
-#     def set_kch_id(self):
-#         self.kch_id = 'E0C14E34FA15301BE0530284030AC4CF'
-#
-#     def set_xkkz_id(self):
-#         self.xkkz_id = '0DED336E5061CC2AE0630284030A0FB8'

@@ -1,3 +1,46 @@
+"""
+The module of user's session:
+    1. The `get_redis_connection` function:
+        It will return the redis connection. The result will save in the cache.
+
+    2. The `SessionManager` class:
+        It provides some method for controlling user session.
+        -- `get` method:
+            Return the session string from redis.
+            You must provide a port to this method.
+        -- `set` method:
+            Saving a session to redis.
+        -- `all_sessions` method:
+            Return all sessions of the user. It's a dictionary.
+        -- `has_sessions` method:
+            Judging current username is including session or not.
+        -- `has_session` method:
+            Judging current username is including appoint session or not.
+        -- `get_random_session` method:
+            Random generating a session.
+        -- `close` method:
+            Closing current connection of redis.
+
+    3. The `get_session_manager` function:
+        Return a session manager of appointing username.
+
+    4. The `AsyncSessionSetter` class:
+        You can set a session by this class.
+        Usage:
+            import asyncio
+
+            setter = AsyncSessionSetter(your_username, your_password, base_url, port)
+            cookies, port = asyncio.run(setter.set_session())
+
+    5. The `async_set_session` function:
+        A shortcuts for setting the session, but it's a coroutine, could not call directly.
+
+    6. The `set_session` function:
+        Providing a way for call the `async_set_session`.
+
+    7. The `check_and_set_session` function:
+        If the username haven't session. It will set session for this username.
+"""
 import base64
 from functools import lru_cache
 from random import choice
@@ -33,8 +76,12 @@ class SessionManager:
         if cookie and port:
             self._session_cache.hset(self.username, port, cookie)
 
-    def all_sessions(self):
-        return self._session_cache.hgetall(self.username)
+    def all_sessions(self) -> dict:
+        def decode(item: tuple):
+            key, value = item
+            return key.decode(), value.decode()
+        _sessions = self._session_cache.hgetall(self.username)
+        return dict(map(decode, _sessions.items()))
 
     def has_sessions(self) -> bool:
         return self._session_cache.hlen(self.username) > 0
@@ -55,7 +102,7 @@ def get_session_manager(username: str):
     return SessionManager(username)
 
 
-class AsynchronousSession:
+class AsyncSessionSetter:
     def __init__(self, username: str, password: str, base_url, port: int):
         self.username = username
         self.password = password
@@ -77,9 +124,11 @@ class AsynchronousSession:
         return base64.b64encode(cipher.encrypt(self.password.encode())).decode()
 
     async def set_session(self):
-        # 默认ClientSession使用的是严格模式的 aiohttp.CookieJar. RFC 2109，
-        # 明确的禁止接受url和ip地址产生的cookie，只能接受 DNS 解析IP产生的cookie。
-        # 可以通过设置aiohttp.CookieJar 的 unsafe=True 来配置
+        """
+        默认ClientSession使用的是严格模式的 aiohttp.CookieJar. RFC 2109，
+        明确的禁止接受url和ip地址产生的cookie，只能接受 DNS 解析IP产生的cookie。
+        可以通过设置aiohttp.CookieJar 的 unsafe=True 来配置
+        """
         cookie_jar = aiohttp.CookieJar(unsafe=True)
         timeout = aiohttp.ClientTimeout(total=settings.TIMEOUT)
         try:
@@ -101,7 +150,7 @@ class AsynchronousSession:
 
 
 async def async_set_session(username, password):
-    sessions = [AsynchronousSession(username, password, 'http://10.3.132.%s/jwglxt' % port, port)
+    sessions = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)
                 for port in settings.PORTS]
     tasks = [asyncio.create_task(session.set_session()) for session in sessions]
     cookies_info = await asyncio.gather(*tasks, return_exceptions=True)
@@ -112,7 +161,6 @@ async def async_set_session(username, password):
 
 
 def set_session(username: str, password: str):
-    """为一个学号设置session"""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(async_set_session(username, password))
@@ -120,10 +168,9 @@ def set_session(username: str, password: str):
 
 def check_and_set_session(username: str, password: str):
     """
-    检查并设置session
-    :param username: 学号
-    :param password: 密码
-    :return: 是否设置成功 （-1 不成功） （1 成功）
+    :param username:
+    :param password:
+    :return: success or not （-1 not success） （1 success）
     """
     manager = get_session_manager(username)
     retry = 0
@@ -133,6 +180,6 @@ def check_and_set_session(username: str, password: str):
         set_session(username, password)
         retry += 1
     if not manager.has_sessions():
-        create_failed_data(username, '', '', '模拟登录失败')
+        create_failed_data(username, '', '', '模拟登录失败', 0)
         return -1
     return 1

@@ -1,7 +1,27 @@
 """
-celery -A snatcher.tasks worker -l INFO --pool=threads --concurrency=12
-celery -A snatcher.tasks worker -l INFO -P eventlet --concurrency=12
-celery -A snatcher.tasks worker -l INFO -P gevent --concurrency=12
+The module of celery configuration and its task function:
+    You can launch a celery worker usage:
+        1. celery -A snatcher.tasks worker -l INFO --pool=threads --concurrency=12
+        2. celery -A snatcher.tasks worker -l INFO -P eventlet --concurrency=12
+
+    1. The `application` object:
+        It is a celery instance.
+
+    2. The `send_email` task:
+        It is a celery task function. It will send an email into appoint user.
+
+    3. The `selector_caller` function:
+        It will perform relevant logic for a selector instance.
+
+    4. The `physical_education_task` task.
+        It will send a 'PE' task to celery task queue.
+
+    5. The `public_choice_task` task.
+        It will send a 'PC' task to celery task queue.
+
+    6. The `select_course` task:
+        Providing an interface for outer caller.
+        Detail call way to see if __name__ == '__main__'.
 """
 from datetime import datetime
 
@@ -31,32 +51,17 @@ application = Celery('snatcher', backend=backend, broker=broker)
 
 @application.task(name='snatcher.tasks.send_email')
 def send_email(receiver_email: str, username: str, course_name: str):
-    """
-    选课成功结果通知
-    :param receiver_email:
-    :param username:
-    :param course_name:
-    :return:
-    """
     subject = '选课结果通知'
     content = '学号为%s的同学：\n你好，您意向的课程《%s》已经选课成功，感谢您对我们的信任，谢谢！' % (username, course_name)
     send_mail(receiver_email, subject, content)
 
 
-def task_caller(
+def selector_caller(
     conditions: list,
     username: str,
     email: str,
     selector: CourseSelector
 ):
-    """
-    任务调用者
-    :param conditions: 过滤条件
-    :param username: 用户名
-    :param email: 邮箱
-    :param selector: 选择器
-    :return:
-    """
     for condition in conditions:
         selector.update_filter_condition(condition)
         result = selector.select()
@@ -68,33 +73,22 @@ def task_caller(
 
 @application.task(name='snatcher.tasks.physical_education_task')
 def physical_education_task(conditions: list, username: str, email: str):
-    """体育课选课任务"""
-    task_caller(conditions, username, email, SynchronousPhysicalEducationCourseSelector(username))
+    selector_caller(conditions, username, email, SynchronousPhysicalEducationCourseSelector(username))
 
 
 @application.task(name='snatcher.tasks.public_choice_task')
 def public_choice_task(conditions: list, username: str, email: str):
-    """公选课选课任务"""
-    task_caller(conditions, username, email, SynchronousPublicChoiceCourseSelector(username))
+    selector_caller(conditions, username, email, SynchronousPublicChoiceCourseSelector(username))
 
 
 @application.task(name='snatcher.tasks.snatcher')
 def select_course(
     username: str,
     password: str,
-    conditions: list,
+    conditions: list[str],
     course_type: str,
     email: str
 ):
-    """
-    选课接口
-    :param username: 学号
-    :param password: 密码
-    :param conditions: 所有过滤条件 ['珍珠球', '排球']
-    :param course_type: 课程类型，公选课 'PC'、英语课 'EG'、体育课 'PE'
-    :param email: 邮箱
-    :return:
-    """
     tasks = {
         'PC': public_choice_task,
         'PE': physical_education_task
@@ -108,3 +102,7 @@ def select_course(
         return
     start_time = datetime.utcfromtimestamp(datetime(**settings.START_TIME).timestamp())
     task.apply_async(eta=start_time, args=(conditions, username, email))
+
+
+if __name__ == '__main__':
+    select_course.delay('your_username', 'your_password', ['condition1', 'condition2'], 'PE', 'email')

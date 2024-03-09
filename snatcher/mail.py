@@ -1,5 +1,6 @@
 """
-发送邮件
+The wrapper of send email.
+    The detail calling to see: if __name__ == '__main__'
 """
 import smtplib
 import base64
@@ -9,15 +10,15 @@ from email.header import Header
 from snatcher.conf import settings
 
 
-def include_chinese(string):
-    """判断用户名是否包含中文"""
+def include_chinese(string: str):
+    """judge current string is including Chinese or not."""
     for content in string:
         if u'\u4e00' <= content <= u'\u9fff':
             return True
     return False
 
 
-class SendEmail:
+class EmailSender:
     def __init__(self, receiver_email, subject, content):
         email_config = settings.EMAIL_CONFIG
         self.email_from = email_config['email_from']
@@ -26,11 +27,11 @@ class SendEmail:
         self.subject = subject
         self.content = content
         self.smtp = smtplib.SMTP()
-        self.smtp.connect(email_config['host'], port=email_config['port'])  # 465/587为QQ邮箱的smtp端口号
+        self.smtp.connect(email_config['host'], port=email_config['port'])
         self.smtp.login(user=self.email_from, password=email_config['verify_code'])
 
     def send(self):
-        """发送邮件"""
+        """send email"""
         message = MIMEText(self.content, 'plain', 'utf-8')
         message['From'] = Header(self.get_sender_name(self.sender_name))
         message['To'] = Header(self.receiver_email, 'utf-8')
@@ -40,8 +41,8 @@ class SendEmail:
 
     def get_sender_name(self, name):
         """
-        构造发件人昵称
-        详见：https://service.mail.qq.com/detail/124/995
+        struct sender name.
+        detail: https://service.mail.qq.com/detail/124/995
         """
         if include_chinese(name):
             name = base64.b64encode(name.encode('utf-8')).decode('utf-8')
@@ -49,7 +50,7 @@ class SendEmail:
 
 
 def send_email(receiver_email: str, subject: str, content: str):
-    SendEmail(receiver_email, subject, content).send()
+    EmailSender(receiver_email, subject, content).send()
 
 
 if __name__ == '__main__':

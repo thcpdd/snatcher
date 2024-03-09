@@ -1,5 +1,7 @@
 """
-备份表结构：mysqldump --opt -d select_course -u root -p > db.sql;
+This module provide some function for controlling mysql.
+
+back up db struct: mysqldump --opt -d select_course -u root -p > db.sql;
 """
 from functools import lru_cache
 
@@ -14,12 +16,6 @@ def get_db_connection():
 
 
 def execute_sql(sql: str, args: tuple = None):
-    """
-    执行sql语句
-    :param sql:
-    :param args:
-    :return:
-    """
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute(sql, args)
@@ -33,14 +29,7 @@ def create_selected_data(
     course_name: str,
     log_key: str
 ):
-    """
-    创建一条选课数据
-    :param username: 学号
-    :param email: 邮箱
-    :param course_name: 课程名称
-    :param log_key: 日志关键字
-    :return:
-    """
+    """create a select data."""
     sql = """
         INSERT INTO selected_course_data (`username`, `email`, `course_name`, `log_key`)
         VALUES (%s, %s, %s, %s);
@@ -55,15 +44,7 @@ def create_failed_data(
     failed_reason: str,
     port: int
 ):
-    """
-    创建一条选课失败数据
-    :param username: 学号
-    :param course_name: 课程名
-    :param log_key: 日志key
-    :param failed_reason: 失败原因
-    :param port: 本次发送请求的端口
-    :return:
-    """
+    """create a failed data."""
     sql = """
         INSERT INTO failed_data (`username`, `course_name`, `log_key`, `failed_reason`, `port`)
         VALUES (%s, %s, %s, %s, %s);
@@ -73,9 +54,9 @@ def create_failed_data(
 
 def query_pc_course_id(course_no: str):
     """
-    查询公选课课程id
-    :param course_no: 课程号
-    :return:
+    query PC id
+    :param course_no: the course number
+    :return: (course_id, course_name)
     """
     sql = """
         SELECT `course_id`, `course_name` FROM public_choice_course 
@@ -90,10 +71,10 @@ def query_pc_course_id(course_no: str):
 
 def query_pe_course_id(grade: int, course_name: str):
     """
-    查询体育课课程id
-    :param grade: 年级 2022
-    :param course_name: 部分课程名
-    :return:
+    query pe course id
+    :param grade: grade 2022
+    :param course_name: the part of course name
+    :return: (course_id, course_name)
     """
     sql = """
         SELECT `course_id`, `course_name` FROM physical_education_course 

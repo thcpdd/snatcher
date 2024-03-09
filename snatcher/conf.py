@@ -4,11 +4,6 @@ The project settings.
 
 
 class SingletonMetaClass(type):
-    """
-    单例元类，让一个类变成单例模式：
-        class YourClass(metaclass=SingletonMetaClass):
-            pass
-    """
     def __call__(cls, *args, **kwargs):
         if not hasattr(cls, '_instance'):
             _instance = super().__call__(*args, **kwargs)
@@ -17,7 +12,7 @@ class SingletonMetaClass(type):
 
 
 class Settings(metaclass=SingletonMetaClass):
-    # 数据库连接配置
+    # database configurations
     DATABASES: dict = {
         'redis': {
             'log': {
@@ -38,17 +33,17 @@ class Settings(metaclass=SingletonMetaClass):
         }
     }
 
-    # 全局请求超时时间，单位：秒
+    # global request timeout, unit is second
     TIMEOUT: int = 60 * 20
 
-    # 选课学期设置
-    # 上学期 3，下学期 12
+    # study term
+    # last term is 3, next term is 12
     TERM: int = 12
 
-    # 选课学年
+    # study year
     SELECT_COURSE_YEAR: int = 2023
 
-    # 选课开始时间
+    # select course beginning time
     START_TIME: dict = {
         'year': 2024,
         'month': 3,
@@ -58,16 +53,16 @@ class Settings(metaclass=SingletonMetaClass):
         'second': 1
     }
 
-    # 邮箱配置信息
+    # the email configurations
     EMAIL_CONFIG: dict = {
-        'email_from': 'rainbow59216@foxmail.com',  # 邮箱用户
-        'name': 'Rainbow',
-        'verify_code': 'egpzpjrwjhzsdcbb',  # 邮箱验证码
-        'host': 'smtp.qq.com',
-        'port': 587
+        'email_from': 'rainbow59216@foxmail.com',  # your email address
+        'name': 'Rainbow',  # your name
+        'verify_code': 'egpzpjrwjhzsdcbb',  # your email verify code
+        'host': 'smtp.qq.com',  # current email host
+        'port': 587  # current email port
     }
 
-    # 所有发送请求的端口
+    # all request ports
     PORTS: list = [5, 6, 9]
 
 

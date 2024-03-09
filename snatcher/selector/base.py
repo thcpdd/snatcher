@@ -1,5 +1,37 @@
 """
-课程选择器基类
+The course selector base module.
+    1. The `ParseStudentID` class:
+        It can parse the username. Collecting some special values.
+
+    2. The `RunningLogs` class:
+        Recoding the log during running.
+        -- `set` method:
+            Setting a value from instance messages.
+            The name must be in ['step-1_kch_id', 'step-3_jxb_ids', 'step-2_xkkz_id'].
+        -- `set_others` method:
+            It just like `hset`.
+        -- `retry` method:
+            Add retry count when the task was failing.
+        -- `timeout` method:
+            Add timeout count when the task was timeout.
+
+    3. The `BaseCourseSelector` class:
+        The base class of all course selector
+        -- `set_kch_id` method:
+            Setting course number id. Must be rewritten.
+        -- `set_xkkz_id` method:
+            Setting 'xkkz' id. Must be rewritten.
+        -- `set_jxb_ids` method:
+            Setting 'jxb' id. Must be rewritten.
+        -- `prepare_for_selecting` method:
+            It will be called before sending a request. Must be rewritten.
+        -- `simulate_request` method:
+            The specific logic of selecting course. Must be rewritten.
+        -- `select` method:
+            A method for outer caller. Must be rewritten.
+
+    4. The `CourseSelector` class:
+        The father class of course selector.
 """
 import re
 
@@ -16,7 +48,6 @@ class ParseStudentID:
 
     @property
     def grade(self):
-        """学生年级"""
         return self.groups[0]
 
     @property
@@ -25,17 +56,14 @@ class ParseStudentID:
 
     @property
     def major_id(self):
-        """专业ID"""
         return self.groups[1] + self.groups[3]
 
     @property
     def student_class(self):
-        """学生班级"""
         return self.grade + self.groups[-1]
 
     @property
     def class_id(self):
-        """班级ID"""
         return self.major_id + self.student_class
 
 
@@ -134,31 +162,31 @@ class BaseCourseSelector:
         self.port = None
 
     def set_kch_id(self):
-        """设置课程ID"""
-        raise NotImplementedError('重写该方法')
+        """set course id"""
+        raise NotImplementedError('rewritten me')
 
     def set_xkkz_id(self):
-        """设置选课ID"""
-        raise NotImplementedError('重写该方法')
+        """set xkkz id"""
+        raise NotImplementedError('rewritten me')
 
     def set_jxb_ids(self):
-        """设置教学班ID"""
-        raise NotImplementedError('重写该方法')
+        """set jxb id"""
+        raise NotImplementedError('rewritten me')
 
     def prepare_for_selecting(self):
-        """依次调用：set_kch_id、set_xkkz_id、set_jxb_ids这3个方法"""
-        raise NotImplementedError('重写该方法')
+        """one by one call: set_kch_id, set_xkkz_id, set_jxb_ids"""
+        raise NotImplementedError('rewritten me')
 
     def simulate_request(self):
-        """模拟客户端向选课接口发送请求"""
-        raise NotImplementedError('重写该方法')
+        """simulating browser send request"""
+        raise NotImplementedError('rewritten me')
 
     def select(self):
-        """对外提供调用接口"""
-        raise NotImplementedError('重写该方法')
+        """outer caller please calling me"""
+        raise NotImplementedError('rewritten me')
 
     def update_or_set_cookie(self, cookie_string: str, port: int):
-        """设置或更新相关信息"""
+        """update or set the relative information"""
         if not cookie_string or not port:
             return
         self.cookies = {'JSESSIONID': cookie_string}
@@ -170,17 +198,13 @@ class BaseCourseSelector:
         self.port = port
 
     def update_filter_condition(self, filter_condition: str):
-        """更新过滤条件"""
+        """update filter condition"""
         self.filter_condition = filter_condition
         self.get_jxb_ids_data['filter_list[0]'] = filter_condition
         self.log = RunningLogs(f'{self.username}-{filter_condition}')
 
-    def mark_failed(self, failed_reason):
-        """
-        创建一条mysql失败数据
-        :param failed_reason: 失败原因
-        :return:
-        """
+    def mark_failed(self, failed_reason: str):
+        """create a fail data into mysql"""
         create_failed_data(
             self.username,
             self.real_name,
@@ -191,4 +215,7 @@ class BaseCourseSelector:
 
 
 class CourseSelector(BaseCourseSelector):
-    """所有课程选择器的父类，异步课程选择器、同步课程选择器"""
+    """
+    The father class of all course selector.
+    Including synchronous course selector and asynchronous course selector.
+    """
