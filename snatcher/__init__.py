@@ -3,13 +3,13 @@ The snatcher package information:
     1. `db` package:
         Providing some way to control mysql database.
     2. `selector` package:
-        Some selector in this package.
+        Some selectors in this package.
     3. `api` module:
-        Providing some interface for outer caller.
+        Providing some interfaces for outer caller.
     4. `conf` module:
-        Some configuration of snatcher.
+        Some configurations of snatcher.
     5. `mail` module:
-        A wrapper of sending email.
+        Wrapping a shortcuts for sending email.
     6. `session` module:
         Some ways to control user's session.
     7. `tasks` module:
