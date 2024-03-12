@@ -32,13 +32,20 @@ The course selector base module.
 
     4. The `CourseSelector` class:
         The father class of course selector.
+
+    5. The `selector_caller` function:
+        It will perform relevant logic for a selector instance.
 """
 import re
 
 from redis import Redis
 
 from snatcher.conf import settings
-from snatcher.db.mysql import create_failed_data
+from snatcher.db.mysql import (
+    create_failed_data,
+    create_selected_data
+)
+from snatcher.mail import send_email
 
 
 class ParseStudentID:
@@ -219,3 +226,18 @@ class CourseSelector(BaseCourseSelector):
     The father class of all course selector.
     Including synchronous course selector and asynchronous course selector.
     """
+
+
+def selector_caller(
+    conditions: list,
+    username: str,
+    email: str,
+    selector: CourseSelector
+):
+    for condition in conditions:
+        selector.update_filter_condition(condition)
+        result = selector.select()
+        create_selected_data(username, email, selector.real_name, selector.log.key)
+        if result == 1:
+            send_email(email, username, selector.real_name)
+            break

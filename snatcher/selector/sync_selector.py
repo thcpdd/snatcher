@@ -122,7 +122,10 @@ class SynchronousPublicChoiceCourseSelector(SynchronousCourseSelector):
 
     def set_xkkz_id(self):
         html = self.session.get(self.index_url, timeout=self.timeout).text
-        regex = re.compile(r"""<a id="tab_kklx_10".*?"queryCourse\(.*?,'10','(.*?)','.*?','.*?'\)".*?>通识选修课</a>""")
+        # 只有公选课的时候用这个
+        regex = re.compile('<input type="hidden" name="firstXkkzId" id="firstXkkzId" value="(.*?)"/>')
+        # 有别的选修课的时候用这个
+        # regex = re.compile(r"""<a id="tab_kklx_10".*?"queryCourse\(.*?,'10','(.*?)','.*?','.*?'\)".*?>通识选修课</a>""")
         find_list = regex.findall(html)
         self.xkkz_id = find_list[0] if find_list else None
 

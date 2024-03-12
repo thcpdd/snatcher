@@ -37,7 +37,7 @@ class EmailSender:
         message['To'] = Header(self.receiver_email, 'utf-8')
         message['Subject'] = Header(self.subject)
         self.smtp.sendmail(from_addr=self.email_from, to_addrs=self.receiver_email, msg=message.as_string())
-        self.smtp.close()  # 与服务器断开连接
+        self.smtp.close()  # close with server
 
     def get_sender_name(self, name):
         """
@@ -49,9 +49,17 @@ class EmailSender:
         return f'=?utf-8?B?{name}?= <{self.email_from}>'
 
 
-def send_email(receiver_email: str, subject: str, content: str):
+def send_email(
+    receiver_email: str,
+    username: str,
+    course_name: str
+):
+    subject = 'Congratulations!'
+    content = "Student identity number %s:\n" \
+              "Hello, your intention course <%s> was selected successfully!\n" \
+              "Thank you for your trust in us." % (username, course_name)
     EmailSender(receiver_email, subject, content).send()
 
 
 if __name__ == '__main__':
-    send_email('1834763300@qq.com', '选课结果通知', '学号为%s的同学：\n你好，您选择的课程《%s》已经选课成功，感谢您对我们的信任，谢谢！' % ('2204425143', '毽球'))
+    send_email('1834763300@qq.com', '2204425143', '大学体育')
