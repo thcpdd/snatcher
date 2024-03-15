@@ -16,9 +16,9 @@
 import {ref} from 'vue'
 
 const currentPage = ref(1)
-
+const emit = defineEmits(['update:currentPage'])
 function pageChangeHandle(page) {
-    console.log(page)
     currentPage.value = page
+    emit('update:currentPage', page)
 }
 </script>
