@@ -13,12 +13,19 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref, defineEmits} from 'vue'
 
 const currentPage = ref(1)
-const emit = defineEmits(['update:currentPage'])
+const changePage = defineEmits(['update:currentPage'])
 function pageChangeHandle(page) {
     currentPage.value = page
-    emit('update:currentPage', page)
+    changePage('update:currentPage', page)
 }
 </script>
+
+<style>
+.paginator {
+    margin-bottom: 15px;
+    margin-left: 43%;
+}
+</style>

@@ -1,6 +1,4 @@
-# Snatcher——湾大校园预约抢课系统
-
----
+![](image/snatcher.png)
 
 ---
 
@@ -20,10 +18,10 @@
 
 ## 项目技术栈
 
-+ 编程语言：Python
-+ 数据库：MySQL、Redis
++ 后端：Python、FastAPI、MySQL、Redis、Celery。
++ 前端：Vue3、Element-Plus。
 
-## 项目总体设计架构
+## 核心功能设计架构
 
 ![](image/%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84.png)
 
