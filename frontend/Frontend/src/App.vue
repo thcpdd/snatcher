@@ -4,14 +4,16 @@
             class="el-menu-demo"
             mode="horizontal"
             :ellipsis="false"
-            @select="handleSelect"
             :router="true"
     >
-        <img src="/snatcher.png" alt="Snatcher logo" title="Snatcher logo"/>
-        <div class="flex-grow"/>
+        <img :src="imageUrl()" alt="Snatcher logo" title="Snatcher logo" style="overflow: hidden"/>
+        <div class="flex-grow"></div>
         <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/pc">公选课</el-menu-item>
-        <el-menu-item index="/pe">体育课</el-menu-item>
+        <el-sub-menu>
+            <template #title>👉预约抢课</template>
+            <el-menu-item index="/pc">公选课</el-menu-item>
+            <el-menu-item index="/pe">体育课</el-menu-item>
+        </el-sub-menu>
     </el-menu>
     <div class="content">
         <RouterView/>
@@ -23,10 +25,13 @@ import {ref} from 'vue'
 import {RouterView} from 'vue-router'
 
 const defaultPage = ref('/')
-const handleSelect = (key, keyPath) => {
-    console.log(key, keyPath)
+const imageUrl = () => {
+    let isMobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+    if(isMobile) {
+        return '/logo.svg'
+    }
+    return '/snatcher.svg'
 }
-
 </script>
 
 <style>

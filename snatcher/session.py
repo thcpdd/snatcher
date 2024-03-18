@@ -55,15 +55,10 @@ from snatcher.conf import settings
 from .db.mysql import create_failed_data
 
 
-@lru_cache()
-def get_redis_connection():
-    return Redis(**settings.DATABASES['redis']['session'])
-
-
 class SessionManager:
     def __init__(self, username: str):
         self.username = username
-        self._session_cache = get_redis_connection()
+        self._session_cache = Redis(**settings.DATABASES['redis']['session'])
 
     @lru_cache()
     def get(self, port) -> str:

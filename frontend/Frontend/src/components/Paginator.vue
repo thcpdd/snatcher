@@ -4,7 +4,8 @@
             small
             background
             layout="prev, pager, next"
-            :total="50"
+            :page-size="10"
+            :total="totalData"
             class="mt-4"
             :current-page="currentPage"
             @update:current-page="pageChangeHandle"
@@ -13,10 +14,16 @@
 </template>
 
 <script setup>
-import {ref, defineEmits} from 'vue'
+import {ref, defineEmits, defineProps} from 'vue'
 
 const currentPage = ref(1)
 const changePage = defineEmits(['update:currentPage'])
+
+
+defineProps({
+    totalData: Number
+})
+
 function pageChangeHandle(page) {
     currentPage.value = page
     changePage('update:currentPage', page)
@@ -26,6 +33,8 @@ function pageChangeHandle(page) {
 <style>
 .paginator {
     margin-bottom: 15px;
-    margin-left: 43%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>
