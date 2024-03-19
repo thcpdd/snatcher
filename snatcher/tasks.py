@@ -26,7 +26,7 @@ from .selector.sync_selector import (
     SynchronousPhysicalEducationCourseSelector,
     SynchronousPublicChoiceCourseSelector,
 )
-from .selector.base import selector_caller
+from .selector.base import selector_performer
 from .db.mysql import create_failed_data
 
 
@@ -38,12 +38,12 @@ application = Celery('snatcher', backend=backend, broker=broker)
 
 @application.task(name='snatcher.tasks.physical_education_task')
 def physical_education_task(conditions: list, username: str, email: str):
-    selector_caller(conditions, username, email, SynchronousPhysicalEducationCourseSelector(username))
+    selector_performer(conditions, username, email, SynchronousPhysicalEducationCourseSelector(username))
 
 
 @application.task(name='snatcher.tasks.public_choice_task')
 def public_choice_task(conditions: list, username: str, email: str):
-    selector_caller(conditions, username, email, SynchronousPublicChoiceCourseSelector(username))
+    selector_performer(conditions, username, email, SynchronousPublicChoiceCourseSelector(username))
 
 
 @application.task(name='snatcher.tasks.select_course')

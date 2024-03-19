@@ -228,7 +228,7 @@ class CourseSelector(BaseCourseSelector):
     """
 
 
-def selector_caller(
+def selector_performer(
     conditions: list,
     username: str,
     email: str,

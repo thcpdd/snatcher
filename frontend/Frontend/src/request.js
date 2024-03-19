@@ -67,8 +67,8 @@ export async function searchCourse(courseType, searchContent) {
     return searchResult
 }
 
-export function submitCourse(pathName, data) {
-    requests.post(pathName, data).then(response => {
-        console.log(response.data)
+export async function bookCourse(pathName, data) {
+    return await requests.post(pathName, data).then(response => {
+        return response.data
     })
 }

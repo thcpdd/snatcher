@@ -20,16 +20,20 @@
         <h3>为了您更好的体验，我们需要收集你的一些信息。</h3>
         <div class="user-info-box">
             <div class="user-info">
-                <span>学号：</span>
+                <span>&nbsp;&nbsp;&nbsp;学号：</span>
                 <el-input v-model="username" style="width: 65%" placeholder="请输入你的学号"/>
             </div>
             <div class="user-info">
-                <span>密码：</span>
+                <span>&nbsp;&nbsp;&nbsp;密码：</span>
                 <el-input v-model="password" style="width: 65%" type="password" :show-password="true" placeholder="请输入你的密码"/>
             </div>
             <div class="user-info">
-                <span>邮箱：</span>
+                <span>&nbsp;&nbsp;&nbsp;邮箱：</span>
                 <el-input v-model="email" style="width: 65%" placeholder="请输入你的邮箱"/>
+            </div>
+            <div class="user-info">
+                <span>抢课码：</span>
+                <el-input v-model="verifyCode" style="width: 65%" placeholder="请输入提供给你的抢课码"/>
             </div>
         </div>
         <p>**请确保所填信息完全正确，选课结果将会发送到该邮箱。</p>
@@ -40,11 +44,12 @@
 <script setup>
 import {ref, defineProps, defineEmits, computed, watch} from 'vue'
 import {myMessage} from "@/message.js";
-import {submitCourse} from "@/request.js";
+import {bookCourse} from "@/request.js";
 
 const username = ref('')
 const password = ref('')
 const email = ref('')
+const verifyCode = ref('')
 // 记录要撤销的课程
 const expectDelete = ref(null)
 // 判断当前输入是否能提交
@@ -52,7 +57,8 @@ const canBeSubmitted = computed(() => {
     return username.value !== '' &&
         password.value !== '' &&
         email.value !== '' &&
-        props.currentSelecting.length > 0
+        props.currentSelecting.length > 0 &&
+        verifyCode.value !== ''
 })
 
 // 接收父组件传来的参数
@@ -60,34 +66,45 @@ const props = defineProps({
     openDrawer: Boolean,
     currentSelecting: Array
 })
-// 通知父组件修改新的值
+// 自定义事件
 const emits = defineEmits(['update:openDrawer', 'update:currentSelecting'])
 
+// 监听用户点击“撤销”按钮
 watch(expectDelete, (course_id) => {
     let newCurrentSelecting = []
     // 防止递归调用
-    if(course_id === null) {
+    if (course_id === null) {
         return
     }
     props.currentSelecting.forEach((course) => {
-        if(course.course_id !== course_id) {
+        if (course.course_id !== course_id) {
             newCurrentSelecting.push(course)
         }
     })
     emits('update:currentSelecting', newCurrentSelecting)
+    if (newCurrentSelecting.length === 0) {
+        emits('update:openDrawer', false)
+    }
     expectDelete.value = null
 })
 
-function submitSelected() {
-    myMessage('预约信息提交成功！', 'success')
+async function submitSelected() {
     let pathName = location.pathname
     let data = {
         username: username.value,
         password: password.value,
         email: email.value,
-        courses: props.currentSelecting
+        courses: props.currentSelecting,
+        verify_code: verifyCode.value
     }
-    submitCourse(pathName, data)
+    const responseData = await bookCourse(pathName, data)
+    if (responseData.success === 1) {
+        myMessage('预约信息提交成功！', 'success')
+        emits('update:openDrawer', false)
+        emits('update:currentSelecting', [])
+    } else {
+        myMessage(responseData.msg, 'error')
+    }
 }
 </script>
 

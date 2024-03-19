@@ -3,6 +3,8 @@ This module provide some function for controlling mysql.
 
 back up db struct: mysqldump --opt -d select_course -u root -p > db.sql;
 """
+from time import time
+from random import randint
 from typing import Type
 from functools import lru_cache
 
@@ -154,3 +156,24 @@ def query_pc_course(condition):
     """
     cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM, f'%{condition}%'), cursor=DictCursor)
     return cursor.fetchall()
+
+
+def generate_verify_code(username: str):
+    """Creating a verify code into database and return it."""
+    verify_code = str(int(time())) + str(randint(0, 9))
+    sql = """
+        INSERT INTO verify_codes (`verify_code`, `username`)
+        VALUES (%s, %s);
+    """
+    execute_sql(sql, args=(verify_code, username))
+    return verify_code
+
+
+def check_verify_code(username: str, verify_code: str) -> bool:
+    """Check if the verify code is valid."""
+    sql = """
+        SELECT `id` FROM verify_codes
+        WHERE `verify_code`=%s and `username`=%s;
+    """
+    cursor = execute_sql(sql, args=(verify_code, username))
+    return bool(cursor.fetchone())
