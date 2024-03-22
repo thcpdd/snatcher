@@ -60,7 +60,6 @@ class SessionManager:
         self.username = username
         self._session_cache = Redis(**settings.DATABASES['redis']['session'])
 
-    @lru_cache()
     def get(self, port) -> str:
         res = self._session_cache.hget(self.username, port)
         if res is not None:
@@ -165,7 +164,7 @@ def check_and_set_session(username: str, password: str):
     """
     :param username:
     :param password:
-    :return: success or not （-1 not success） （1 success）
+    :return: success or not (-1 not success) (1 success)
     """
     manager = get_session_manager(username)
     retry = 0

@@ -9,10 +9,6 @@ from requests.exceptions import JSONDecodeError, ReadTimeout
 
 from ..session import get_session_manager
 from .base import CourseSelector
-from ..db.mysql import (
-    query_pc_course_id,
-    query_pe_course_id
-)
 
 
 class SynchronousCourseSelector(CourseSelector):
@@ -39,10 +35,7 @@ class SynchronousCourseSelector(CourseSelector):
             self.mark_failed('非法请求')
 
     def prepare_for_selecting(self):
-        self.set_kch_id()
-        if self.kch_id is None:
-            self.log.set('step-1_kch_id', 0)
-            return 0
+        self.log.set_others('step-0_found_course', self.real_name)
         self.log.set('step-1_kch_id', 1)
 
         self.set_xkkz_id()
@@ -97,14 +90,14 @@ class SynchronousCourseSelector(CourseSelector):
                 self.log.timeout()
             else:
                 if result == 1:
-                    self.log.set_others('task_status', f'{self.filter_condition} 成功')
+                    self.log.set_others('task_status', f'{self.real_name} 成功')
                     return 1
                 if result == -2:
-                    self.log.set_others('task_status', f'{self.filter_condition} 失败')
+                    self.log.set_others('task_status', f'{self.real_name} 失败')
                     return 0
             self.log.retry()
             retry += 1
-        self.log.set_others('task_status', f'{self.filter_condition} 失败')
+        self.log.set_others('task_status', f'{self.real_name} 失败')
         self.mark_failed('超出最大重试次数')
         return 0
 
@@ -112,13 +105,13 @@ class SynchronousCourseSelector(CourseSelector):
 class SynchronousPublicChoiceCourseSelector(SynchronousCourseSelector):
     course_type = '10'  # 公选课
 
-    def set_kch_id(self):
-        course_id, course_name = query_pc_course_id(self.filter_condition)
-        if not all([course_name, course_id]):
-            return
-        self.kch_id = course_id
-        self.real_name = course_name
-        self.log.set_others('step-0_found_course', course_name)
+    # def set_kch_id(self):
+    #     course_id, course_name = query_pc_course_id(self.real_name)
+    #     if not all([course_name, course_id]):
+    #         return
+    #     self.kch_id = course_id
+    #     self.real_name = course_name
+    #     self.log.set_others('step-0_found_course', course_name)
 
     def set_xkkz_id(self):
         html = self.session.get(self.index_url, timeout=self.timeout).text
@@ -133,13 +126,13 @@ class SynchronousPublicChoiceCourseSelector(SynchronousCourseSelector):
 class SynchronousPhysicalEducationCourseSelector(SynchronousCourseSelector):
     course_type = '05'  # 体育课
 
-    def set_kch_id(self):
-        course_id, course_name = query_pe_course_id(int(self.parser.year), self.filter_condition)
-        if not all([course_name, course_id]):
-            return
-        self.kch_id = course_id
-        self.real_name = course_name
-        self.log.set_others('step-0_found_course', course_name)
+    # def set_kch_id(self):
+    #     course_id, course_name = query_pe_course_id(int(self.parser.year), self.real_name)
+    #     if not all([course_name, course_id]):
+    #         return
+    #     self.kch_id = course_id
+    #     self.real_name = course_name
+    #     self.log.set_others('step-0_found_course', course_name)
 
     def set_xkkz_id(self):
         html = self.session.get(self.index_url, timeout=self.timeout).text

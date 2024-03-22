@@ -1,6 +1,7 @@
 """
 The project settings.
 """
+from datetime import datetime
 
 
 class SingletonMetaClass(type):
@@ -64,6 +65,10 @@ class Settings(metaclass=SingletonMetaClass):
 
     # all request ports
     PORTS: list = [5, 6, 9]
+
+    @classmethod
+    def start_time(cls):
+        return datetime.utcfromtimestamp(datetime(**cls.START_TIME).timestamp())
 
 
 settings = Settings()

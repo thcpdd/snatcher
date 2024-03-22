@@ -16,9 +16,7 @@ The module of celery configuration and its task function:
     4. The `select_course` task:
         Providing an interface for outer caller.
 """
-from datetime import datetime
-
-from celery import Celery
+from celery import Celery, Task
 
 from .conf import settings
 from .session import check_and_set_session
@@ -37,33 +35,42 @@ application = Celery('snatcher', backend=backend, broker=broker)
 
 
 @application.task(name='snatcher.tasks.physical_education_task')
-def physical_education_task(conditions: list, username: str, email: str):
-    selector_performer(conditions, username, email, SynchronousPhysicalEducationCourseSelector(username))
+def physical_education_task(
+    username: str,
+    email: str,
+    verify_code: str,
+    goals: list[tuple[str, str]]
+):
+    selector_performer(email, verify_code, goals, SynchronousPhysicalEducationCourseSelector(username))
 
 
 @application.task(name='snatcher.tasks.public_choice_task')
-def public_choice_task(conditions: list, username: str, email: str):
-    selector_performer(conditions, username, email, SynchronousPublicChoiceCourseSelector(username))
+def public_choice_task(
+    username: str,
+    email: str,
+    verify_code: str,
+    goals: list[tuple[str, str]]
+):
+    selector_performer(email, verify_code, goals, SynchronousPublicChoiceCourseSelector(username))
 
 
 @application.task(name='snatcher.tasks.select_course')
 def select_course(
-    username: str,
-    password: str,
-    conditions: list[str],
+    goals: list[tuple[str, str]],
     course_type: str,
-    email: str
+    **users
 ):
     tasks = {
         'PC': public_choice_task,
         'PE': physical_education_task
     }
-    task = tasks.get(course_type)
-    if not task:
+    task: Task | None = tasks.get(course_type)
+    username, password, email = users.get('username'), users.get('password'), users.get('email')
+    if task is None:
         create_failed_data(username, '', '', '选择了不支持的课程类型', 0)
         return
     result = check_and_set_session(username, password)
     if result == -1:
         return
-    start_time = datetime.utcfromtimestamp(datetime(**settings.START_TIME).timestamp())
-    task.apply_async(eta=start_time, args=(conditions, username, email))
+    start_time = settings.start_time()
+    task.apply_async(eta=start_time, args=(username, email, users.get('verify_code'), goals))

@@ -56,17 +56,23 @@ def search_pc_course(keyword: str):
 
 @router.post('/pc', tags=['预约公选课'])
 def book_pc_course(data: BookPCPydantic):
-    if not check_verify_code(data.username, data.verify_code):
+    verify_code = check_verify_code(data.username, data.verify_code)
+    if not verify_code:
         return {'success': 0, 'msg': '无效的抢课码'}
-    conditions = [course.course_no for course in data.courses]
-    public_choice(data.username, data.password, conditions, data.email)
+    if verify_code[0] == 1:
+        return {'success': 0, 'msg': '该抢课码已被使用'}
+    goals = data.packing_data()
+    public_choice(goals, **data.users())
     return {'success': 1}
 
 
 @router.post('/pe', tags=['预约体育课'])
 def book_pe_course(data: BookPEPydantic):
-    if not check_verify_code(data.username, data.verify_code):
+    verify_code = check_verify_code(data.username, data.verify_code)
+    if not verify_code:
         return {'success': 0, 'msg': '无效的抢课码'}
-    conditions = [course.course_name for course in data.courses]
-    physical_education(data.username, data.password, conditions, data.email)
+    if verify_code[0] == 1:
+        return {'success': 0, 'msg': '该抢课码已被使用'}
+    goals = data.packing_data()
+    physical_education(goals, **data.users())
     return {'success': 1}

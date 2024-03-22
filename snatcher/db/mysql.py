@@ -169,11 +169,21 @@ def generate_verify_code(username: str):
     return verify_code
 
 
-def check_verify_code(username: str, verify_code: str) -> bool:
+def check_verify_code(username: str, verify_code: str) -> tuple:
     """Check if the verify code is valid."""
     sql = """
-        SELECT `id` FROM verify_codes
+        SELECT `is_used` FROM verify_codes
         WHERE `verify_code`=%s and `username`=%s;
     """
     cursor = execute_sql(sql, args=(verify_code, username))
-    return bool(cursor.fetchone())
+    return cursor.fetchone()
+
+
+def mark_verify_code_is_used(username: str, verify_code: str):
+    """Mark the verify code as used."""
+    sql = """
+        UPDATE verify_codes
+        SET `is_used`=1
+        WHERE `verify_code`=%s and `username`=%s;
+    """
+    execute_sql(sql, args=(verify_code, username))

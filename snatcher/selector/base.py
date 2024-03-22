@@ -33,7 +33,7 @@ The course selector base module.
     4. The `CourseSelector` class:
         The father class of course selector.
 
-    5. The `selector_caller` function:
+    5. The `selector_performer` function:
         It will perform relevant logic for a selector instance.
 """
 import re
@@ -43,7 +43,8 @@ from redis import Redis
 from snatcher.conf import settings
 from snatcher.db.mysql import (
     create_failed_data,
-    create_selected_data
+    create_selected_data,
+    mark_verify_code_is_used
 )
 from snatcher.mail import send_email
 
@@ -124,13 +125,8 @@ class BaseCourseSelector:
     select_course_year: int = settings.SELECT_COURSE_YEAR  # 选课学年码
 
     def __init__(self, username: str):
-        self.real_name = '空'
         self.username = username  # 学号
-        self.filter_condition = None  # 过滤条件
         self.parser = ParseStudentID(username)  # 解析学号
-        self.kch_id = None  # 课程ID
-        self.jxb_ids = None  # 教学班ids
-        self.xkkz_id = None
         # 获取教学班ids所需的表单数据
         self.get_jxb_ids_data = {
             'bklx_id': 0,  # 补考类型id
@@ -147,7 +143,6 @@ class BaseCourseSelector:
             'xsbj': 4,  # 学生标记，国内学生 4
             'xkxnm': self.select_course_year,  # 选课学年码
             'xkxqm': self.term,  # 选课学期码（上下学期，上学期 3，下学期 12）
-            'filter_list[0]': self.filter_condition,  # 过滤条件
             'kklxdm': '',  # 开课类型代码，公选课10，体育课05、主修课程01，特殊课程09
             'kch_id': '',  # 课程id
             'xkkz_id': ''  # 选课的时间，课程的类型（主修、体育、特殊、通识）
@@ -159,6 +154,7 @@ class BaseCourseSelector:
             'qz': 0  # 权重
         }
         self.timeout = settings.TIMEOUT
+        self.real_name = ''
         self.log = None
         self.session = None
         self.cookies = None
@@ -167,30 +163,33 @@ class BaseCourseSelector:
         self.jxb_ids_api = None
         self.base_url = None
         self.port = None
+        self.kch_id = None  # 课程ID
+        self.jxb_ids = None  # 教学班ids
+        self.xkkz_id = None
 
     def set_kch_id(self):
         """set course id"""
-        raise NotImplementedError('rewritten me')
+        raise NotImplementedError('rewrite me')
 
     def set_xkkz_id(self):
         """set xkkz id"""
-        raise NotImplementedError('rewritten me')
+        raise NotImplementedError('rewrite me')
 
     def set_jxb_ids(self):
         """set jxb id"""
-        raise NotImplementedError('rewritten me')
+        raise NotImplementedError('rewrite me')
 
     def prepare_for_selecting(self):
         """one by one call: set_kch_id, set_xkkz_id, set_jxb_ids"""
-        raise NotImplementedError('rewritten me')
+        raise NotImplementedError('rewrite me')
 
     def simulate_request(self):
         """simulating browser send request"""
-        raise NotImplementedError('rewritten me')
+        raise NotImplementedError('rewrite me')
 
     def select(self):
         """outer caller please calling me"""
-        raise NotImplementedError('rewritten me')
+        raise NotImplementedError('rewrite me')
 
     def update_or_set_cookie(self, cookie_string: str, port: int):
         """update or set the relative information"""
@@ -204,11 +203,11 @@ class BaseCourseSelector:
         self.base_url = base_url
         self.port = port
 
-    def update_filter_condition(self, filter_condition: str):
-        """update filter condition"""
-        self.filter_condition = filter_condition
-        self.get_jxb_ids_data['filter_list[0]'] = filter_condition
-        self.log = RunningLogs(f'{self.username}-{filter_condition}')
+    def update_selector_info(self, course_name: str, course_id: str):
+        """update relative information"""
+        self.real_name = course_name
+        self.kch_id = course_id
+        self.log = RunningLogs(f'{self.username}-{course_name}')
 
     def mark_failed(self, failed_reason: str):
         """create a fail data into mysql"""
@@ -229,15 +228,16 @@ class CourseSelector(BaseCourseSelector):
 
 
 def selector_performer(
-    conditions: list,
-    username: str,
     email: str,
-    selector: CourseSelector
+    verify_code: str,
+    goals: list[tuple[str, str]],
+    selector: CourseSelector,
 ):
-    for condition in conditions:
-        selector.update_filter_condition(condition)
+    for course_name, course_id in goals:
+        selector.update_selector_info(course_name, course_id)
         result = selector.select()
-        create_selected_data(username, email, selector.real_name, selector.log.key)
+        create_selected_data(selector.username, email, course_name, selector.log.key)
         if result == 1:
-            send_email(email, username, selector.real_name)
+            mark_verify_code_is_used(selector.username, verify_code)
+            send_email(email, selector.username, course_name)
             break

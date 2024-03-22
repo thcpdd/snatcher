@@ -11,10 +11,10 @@ Some interfaces of this project to start.
         If the argument `grade` is null, all data will write to `public_choice_course` table.
         Otherwise, all data will write to `physical_education_course` table.
 
-    3. The `update_pc_data` function:
+    4. The `update_pc_data` function:
         Updating the 'PC' course data to database.
 
-    4. The `update_pe_data` function:
+    5. The `update_pe_data` function:
         Updating the 'PE' course data to database.
 """
 import requests
@@ -25,12 +25,30 @@ from .tasks import select_course
 from .db.mysql import get_db_connection
 
 
-def physical_education(username: str, password: str, conditions: list, email: str):
-    select_course.delay(username, password, conditions, 'PE', email)
+def physical_education(
+    goals: list[tuple[str, str]],
+    **users
+):
+    """
+    send a PE select course task.
+    :param goals: [(course_name, course_id),...]
+    :param users: It must contain: username, password, email, verify_code
+    :return:
+    """
+    select_course.delay(goals, 'PE', **users)
 
 
-def public_choice(username: str, password: str, conditions: list, email: str):
-    select_course.delay(username, password, conditions, 'PC', email)
+def public_choice(
+    goals: list[tuple[str, str]],
+    **users
+):
+    """
+    send a PC select course task.
+    :param goals: [(course_name, course_id),...]
+    :param users: It must contain: username, password, email, verify_code
+    :return:
+    """
+    select_course.delay(goals, 'PC', **users)
 
 
 def update_data(grade: str = None):
