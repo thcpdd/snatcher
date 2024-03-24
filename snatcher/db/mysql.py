@@ -7,6 +7,7 @@ from time import time
 from random import randint
 from typing import Type
 from functools import lru_cache
+from hashlib import md5
 
 from pymysql import Connection
 from pymysql.cursors import Cursor, DictCursor
@@ -160,7 +161,8 @@ def query_pc_course(condition):
 
 def generate_verify_code(username: str):
     """Creating a verify code into database and return it."""
-    verify_code = str(int(time())) + str(randint(0, 9))
+    code = str(int(time())) + str(randint(0, 9))
+    verify_code = md5(code.encode()).hexdigest()
     sql = """
         INSERT INTO verify_codes (`verify_code`, `username`)
         VALUES (%s, %s);
@@ -187,3 +189,59 @@ def mark_verify_code_is_used(username: str, verify_code: str):
         WHERE `verify_code`=%s and `username`=%s;
     """
     execute_sql(sql, args=(verify_code, username))
+
+
+def query_all_selected_data(page=1, page_size=10):
+    start = (page - 1) * 10
+    page_size = page_size
+    sql = """
+        SELECT `id`, `username`, `email`, `course_name`, `log_key`, `created_at` FROM selected_course_data
+        ORDER BY `id` DESC
+        LIMIT %s, %s;
+    """
+    cursor = execute_sql(sql, args=(start, page_size), cursor=DictCursor)
+    return cursor.fetchall()
+
+
+def query_selected_data_count() -> int:
+    sql = """SELECT COUNT(`id`) FROM selected_course_data;"""
+    cursor = execute_sql(sql)
+    return cursor.fetchone()[0]
+
+
+def query_failed_data_count() -> int:
+    sql = """SELECT COUNT(`id`) FROM failed_data;"""
+    cursor = execute_sql(sql)
+    return cursor.fetchone()[0]
+
+
+def query_failed_data(page=1, page_size=10):
+    start = (page - 1) * 10
+    page_size = page_size
+    sql = """
+        SELECT `id`, `username`, `port`, `course_name`, `log_key`, `failed_reason`, `created_at` FROM failed_data
+        ORDER BY `id` DESC
+        LIMIT %s, %s;
+    """
+    cursor = execute_sql(sql, args=(start, page_size), cursor=DictCursor)
+    return cursor.fetchall()
+
+
+def query_all_verify_codes(page=1, page_size=10):
+    start = (page - 1) * 10
+    page_size = page_size
+    sql = "SELECT * FROM verify_codes LIMIT %s,%s;"
+    cursor = execute_sql(sql, args=(start, page_size), cursor=DictCursor)
+    return cursor.fetchall()
+
+
+def query_verify_code_count() -> int:
+    sql = "SELECT COUNT(`id`) FROM verify_codes;"
+    cursor = execute_sql(sql)
+    return cursor.fetchone()[0]
+
+
+if __name__ == '__main__':
+    # for data in query_all_verify_codes():
+    #     print(data)
+    print(type(query_failed_data_count()))

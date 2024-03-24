@@ -28,10 +28,15 @@ import router from "@/router/index.js";
 
 const isLogin = ref(false)
 onBeforeMount(() => {
-    let _isLogin = sessionStorage.getItem('isLogin')
-    if(!_isLogin) {
+    let token = localStorage.getItem('token')
+    if(!token) {
         router.push('/login')
     } else {
+        let exp = JSON.parse(window.atob(token.split('.')[1])).exp
+        if (Date.parse(Date()) / 1000 > exp) {  // 过期
+            localStorage.removeItem('token')
+            window.location = '/login'
+        }
         isLogin.value = true
     }
 })
@@ -55,10 +60,11 @@ body {
 
 .content {
     width: 85%;
-    border: 1px solid #cbccce;
     border-radius: 10px;
     text-align: -webkit-center;
     float: right;
-    margin-top: 17px;
+    margin-top: 50px;
+    background-color: white;
+    margin-right: 16px;
 }
 </style>

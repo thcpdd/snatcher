@@ -19,12 +19,14 @@
                 ></el-input>
             </el-form-item>
         </el-form>
-        <el-button type="primary" style="width: 100%" :disabled="!canBeLogin" @click="login">登录</el-button>
+        <el-button type="primary" style="width: 100%" :disabled="!canBeLogin" @click="_login">登录</el-button>
     </el-card>
 </template>
+
 <script setup>
 import {ref, computed} from "vue";
 import {myMessage} from "@/message.js";
+import {login} from "@/request.js";
 
 
 const username = ref("");
@@ -33,26 +35,29 @@ const canBeLogin = computed(() => {
     return username.value !== "" && password.value !== "";
 });
 
-const login = () => {
-    if(username.value === 'rainbow' && password.value === 'rainbow') {
-        sessionStorage.setItem('isLogin', '1');
+const _login = async () => {
+    let res = await login(username.value, password.value)
+    if (res.success) {
         window.location = '/'
     } else {
-        myMessage('身份验证失败', 'error')
+        myMessage(res.msg, 'error')
     }
 }
-
 </script>
 
 <style>
 .login-form {
-    width: 410px;
+    width: 400px;
     border-radius: 10px;
-    margin-top: 18%;
+    margin-top: 12%;
+    margin-right: 15%;
 }
 body {
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("../../public/wallhaven-72yzje.jpg");
+    background-image: url("/wallhaven-72yzje.jpg");
+}
+.content {
+    background-color: unset;
 }
 </style>
