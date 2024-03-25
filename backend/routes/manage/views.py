@@ -9,7 +9,9 @@ from .pydantic import (
     AllSelectedDataPydantic,
     FailedDataPydantic,
     VerifyCodePydantic,
-    LoginPydantic
+    LoginPydantic,
+    PCPydantic,
+    PEPydantic
 )
 from snatcher.db.mysql import (
     query_all_selected_data,
@@ -18,7 +20,11 @@ from snatcher.db.mysql import (
     query_failed_data,
     query_all_verify_codes,
     query_verify_code_count,
-    generate_verify_code
+    generate_verify_code,
+    query_pe_course_count,
+    query_pc_course_count,
+    query_all_pc_course,
+    query_all_pe_course
 )
 
 
@@ -30,7 +36,7 @@ SECRET = '410d5e58a1268d7c11552571b9c13dbf2e095f28f37fe3ed6e8149ca0e30abff'
 def identity_validator(request: Request):
     token = request.headers.get('Authorization')
     if not token:
-        return JSONResponse({'msg': '身份验证失败', 'success': 0}, status_code=401)
+        return JSONResponse({'msg': '非法请求', 'success': 0}, status_code=401)
     try:
         jwt.decode(token, SECRET, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
@@ -110,6 +116,38 @@ def create_verify_code(username: str, request: Request):
     if response:
         return response
     return generate_verify_code(username)
+
+
+@router.get('/pc/count', tags=['查询公选课总数'])
+def get_pc_course_count(request: Request):
+    response = identity_validator(request)
+    if response:
+        return response
+    return query_pc_course_count()
+
+
+@router.get('/pe/count', tags=['查询体育课总数'])
+def get_pe_course_count(request: Request):
+    response = identity_validator(request)
+    if response:
+        return response
+    return query_pe_course_count()
+
+
+@router.get('/pc/{page}', response_model=list[PCPydantic], tags=['查询公选课列表'])
+def get_pc_course(request: Request, page: int = 1):
+    response = identity_validator(request)
+    if response:
+        return response
+    return query_all_pc_course(page)
+
+
+@router.get('/pe/{page}', response_model=list[PEPydantic], tags=['查询体育课列表'])
+def get_pe_course(request: Request, page: int = 1):
+    response = identity_validator(request)
+    if response:
+        return response
+    return query_all_pe_course(page)
 
 
 @router.post('/login', tags=['超级管理员登录'])

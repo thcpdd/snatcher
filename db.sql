@@ -50,7 +50,7 @@ create table verify_codes
     id          int auto_increment
         primary key,
     username    varchar(20) default ''                null,
-    verify_code varchar(20) default ''                null,
+    verify_code varchar(40) default ''                null,
     is_used     tinyint(1)  default 0                 null,
     create_at   timestamp   default CURRENT_TIMESTAMP null,
     constraint verify_code

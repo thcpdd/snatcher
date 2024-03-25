@@ -98,7 +98,7 @@ def query_all_pc_course(page=1, page_size=10):
     start = (page - 1) * 10
     page_size = page_size
     sql = """
-        SELECT `id`, `course_id`, `course_name`, `course_no` FROM public_choice_course
+        SELECT * FROM public_choice_course
         WHERE `study_year`=%s and `term`=%s
         ORDER BY `id` 
         LIMIT %s, %s;
@@ -112,7 +112,7 @@ def query_all_pe_course(page=1, page_size=10):
     start = (page - 1) * 10
     page_size = page_size
     sql = """
-        SELECT `id`, `course_id`, `course_name`, `grade` FROM physical_education_course
+        SELECT * FROM physical_education_course
         WHERE `study_year`=%s and `term`=%s
         ORDER BY `id` 
         LIMIT %s, %s;

@@ -73,3 +73,35 @@ export async function login(username, password) {
         return response.data
     })
 }
+
+export async function getPECoursesCount() {
+    let localPECount = 0
+    await requests.get('/pe/count').then((response) => {
+        localPECount = response.data
+    })
+    return Number(localPECount);
+}
+
+export async function getPCCoursesCount() {
+    let localPCCount = 0
+    await requests.get('/pc/count').then((response) => {
+        localPCCount = response.data
+    })
+    return Number(localPCCount);
+}
+
+export async function getPECourses(page) {
+    let localPECourses = []
+    await requests.get(`/pe/${page}`).then((response) => {
+        localPECourses = response.data
+    })
+    return localPECourses;
+}
+
+export async function getPCCourses(page) {
+    let localPCCourses = []
+    await requests.get(`/pc/${page}`).then((response) => {
+        localPCCourses = response.data
+    })
+    return localPCCourses;
+}

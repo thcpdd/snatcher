@@ -33,3 +33,19 @@ class VerifyCodePydantic(BaseModel):
 class LoginPydantic(BaseModel):
     username: str
     password: str
+
+
+class CoursePydantic(BaseModel):
+    id: int
+    course_id: str
+    course_name: str
+    study_year: int
+    term: str
+
+
+class PEPydantic(CoursePydantic):
+    grade: int
+
+
+class PCPydantic(CoursePydantic):
+    course_no: str
