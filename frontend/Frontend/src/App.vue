@@ -14,6 +14,7 @@
             <el-menu-item index="/pc">公选课</el-menu-item>
             <el-menu-item index="/pe">体育课</el-menu-item>
         </el-sub-menu>
+        <img src="/avatar.svg" class="avatar" alt="avatar" style="">
     </el-menu>
     <div class="content">
         <RouterView/>
@@ -27,7 +28,7 @@ import {RouterView} from 'vue-router'
 const defaultPage = ref('/')
 const imageUrl = () => {
     let isMobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
-    if(isMobile) {
+    if (isMobile) {
         return '/logo.svg'
     }
     return '/snatcher.svg'
@@ -48,11 +49,20 @@ body {
     border-radius: 10px;
     text-align: -webkit-center;
     margin-top: 10px;
-    padding-bottom: 13px;
+    overflow: hidden;
+    height: max-content;
 }
 
 .el-menu-demo {
     border-radius: 10px;
-    --el-menu-bg-color: #f4f6f8  /*官方文档写的就是一坨*/
+    overflow: clip;
+    --el-menu-bg-color: #f4f6f8 /*官方文档写的就是一坨*/
+}
+
+.avatar {
+    border-radius: 50%;
+    height: 80%;
+    margin-top: 8px;
+    margin-right: 10px;
 }
 </style>

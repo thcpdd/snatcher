@@ -14,7 +14,7 @@
                 type="primary"
                 style="float: right; margin-bottom: 4px;margin-right: 8px"
                 size="small"
-                @click="currentSelecting.push(course);myMessage('课程选择成功', 'success')"
+                @click="currentSelecting.push(course);myMessage('添加课程成功，请继续选择其他课程 或 点击下方的确认按钮', 'success')"
             >选择</el-button>
         </el-collapse-item>
     </el-collapse>
@@ -27,6 +27,7 @@
             @click="() => openDrawer = true"
             :disabled="currentSelecting.length === 0"
             title="在表格中勾选你的意向课程"
+            style="margin-bottom: 13px;"
         >确认</el-button>
     </el-badge>
     <!--  对话框  -->
