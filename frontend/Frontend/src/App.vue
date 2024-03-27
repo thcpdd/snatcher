@@ -29,6 +29,7 @@ const defaultPage = ref('/')
 const imageUrl = () => {
     let isMobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
     if (isMobile) {
+        sessionStorage.setItem('isMobile', '1')
         return '/logo.svg'
     }
     return '/snatcher.svg'
@@ -36,10 +37,10 @@ const imageUrl = () => {
 </script>
 
 <style>
-body {
+body, html {
     margin: 0;
+    scroll-behavior: smooth;
 }
-
 .flex-grow {
     flex-grow: 1;
 }
