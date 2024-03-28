@@ -7,7 +7,7 @@
             </span>
         </div>
         <div class="t2"><span class="t2-font">Python Spider Program</span></div>
-        <div class="t3"><span>傻瓜式操作：选择课程-输入信息-提交</span></div>
+        <div class="t3"><span>选择课程-填写相关信息-提交-预约抢课成功</span></div>
         <div style="margin-top: 3%">
             <el-button type="primary"
                        style="width: max-content;font-weight: bolder;font-size: 100%"
@@ -23,12 +23,12 @@
         <div class="tc1"><span class="tc1-font">Vue3 + Element-Plus</span></div>
         <div class="tc2">
             <span>
-                以Vite为脚手架，将整个WEB界面打包成静态文件，通过Nginx服务器进行部署，<br/>
-                从而减少了页面一系列不必要的编译时间，提高了页面的流畅度。<br/>
+                以Vite为脚手架，将整个WEB界面打包成静态文件，部署在Nginx服务器，<br/>
+                从而减少一系列不必要的编译时间，提高了页面的流畅度。<br/>
             </span>
         </div>
         <div class="tc2">
-            <span>使用Element-Plus快速构建WEB界面。</span>
+            <span>使用Element-Plus快速构建WEB UI界面。</span>
         </div>
         <div class="logo-image">
             <img src="/vue-logo.svg" alt="vue-logo" style="width: 10%;margin-right: 3%">
@@ -45,7 +45,7 @@
         <div><span class="bt1-font">FastAPI + MySQL + Redis + Celery</span></div>
         <div class="tc2">
             <span>
-                FastAPI是现代的Python后端框架，号称速度是当今最快的Python后端框架。
+                FastAPI是现代的Python后端框架，是当今最快的Python后端框架之一。
             </span>
         </div>
         <div class="tc2">
@@ -54,10 +54,10 @@
             </span>
         </div>
         <div class="logo-image">
-            <img src="/logo-mysql-170x115.png" alt="fastapi-logo" style="width: 15%"><br/>
+            <img src="/logo-mysql-170x115.png" alt="mysql-logo" style="width: 15%"><br/>
             <img src="/fastapi.png" alt="fastapi-logo" style="width: 30%"><br/>
-            <img src="/redis_original_logo_icon_146368.svg" alt="fastapi-logo" style="width: 8%">
-            <img src="/celery_512.webp" alt="fastapi-logo" style="width: 8%;margin-left: 3%">
+            <img src="/redis_original_logo_icon_146368.svg" alt="redis-logo" style="width: 8%">
+            <img src="/celery_512.webp" alt="celery-logo" style="width: 8%;margin-left: 3%">
         </div>
     </div>
 </template>
@@ -71,6 +71,7 @@ function setFontSize(selector, rate) {
     document.querySelector(selector).style.fontSize = width / rate + "px";
 }
 onMounted(() => {
+    // 重新调整移动端的字体大小
     if (sessionStorage.getItem("isMobile")) {
         setFontSize(".t1-font", 10);
         setFontSize(".t2-font", 17);

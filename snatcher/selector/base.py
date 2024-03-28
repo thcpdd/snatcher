@@ -35,16 +35,30 @@ The course selector base module.
 
     5. The `selector_performer` function:
         It will perform relevant logic for a selector instance.
+
+    6. The `update_data` function:
+        Updating course information to mysql.
+        If the argument `grade` is null, all data will write to `public_choice_course` table.
+        Otherwise, all data will write to `physical_education_course` table.
+
+    7. The `update_pc_data` function:
+        Updating the 'PC' course data to database.
+
+    8. The `update_pe_data` function:
+        Updating the 'PE' course data to database.
 """
 import re
 
+import requests
+from requests.exceptions import JSONDecodeError
 from redis import Redis
 
 from snatcher.conf import settings
 from snatcher.db.mysql import (
     create_failed_data,
     create_selected_data,
-    mark_verify_code_is_used
+    mark_verify_code_is_used,
+    get_db_connection
 )
 from snatcher.mail import send_email
 
@@ -203,14 +217,22 @@ class BaseCourseSelector:
         self.base_url = base_url
         self.port = port
 
-    def update_selector_info(self, course_name: str, course_id: str):
+    def update_selector_info(self, course_name: str, course_id: str, email: str):
         """update relative information"""
         self.real_name = course_name
         self.kch_id = course_id
         self.log = RunningLogs(f'{self.username}-{course_name}')
+        create_selected_data(self.username, email, course_name, self.log.key)
 
     def mark_failed(self, failed_reason: str):
         """create a fail data into mysql"""
+        send_email(
+            '1834763300@qq.com',
+            self.username,
+            self.real_name,
+            False,
+            failed_reason
+        )
         create_failed_data(
             self.username,
             self.real_name,
@@ -234,10 +256,86 @@ def selector_performer(
     selector: CourseSelector,
 ):
     for course_name, course_id in goals:
-        selector.update_selector_info(course_name, course_id)
+        selector.update_selector_info(course_name, course_id, email)
         result = selector.select()
-        create_selected_data(selector.username, email, course_name, selector.log.key)
         if result == 1:
             mark_verify_code_is_used(selector.username, verify_code)
             send_email(email, selector.username, course_name)
             break
+
+
+def update_data(grade: str = None):
+    study_year = settings.SELECT_COURSE_YEAR
+    term = settings.TERM
+
+    url = 'http://10.3.132.10/jwglxt/xsxk/zzxkyzb_cxZzxkYzbPartDisplay.html?gnmkdm=N253512'
+    data = {
+        'bklx_id': 0,
+        'xkxnm': study_year,
+        'xkxqm': term,
+        'kklxdm': '',
+        'kspage': 1,  # kspage: 1, after: jspage + 1
+        'jspage': 10,  # jspage: 10, after: jspage + 10
+        'zyfx_id': 'wfx',
+        'bh_id': '0425221',
+        'xbm': 1,
+        'xslbdm': 'wlb',
+        'mzm': '13',
+        'xz': 4,
+        'ccdm': 3,
+        'xsbj': 4,
+        'xqh_id': 3,
+        'jg_id': '206',
+    }
+    headers = {
+        'Cookie': 'JSESSIONID=94258A739E2D283AF575FDB08642EB48; route=3d51944d5f53d489f356b638f274e4fb'
+    }
+    if grade is not None:
+        data['njdm_id'] = grade  # add a must field
+        data['kklxdm'] = '05'
+        sql = """INSERT INTO physical_education_course 
+            (`course_name`, `course_id`, `grade`, `study_year`, `term`)
+            VALUES (%s,%s,%s,%s,%s);
+        """
+    else:
+        data['kklxdm'] = '10'
+        sql = """INSERT INTO public_choice_course 
+            (`course_name`, `course_id`, `course_no`, `study_year`, `term`)
+            VALUES (%s,%s,%s,%s,%s);
+        """
+    db = get_db_connection()
+    cursor = db.cursor()
+
+    while True:
+        response = requests.post(url, data=data, headers=headers)
+
+        try:
+            json_data_list = response.json()
+        except JSONDecodeError:
+            print(response.text)
+            return
+
+        if not (temp_list := json_data_list['tmpList']):
+            break
+
+        if grade is not None:
+            for json_data in temp_list:
+                print(json_data)
+                cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], grade, study_year, term))
+        else:
+            for json_data in temp_list:
+                print(json_data)
+                cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], json_data['kch'], study_year, term))
+        db.commit()
+
+        # next page
+        data['kspage'] = data['jspage'] + 1
+        data['jspage'] += 10
+
+
+def update_pc_data():
+    update_data()
+
+
+def update_pe_data(grade: str):
+    update_data(grade)

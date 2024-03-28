@@ -12,8 +12,8 @@ from snatcher.conf import settings
 
 def include_chinese(string: str):
     """judge current string is including Chinese or not."""
-    for content in string:
-        if u'\u4e00' <= content <= u'\u9fff':
+    for char in string:
+        if u'\u4e00' <= char <= u'\u9fff':
             return True
     return False
 
@@ -52,14 +52,20 @@ class EmailSender:
 def send_email(
     receiver_email: str,
     username: str,
-    course_name: str
+    course_name: str,
+    success: bool = True,
+    failed_reason: str = None
 ):
-    subject = 'Congratulations!'
-    content = "Student identity number %s:\n" \
-              "Hello, your intention course <%s> was selected successfully!\n" \
-              "Thank you for your trust in us." % (username, course_name)
+    if success:
+        subject = 'Congratulations!'
+        content = "Student identity number %s:\n" \
+                  "Hello, your intention course <%s> was selected successfully!\n" \
+                  "Thank you for your trust in us." % (username, course_name)
+    else:
+        subject = '选课失败通知'
+        content = "学号为 %s 的意向课程 <%s> 选课失败，原因：%s" % (username, course_name, failed_reason)
     EmailSender(receiver_email, subject, content).send()
 
 
 if __name__ == '__main__':
-    send_email('1834763300@qq.com', '2204425143', '大学体育')
+    send_email('1834763300@qq.com', '2204425143', '大学体育', True)
