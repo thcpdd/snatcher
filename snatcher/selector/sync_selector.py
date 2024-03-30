@@ -105,14 +105,6 @@ class SynchronousCourseSelector(CourseSelector):
 class SynchronousPublicChoiceCourseSelector(SynchronousCourseSelector):
     course_type = '10'  # 公选课
 
-    # def set_kch_id(self):
-    #     course_id, course_name = query_pc_course_id(self.real_name)
-    #     if not all([course_name, course_id]):
-    #         return
-    #     self.kch_id = course_id
-    #     self.real_name = course_name
-    #     self.log.set_others('step-0_found_course', course_name)
-
     def set_xkkz_id(self):
         html = self.session.get(self.index_url, timeout=self.timeout).text
         # 只有公选课的时候用这个
@@ -125,14 +117,6 @@ class SynchronousPublicChoiceCourseSelector(SynchronousCourseSelector):
 
 class SynchronousPhysicalEducationCourseSelector(SynchronousCourseSelector):
     course_type = '05'  # 体育课
-
-    # def set_kch_id(self):
-    #     course_id, course_name = query_pe_course_id(int(self.parser.year), self.real_name)
-    #     if not all([course_name, course_id]):
-    #         return
-    #     self.kch_id = course_id
-    #     self.real_name = course_name
-    #     self.log.set_others('step-0_found_course', course_name)
 
     def set_xkkz_id(self):
         html = self.session.get(self.index_url, timeout=self.timeout).text

@@ -53,6 +53,7 @@ from redis import Redis
 
 from snatcher.conf import settings
 from .db.mysql import create_failed_data
+from .mail import send_email
 
 
 class SessionManager:
@@ -175,5 +176,6 @@ def check_and_set_session(username: str, password: str):
         retry += 1
     if not manager.has_sessions():
         create_failed_data(username, '', '', '模拟登录失败', 0)
+        send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
         return -1
     return 1

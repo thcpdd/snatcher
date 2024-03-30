@@ -14,7 +14,7 @@ def physical_education(
     **users
 ):
     """
-    send a PE select course task.
+    select PE course interface.
     :param goals: [(course_name, course_id),...]
     :param users: It must contain: username, password, email, verify_code
     :return:
@@ -27,7 +27,7 @@ def public_choice(
     **users
 ):
     """
-    send a PC select course task.
+    select PC course interface.
     :param goals: [(course_name, course_id),...]
     :param users: It must contain: username, password, email, verify_code
     :return:

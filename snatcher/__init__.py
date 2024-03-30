@@ -19,7 +19,13 @@ Usage:
     from snatcher import physical_education  # the PE interface.
     from snatcher import public_choice  # the PC interface.
 
-    physical_education(your_username, your_password, ['goal1', ...], 'rainbow59216@rainbow.com')
+    physical_education(
+        [(course_name, course_id), ...],
+        username='your_username',
+        password='your_password',
+        email='rainbow59216@rainbow.com',
+        verify_code='your_verify_code'
+    )
 """
 from .api import (
     physical_education as physical_education,
