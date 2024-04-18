@@ -15,6 +15,11 @@ from pymysql.cursors import Cursor, DictCursor
 from snatcher.conf import settings
 
 
+study_year = settings.SELECT_COURSE_YEAR
+term = settings.TERM
+period = settings.PERIOD
+
+
 def get_db_connection():
     return Connection(**settings.DATABASES['mysql'])
 
@@ -64,8 +69,8 @@ def query_pc_course_id(course_no: str):
     :return: (course_id, course_name)
     """
     sql = """
-        SELECT `course_id`, `course_name` FROM public_choice_course 
-        WHERE `study_year`=%s and `term`=%s and `course_no`=%s;
+        SELECT `course_id`, `course_name` FROM pc 
+        WHERE `study_year`=%s and `term`=%s and `period`=%s and `course_no`=%s;
     """
     cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM, course_no))
     data = cursor.fetchone()
@@ -83,7 +88,7 @@ def query_pe_course_id(grade: int, course_name: str):
     :return: (course_id, course_name)
     """
     sql = """
-        SELECT `course_id`, `course_name` FROM physical_education_course 
+        SELECT `course_id`, `course_name` FROM pe 
         WHERE `study_year`=%s and `term`=%s and `grade`=%s and `course_name` like %s;
     """
     cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM, grade, f'%{course_name}%'))
@@ -98,12 +103,13 @@ def query_all_pc_course(page=1, page_size=10):
     start = (page - 1) * 10
     page_size = page_size
     sql = """
-        SELECT * FROM public_choice_course
-        WHERE `study_year`=%s and `term`=%s
+        SELECT * FROM pc
+        WHERE `study_year`=%s and `term`=%s and `period`=%s
         ORDER BY `id` 
         LIMIT %s, %s;
     """
-    cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM, start, page_size), cursor=DictCursor)
+    cursor = execute_sql(sql, args=(study_year, term, period, start, page_size),
+                         cursor=DictCursor)
     return cursor.fetchall()
 
 
@@ -112,50 +118,50 @@ def query_all_pe_course(page=1, page_size=10):
     start = (page - 1) * 10
     page_size = page_size
     sql = """
-        SELECT * FROM physical_education_course
+        SELECT * FROM pe
         WHERE `study_year`=%s and `term`=%s
         ORDER BY `id` 
         LIMIT %s, %s;
     """
-    cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM, start, page_size), cursor=DictCursor)
+    cursor = execute_sql(sql, args=(study_year, term, start, page_size), cursor=DictCursor)
     return cursor.fetchall()
 
 
 @lru_cache()
 def query_pc_course_count() -> int:
     sql = """
-        SELECT COUNT(`id`) FROM public_choice_course
-        WHERE `study_year`=%s and `term`=%s;
+        SELECT COUNT(`id`) FROM pc
+        WHERE `study_year`=%s and `term`=%s and `period`=%s;
     """
-    cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM))
+    cursor = execute_sql(sql, args=(study_year, term, period))
     return cursor.fetchone()[0]
 
 
 @lru_cache()
 def query_pe_course_count() -> int:
     sql = """
-        SELECT COUNT(`id`) FROM physical_education_course
+        SELECT COUNT(`id`) FROM pe
         WHERE `study_year`=%s and `term`=%s;
     """
-    cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM))
+    cursor = execute_sql(sql, args=(study_year, term))
     return cursor.fetchone()[0]
 
 
 def query_pe_course(condition):
     sql = """
-    SELECT `id`, `course_id`, `course_name`, `grade` FROM physical_education_course
+    SELECT `id`, `course_id`, `course_name`, `grade` FROM pe
     WHERE `study_year`=%s and `term`=%s and `course_name` like %s;
     """
-    cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM, f'%{condition}%'), cursor=DictCursor)
+    cursor = execute_sql(sql, args=(study_year, term, f'%{condition}%'), cursor=DictCursor)
     return cursor.fetchall()
 
 
 def query_pc_course(condition):
     sql = """
-    SELECT `id`, `course_id`, `course_name`, `course_no` FROM public_choice_course
-    WHERE `study_year`=%s and `term`=%s and `course_name` like %s;
+    SELECT `id`, `course_id`, `course_name`, `course_no` FROM pc
+    WHERE `study_year`=%s and `term`=%s and `period`=%s and `course_name` like %s;
     """
-    cursor = execute_sql(sql, args=(settings.SELECT_COURSE_YEAR, settings.TERM, f'%{condition}%'), cursor=DictCursor)
+    cursor = execute_sql(sql, args=(study_year, term, period, f'%{condition}%'), cursor=DictCursor)
     return cursor.fetchall()
 
 

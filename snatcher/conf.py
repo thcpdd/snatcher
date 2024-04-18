@@ -26,7 +26,7 @@ class Settings(metaclass=SingletonMetaClass):
             }
         },
         'mysql': {
-            'database': 'select_course',
+            'database': 'snatcher',
             'host': '127.0.0.1',
             'user': 'root',
             'password': '000000',
@@ -44,11 +44,15 @@ class Settings(metaclass=SingletonMetaClass):
     # study year
     SELECT_COURSE_YEAR: int = 2023
 
+    # study term period
+    # The first half of the term is 1, the second half of the term is 2
+    PERIOD: int = 2
+
     # select course beginning time
     START_TIME: dict = {
         'year': 2024,
-        'month': 3,
-        'day': 5,
+        'month': 4,
+        'day': 22,
         'hour': 12,
         'minute': 30,
         'second': 1
@@ -64,7 +68,7 @@ class Settings(metaclass=SingletonMetaClass):
     }
 
     # all request ports
-    PORTS: list = [5, 6, 9]
+    PORTS: list = [5, 6]
 
     def start_time(self):
         return datetime.utcfromtimestamp(datetime(**self.START_TIME).timestamp())

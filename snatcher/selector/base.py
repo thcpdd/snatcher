@@ -288,20 +288,20 @@ def update_data(grade: str = None):
         'jg_id': '206',
     }
     headers = {
-        'Cookie': 'JSESSIONID=94258A739E2D283AF575FDB08642EB48; route=3d51944d5f53d489f356b638f274e4fb'
+        'Cookie': 'JSESSIONID=7A7572FCAEBCA0E7D6CFDC05CC96758F; route=f24d04cc10e92fdab9790b41504f5b47'
     }
     if grade is not None:
         data['njdm_id'] = grade  # add a must field
         data['kklxdm'] = '05'
-        sql = """INSERT INTO physical_education_course 
+        sql = """INSERT INTO pe 
             (`course_name`, `course_id`, `grade`, `study_year`, `term`)
             VALUES (%s,%s,%s,%s,%s);
         """
     else:
         data['kklxdm'] = '10'
-        sql = """INSERT INTO public_choice_course 
-            (`course_name`, `course_id`, `course_no`, `study_year`, `term`)
-            VALUES (%s,%s,%s,%s,%s);
+        sql = """INSERT INTO pc 
+            (`course_name`, `course_id`, `course_no`, `study_year`, `term`, `period`)
+            VALUES (%s,%s,%s,%s,%s,%s);
         """
     db = get_db_connection()
     cursor = db.cursor()
@@ -325,7 +325,9 @@ def update_data(grade: str = None):
         else:
             for json_data in temp_list:
                 print(json_data)
-                cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], json_data['kch'], study_year, term))
+                cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], json_data['kch'], study_year, term,
+                                     settings.PERIOD))
+
         db.commit()
 
         # next page

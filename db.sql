@@ -10,7 +10,7 @@ create table failed_data
     port          int          default 0                 not null
 );
 
-create table physical_education_course
+create table pe
 (
     id          int auto_increment
         primary key,
@@ -21,7 +21,7 @@ create table physical_education_course
     term        varchar(10)  default '' not null comment '学期'
 );
 
-create table public_choice_course
+create table pc
 (
     id          int auto_increment
         primary key,
@@ -29,7 +29,8 @@ create table public_choice_course
     course_id   varchar(255) default '' not null comment '课程id',
     course_no   varchar(255) default '' not null comment '课程号',
     study_year  int          default 0  not null comment '学年',
-    term        varchar(10)  default '' not null comment '学期'
+    term        varchar(10)  default '' not null comment '学期',
+    `period`    int(1)       default 1  not null comment '学期阶段'
 );
 
 create table selected_course_data
@@ -50,7 +51,7 @@ create table verify_codes
     id          int auto_increment
         primary key,
     username    varchar(20) default ''                null,
-    verify_code varchar(40) default ''                null,
+    verify_code varchar(40)                           null,
     is_used     tinyint(1)  default 0                 null,
     create_at   timestamp   default CURRENT_TIMESTAMP null,
     constraint verify_code
