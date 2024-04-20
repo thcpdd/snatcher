@@ -23,6 +23,10 @@ class Settings(metaclass=SingletonMetaClass):
             'session': {
                 'db': 4,
                 'host': '127.0.0.1'
+            },
+            'weights': {
+                'db': 5,
+                'host': '127.0.0.1'
             }
         },
         'mysql': {
@@ -68,7 +72,7 @@ class Settings(metaclass=SingletonMetaClass):
     }
 
     # all request ports
-    PORTS: list = [5, 6]
+    PORTS: list[str] = ['5', '6', '7', '8', '9']
 
     def start_time(self):
         return datetime.utcfromtimestamp(datetime(**self.START_TIME).timestamp())

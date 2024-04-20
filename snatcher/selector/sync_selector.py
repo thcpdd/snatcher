@@ -9,6 +9,7 @@ from requests.exceptions import JSONDecodeError, ReadTimeout
 
 from ..session import get_session_manager
 from .base import CourseSelector
+from ..db.redis import increasing_weight, decreasing_weight
 
 
 class SynchronousCourseSelector(CourseSelector):
@@ -56,6 +57,7 @@ class SynchronousCourseSelector(CourseSelector):
         self.session.cookies.update(self.cookies)
         success = self.prepare_for_selecting()
         if not success:
+            self.mark_failed('选课参数异常')
             return 0
         self.select_course_data['kch_id'] = self.kch_id
         self.select_course_data['jxb_ids'] = self.jxb_ids
@@ -73,6 +75,7 @@ class SynchronousCourseSelector(CourseSelector):
         else:
             if json_data['flag'] == '1':
                 self.log.set_others('step-4', '选课成功')
+                increasing_weight(self.port, 15)
                 return 1
             self.log.set_others('step-4_server_response', json_data['msg'])
             self.mark_failed(json_data['msg'])
@@ -82,23 +85,22 @@ class SynchronousCourseSelector(CourseSelector):
         manager = get_session_manager(self.username)
         retry = 0
         while retry < 3:
-            cookie_string, port = manager.get_random_session()
+            cookie_string, port = manager.get_session_by_weight()
             self.update_or_set_cookie(cookie_string, port)
             try:
                 result = self.simulate_request()
             except ReadTimeout:
+                decreasing_weight(self.port)
                 self.log.timeout()
+                self.log.retry()
+                retry += 1
             else:
                 if result == 1:
                     self.log.set_others('task_status', f'{self.real_name} 成功')
                     return 1
-                if result == -2:
-                    self.log.set_others('task_status', f'{self.real_name} 失败')
-                    return 0
-            self.log.retry()
-            retry += 1
-        self.log.set_others('task_status', f'{self.real_name} 失败')
+                return 0
         self.mark_failed('超出最大重试次数')
+        decreasing_weight(self.port, 25)
         return 0
 
 
@@ -109,9 +111,13 @@ class SynchronousPublicChoiceCourseSelector(SynchronousCourseSelector):
         html = self.session.get(self.index_url, timeout=self.timeout).text
         # 只有公选课的时候用这个
         regex = re.compile('<input type="hidden" name="firstXkkzId" id="firstXkkzId" value="(.*?)"/>')
-        # 有别的选修课的时候用这个
-        # regex = re.compile(r"""<a id="tab_kklx_10".*?"queryCourse\(.*?,'10','(.*?)','.*?','.*?'\)".*?>通识选修课</a>""")
         find_list = regex.findall(html)
+        if not find_list:
+            # 尝试第二种匹配（有别的选修课的时候）
+            regex = re.compile(
+                r"""<a id="tab_kklx_10".*?"queryCourse\(.*?,'10','(.*?)','.*?','.*?'\)".*?>通识选修课</a>"""
+            )
+            find_list = regex.findall(html)
         self.xkkz_id = find_list[0] if find_list else None
 
 

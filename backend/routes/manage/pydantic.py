@@ -49,3 +49,4 @@ class PEPydantic(CoursePydantic):
 
 class PCPydantic(CoursePydantic):
     course_no: str
+    period: int

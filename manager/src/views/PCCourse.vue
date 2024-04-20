@@ -14,6 +14,7 @@
             <el-table-column prop="course_no" label="课程号" align="center"/>
             <el-table-column prop="study_year" label="选课学年" align="center"/>
             <el-table-column prop="term" label="学期" align="center"/>
+            <el-table-column prop="period" label="学期阶段" align="center"/>
         </el-table>
         <paginator :total-data="total" @update:current-page="pageChangeHandle"></paginator>
     </div>

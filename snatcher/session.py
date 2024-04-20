@@ -44,6 +44,7 @@ The module of user's session:
 import base64
 from functools import lru_cache
 from random import choice
+from yarl import URL
 
 import asyncio
 import aiohttp
@@ -53,40 +54,47 @@ from redis import Redis
 
 from snatcher.conf import settings
 from .db.mysql import create_failed_data
+from .db.redis import (
+    optimal_port_generator,
+    decreasing_weight,
+    increasing_weight
+)
 from .mail import send_email
 
 
 class SessionManager:
     def __init__(self, username: str):
         self.username = username
-        self._session_cache = Redis(**settings.DATABASES['redis']['session'])
+        self._session_cache = Redis(**settings.DATABASES['redis']['session'], decode_responses=True)
 
-    def get(self, port) -> str:
+    def get(self, port: str) -> str:
         res = self._session_cache.hget(self.username, port)
         if res is not None:
-            return res.decode()
+            return res
         return ''
 
-    def set(self, cookie, port):
+    def set(self, cookie: str, port: str):
         if cookie and port:
             self._session_cache.hset(self.username, port, cookie)
 
     def all_sessions(self) -> dict:
-        def decode(item: tuple):
-            key, value = item
-            return key.decode(), value.decode()
-        _sessions = self._session_cache.hgetall(self.username)
-        return dict(map(decode, _sessions.items()))
+        return self._session_cache.hgetall(self.username)
 
     def has_sessions(self) -> bool:
         return self._session_cache.hlen(self.username) > 0
 
-    def has_session(self, port) -> bool:
+    def has_session(self, port: str) -> bool:
         return self._session_cache.hexists(self.username, port)
 
-    def get_random_session(self) -> tuple[str, int]:
+    def get_session_by_weight(self) -> tuple[str, str]:
+        for port in optimal_port_generator():
+            if self.has_session(port):
+                return self.get(port), port
+        return self.get_random_session()
+
+    def get_random_session(self) -> tuple[str, str]:
         port = choice(self._session_cache.hkeys(self.username))
-        return self.get(port), int(port.decode())
+        return self.get(port), port
 
     def close(self):
         self._session_cache.close()
@@ -98,7 +106,7 @@ def get_session_manager(username: str):
 
 
 class AsyncSessionSetter:
-    def __init__(self, username: str, password: str, base_url, port: int):
+    def __init__(self, username: str, password: str, base_url: str, port: str):
         self.username = username
         self.password = password
         self.base_url = base_url
@@ -137,14 +145,16 @@ class AsyncSessionSetter:
                 }
                 async with await self.session.post(url, data=data) as response:
                     if str(response.url) != url:  # 登录成功重定向后url改变
-                        cookies = self.session.cookie_jar.filter_cookies(url)
+                        cookies = self.session.cookie_jar.filter_cookies(URL(url))
+                        increasing_weight(self.port)
                         return cookies.get('JSESSIONID').value, self.port
                     return '', self.port
         except TimeoutError:
+            decreasing_weight(self.port)
             return '', self.port
 
 
-async def async_set_session(username, password):
+async def async_set_session(username: str, password: str):
     sessions = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)
                 for port in settings.PORTS]
     tasks = [asyncio.create_task(session.set_session()) for session in sessions]

@@ -168,7 +168,7 @@ class BaseCourseSelector:
             'qz': 0  # 权重
         }
         self.timeout = settings.TIMEOUT
-        self.real_name = ''
+        self.real_name = None
         self.log = None
         self.session = None
         self.cookies = None
@@ -205,12 +205,12 @@ class BaseCourseSelector:
         """outer caller please calling me"""
         raise NotImplementedError('rewrite me')
 
-    def update_or_set_cookie(self, cookie_string: str, port: int):
+    def update_or_set_cookie(self, cookie_string: str, port: str):
         """update or set the relative information"""
         if not cookie_string or not port:
             return
         self.cookies = {'JSESSIONID': cookie_string}
-        base_url = ''.join(['http:', '//10.3.132.', str(port), '/jwglxt'])
+        base_url = ''.join(['http:', '//10.3.132.', port, '/jwglxt'])
         self.select_course_api = base_url + '/xsxk/zzxkyzbjk_xkBcZyZzxkYzb.html?gnmkdm=N253512'  # 选课api
         self.index_url = base_url + '/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default'  # 选课首页
         self.jxb_ids_api = base_url + '/xsxk/zzxkyzbjk_cxJxbWithKchZzxkYzb.html?gnmkdm=N253512'  # 获取教学班ids的api
