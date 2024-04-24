@@ -90,7 +90,7 @@ class ParseStudentID:
 
 
 class RunningLogs:
-    def __init__(self, key):
+    def __init__(self, key: str):
         _db_info = settings.DATABASES['redis']['log']
         self._connection = Redis(**_db_info)
         self.key = key
@@ -109,10 +109,10 @@ class RunningLogs:
             },
         }
 
-    def set(self, name, success):
+    def set(self, name: str, success: int):
         self._connection.hset(self.key, name, self.messages[name][success])
 
-    def set_others(self, name, message):
+    def set_others(self, name: str, message: str):
         self._connection.hset(self.key, name, message)
 
     def timeout(self):
@@ -169,7 +169,7 @@ class BaseCourseSelector:
         }
         self.timeout = settings.TIMEOUT
         self.real_name = None
-        self.log = None
+        self.log: RunningLogs | None = None
         self.session = None
         self.cookies = None
         self.select_course_api = None
@@ -260,7 +260,9 @@ def selector_performer(
         result = selector.select()
         if result == 1:
             mark_verify_code_is_used(selector.username, verify_code)
-            send_email(email, selector.username, course_name)
+            success, exception = send_email(email, selector.username, course_name)
+            if not success:
+                selector.log.set_others('send_email_failed', str(exception))
             break
 
 

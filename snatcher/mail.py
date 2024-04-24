@@ -33,17 +33,18 @@ class EmailSender:
     def send(self):
         """send email"""
         message = MIMEText(self.content, 'plain', 'utf-8')
-        message['From'] = Header(self.get_sender_name(self.sender_name))
+        message['From'] = Header(self.get_sender_name())
         message['To'] = Header(self.receiver_email, 'utf-8')
         message['Subject'] = Header(self.subject)
         self.smtp.sendmail(from_addr=self.email_from, to_addrs=self.receiver_email, msg=message.as_string())
-        self.smtp.close()  # close with server
+        self.smtp.quit()  # quit session with smtp server
 
-    def get_sender_name(self, name):
+    def get_sender_name(self):
         """
         struct sender name.
         detail: https://service.mail.qq.com/detail/124/995
         """
+        name = self.sender_name
         if include_chinese(name):
             name = base64.b64encode(name.encode('utf-8')).decode('utf-8')
         return f'=?utf-8?B?{name}?= <{self.email_from}>'
@@ -64,7 +65,11 @@ def send_email(
     else:
         subject = '选课失败通知'
         content = "学号为 %s 的意向课程 <%s> 选课失败，原因：%s" % (username, course_name, failed_reason)
-    EmailSender(receiver_email, subject, content).send()
+    try:
+        EmailSender(receiver_email, subject, content).send()
+    except smtplib.SMTPException as exception:
+        return 0, exception
+    return 1, ''
 
 
 if __name__ == '__main__':

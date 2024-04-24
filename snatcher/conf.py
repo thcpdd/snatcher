@@ -39,7 +39,7 @@ class Settings(metaclass=SingletonMetaClass):
     }
 
     # global request timeout, unit is second
-    TIMEOUT: int = 60 * 20
+    TIMEOUT: int = 60 * 60
 
     # study term
     # last term is 3, next term is 12

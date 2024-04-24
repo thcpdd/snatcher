@@ -5,7 +5,12 @@ All synchronous course selectors will use `requests` package to send request.
 import re
 
 from requests import session
-from requests.exceptions import JSONDecodeError, ReadTimeout
+from requests.exceptions import (
+    JSONDecodeError,
+    ReadTimeout,
+    ConnectionError,
+    ConnectTimeout
+)
 
 from ..session import get_session_manager
 from .base import CourseSelector
@@ -89,7 +94,10 @@ class SynchronousCourseSelector(CourseSelector):
             self.update_or_set_cookie(cookie_string, port)
             try:
                 result = self.simulate_request()
-            except ReadTimeout:
+            except (ReadTimeout, ConnectTimeout, ConnectionError):
+                # ReadTimeout 与服务器连接成功，但是接收响应超时
+                # ConnectTimeout 与服务器建立连接时超时
+                # ConnectionError 服务器拒绝连接
                 decreasing_weight(self.port)
                 self.log.timeout()
                 self.log.retry()

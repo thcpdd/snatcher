@@ -76,17 +76,3 @@ def book_pe_course(data: BookPEPydantic):
     goals = data.packing_data()
     physical_education(goals, **data.users())
     return {'success': 1}
-
-
-@router.get('/test')
-def test_request():
-    import requests
-
-    url = 'http://10.3.132.10/jwglxt/xtgl/login_getPublicKey.html'
-    try:
-        response = requests.get(url)
-    except Exception as e:
-        return {'msg': e}
-    else:
-        return response.json()
-    
