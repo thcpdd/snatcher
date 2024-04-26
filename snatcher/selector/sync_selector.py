@@ -12,9 +12,9 @@ from requests.exceptions import (
     ConnectTimeout
 )
 
-from ..session import get_session_manager
+from snatcher.session import get_session_manager
+from snatcher.db.redis import increasing_weight, decreasing_weight
 from .base import CourseSelector
-from ..db.redis import increasing_weight, decreasing_weight
 
 
 class SynchronousCourseSelector(CourseSelector):

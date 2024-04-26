@@ -1,0 +1,79 @@
+"""
+Asyncio Celery Tasks:
+    You can launch an async celery worker usage:
+        aio_celery worker snatcher.aiotasks:application --concurrency=12
+
+    1. The `application` object:
+        It is an async celery instance.
+
+    2. The `async_physical_education_task` task.
+        It will send a 'PE' async task to async celery task queue.
+
+    3. The `async_public_choice_task` task.
+        It will send a 'PC' async task to async celery task queue.
+
+    4. The `async_select_course` task:
+        Providing an interface for outer caller.
+"""
+from aio_celery import Celery
+from aio_celery.annotated_task import AnnotatedTask
+
+from snatcher.conf import settings
+from snatcher.selector.async_selector import (
+    AsynchronousPublicChoiceCourseSelector as AsyncPCSelector,
+    AsynchronousPhysicalEducationCourseSelector as AsyncPESelector
+)
+from snatcher.selector.performers import async_selector_performer
+from snatcher.db.mysql import create_failed_data
+from snatcher.session import async_check_and_set_session
+
+
+application = Celery('snatcher')
+application.conf.result_backend = 'redis://127.0.0.1:6379/1'
+
+
+@application.task(name='snatcher.aiotasks.async_physical_education_task')
+async def async_physical_education_task(
+    username: str,
+    email: str,
+    verify_code: str,
+    goals: list[tuple[str, str]]
+):
+    await async_selector_performer(email, verify_code, goals, AsyncPESelector(username))
+
+
+@application.task(name='snatcher.aiotasks.async_public_choice_task')
+async def async_public_choice_task(
+    username: str,
+    email: str,
+    verify_code: str,
+    goals: list[tuple[str, str]]
+):
+    await async_selector_performer(email, verify_code, goals, AsyncPCSelector(username))
+
+
+aiotasks = {
+    'PC': async_public_choice_task,
+    'PE': async_physical_education_task
+}
+
+
+@application.task(name='snatcher.aiotasks.async_select_course')
+async def async_select_course(
+    goals: list[tuple[str, str]],
+    course_type: str,
+    **users
+):
+    task: AnnotatedTask | None = aiotasks.get(course_type)
+    username = users.get('username')
+    if task is None:
+        create_failed_data(username, '', '', '选择了不支持的课程类型', 0)
+        return
+    password = users.get('password')
+    result = await async_check_and_set_session(username, password)
+    if result == -1:
+        return
+    countdown = settings.countdown()
+    email = users.get('email')
+    verify_code = users.get('verify_code')
+    await task.apply_async(args=(username, email, verify_code, goals), countdown=countdown)

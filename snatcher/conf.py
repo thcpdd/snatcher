@@ -77,5 +77,10 @@ class Settings(metaclass=SingletonMetaClass):
     def start_time(self):
         return datetime.utcfromtimestamp(datetime(**self.START_TIME).timestamp())
 
+    def countdown(self):
+        if self.start_time() <= datetime.utcnow():
+            return 0
+        return (self.start_time() - datetime.utcnow()).seconds
+
 
 settings = Settings()

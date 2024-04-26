@@ -1,9 +1,6 @@
 """
 The module of user's session:
-    1. The `get_redis_connection` function:
-        It will return the redis connection. The result will save in the cache.
-
-    2. The `SessionManager` class:
+    1. The `SessionManager` class:
         It provides some method for controlling user session.
         -- `get` method:
             Return the session string from redis.
@@ -16,15 +13,17 @@ The module of user's session:
             Judging current username is including session or not.
         -- `has_session` method:
             Judging current username is including appoint session or not.
+        -- `get_session_by_weight`:
+            Generating a session by port weight.
         -- `get_random_session` method:
             Random generating a session.
         -- `close` method:
             Closing current connection of redis.
 
-    3. The `get_session_manager` function:
+    2. The `get_session_manager` function:
         Return a session manager of appointing username.
 
-    4. The `AsyncSessionSetter` class:
+    3. The `AsyncSessionSetter` class:
         You can set a session by this class.
         Usage:
             import asyncio
@@ -32,14 +31,17 @@ The module of user's session:
             setter = AsyncSessionSetter(your_username, your_password, base_url, port)
             cookies, port = asyncio.run(setter.set_session())
 
-    5. The `async_set_session` function:
+    4. The `async_set_session` function:
         A shortcuts for setting the session, but it's a coroutine, could not call directly.
 
-    6. The `set_session` function:
-        Providing a way for call the `async_set_session`.
+    5. The `set_session` function:
+        Providing a sync way for call the `async_set_session`.
 
-    7. The `check_and_set_session` function:
+    6. The `check_and_set_session` function:
         If the username haven't session. It will set session for this username.
+
+    7. The `async_check_and_set_session` function:
+        An async way to check and set session.
 """
 import base64
 from functools import lru_cache
@@ -53,13 +55,13 @@ from Crypto.PublicKey import RSA
 from redis import Redis
 
 from snatcher.conf import settings
-from .db.mysql import create_failed_data
-from .db.redis import (
+from snatcher.db.mysql import create_failed_data
+from snatcher.db.redis import (
     optimal_port_generator,
     decreasing_weight,
     increasing_weight
 )
-from .mail import send_email
+from snatcher.mail import send_email
 
 
 class SessionManager:
@@ -143,8 +145,8 @@ class AsyncSessionSetter:
                     'yhm': self.username,
                     'mm': encrypt_password
                 }
-                async with await self.session.post(url, data=data) as response:
-                    if str(response.url) != url:  # 登录成功重定向后url改变
+                async with await self.session.post(url, data=data, allow_redirects=False) as response:
+                    if response.status == 302:  # 302表示将要重定向，登录成功
                         cookies = self.session.cookie_jar.filter_cookies(URL(url))
                         increasing_weight(self.port)
                         return cookies.get('JSESSIONID').value, self.port
@@ -166,9 +168,9 @@ async def async_set_session(username: str, password: str):
 
 
 def set_session(username: str, password: str):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(async_set_session(username, password))
+    from asgiref.sync import async_to_sync
+
+    async_to_sync(async_set_session)(username, password)
 
 
 def check_and_set_session(username: str, password: str):
@@ -183,6 +185,26 @@ def check_and_set_session(username: str, password: str):
         if manager.has_sessions():
             break
         set_session(username, password)
+        retry += 1
+    if not manager.has_sessions():
+        create_failed_data(username, '', '', '模拟登录失败', 0)
+        send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
+        return -1
+    return 1
+
+
+async def async_check_and_set_session(username: str, password: str):
+    """
+    :param username:
+    :param password:
+    :return: success or not (-1 not success) (1 success)
+    """
+    manager = get_session_manager(username)
+    retry = 0
+    while retry < 3:
+        if manager.has_sessions():
+            break
+        await async_set_session(username, password)
         retry += 1
     if not manager.has_sessions():
         create_failed_data(username, '', '', '模拟登录失败', 0)

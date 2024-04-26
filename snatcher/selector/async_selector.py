@@ -5,16 +5,11 @@ All asynchronous course selectors will use `aiohttp` package to send request.
 import re
 
 import aiohttp
-import asyncio
 from asyncio import TimeoutError
 from aiohttp.client_exceptions import ContentTypeError
 
+from snatcher.session import get_session_manager
 from .base import CourseSelector
-# from ..db.mysql import (
-#     query_pc_course_id,
-#     query_pe_course_id,
-# )
-from ..session import get_session_manager
 
 
 class AsynchronousCourseSelector(CourseSelector):
@@ -37,10 +32,7 @@ class AsynchronousCourseSelector(CourseSelector):
             self.mark_failed('非法请求')
 
     async def prepare_for_selecting(self):
-        await self.set_kch_id()
-        if self.kch_id is None:
-            self.log.set('step-1_kch_id', 0)
-            return 0
+        self.log.set_others('step-0_found_course', self.real_name)
         self.log.set('step-1_kch_id', 1)
 
         await self.set_xkkz_id()
@@ -61,6 +53,7 @@ class AsynchronousCourseSelector(CourseSelector):
         self.session = aiohttp.ClientSession(cookies=self.cookies, timeout=timeout)
         success = await self.prepare_for_selecting()
         if not success:
+            self.mark_failed('选课参数异常')
             await self.session.close()
             return 0
         self.select_course_data['kch_id'] = self.kch_id
@@ -83,64 +76,46 @@ class AsynchronousCourseSelector(CourseSelector):
             response.close()
             await self.session.close()
 
-    async def async_select(self):
+    async def select(self):
         manager = get_session_manager(self.username)
         retry = 0
         while retry < 3:
-            cookie_string, port = manager.get_random_session()
+            cookie_string, port = manager.get_session_by_weight()
             self.update_or_set_cookie(cookie_string, port)
             try:
                 result = await self.simulate_request()
             except TimeoutError:
+                self.log.retry()
                 self.log.timeout()
+                retry += 1
             else:
                 if result == 1:
                     self.log.set_others('task_status', f'{self.real_name} 成功')
                     return 1
-                if result == -2:
-                    self.log.set_others('task_status', f'{self.real_name} 失败')
-                    return 0
-            self.log.retry()
-            retry += 1
-        self.log.set_others('task_status', f'{self.real_name} 失败')
+                return 0
         self.mark_failed('超出最大重试次数')
         return 0
-
-    def select(self):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        return loop.run_until_complete(self.async_select())
 
 
 class AsynchronousPublicChoiceCourseSelector(AsynchronousCourseSelector):
     course_type = '10'  # 公选课
-
-    # async def set_kch_id(self):
-    #     course_id, course_name = query_pc_course_id(self.filter_condition)
-    #     if not all([course_name, course_id]):
-    #         return
-    #     self.kch_id = course_id
-    #     self.real_name = course_name
-    #     self.log.set_others('step-0_found_course', course_name)
 
     async def set_xkkz_id(self):
         async with await self.session.get(self.index_url) as response:
             html = await response.text()
         regex = re.compile('<input type="hidden" name="firstXkkzId" id="firstXkkzId" value="(.*?)"/>')
         find_list = regex.findall(html)
+        if not find_list:
+            # 尝试第二种匹配（有别的选修课的时候）
+            regex = re.compile(
+                r"""<a id="tab_kklx_10".*?"queryCourse\(.*?,'10','(.*?)','.*?','.*?'\)".*?>通识选修课</a>"""
+            )
+            find_list = regex.findall(html)
         self.xkkz_id = find_list[0] if find_list else None
 
 
 class AsynchronousPhysicalEducationCourseSelector(AsynchronousCourseSelector):
     course_type = '05'  # 体育课
-
-    # async def set_kch_id(self):
-    #     course_id, course_name = query_pe_course_id(int(self.parser.year), self.filter_condition)
-    #     if not all([course_name, course_id]):
-    #         return
-    #     self.kch_id = course_id
-    #     self.real_name = course_name
-    #     self.log.set_others('step-0_found_course', course_name)
 
     async def set_xkkz_id(self):
         response = await self.session.get(self.index_url)
