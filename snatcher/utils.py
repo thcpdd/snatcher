@@ -3,34 +3,21 @@ Some tools in this module:
     1. The `ParseStudentID` class:
         It can parse the username. Collecting some special values.
 
-    2. The `RunningLogs` class:
-        Recoding the log during running.
-        -- `set` method:
-            Setting a value from instance messages.
-            The name must be in ['step-1_kch_id', 'step-3_jxb_ids', 'step-2_xkkz_id'].
-        -- `set_others` method:
-            It just like `hset`.
-        -- `retry` method:
-            Add retry count when the task was failing.
-        -- `timeout` method:
-            Add timeout count when the task was timeout.
-
-    3. The `update_data` function:
+    2. The `update_data` function:
         Updating course information to mysql.
         If the argument `grade` is null, all data will write to `public_choice_course` table.
         Otherwise, all data will write to `physical_education_course` table.
 
-    4. The `update_pc_data` function:
+    3. The `update_pc_data` function:
         Updating the 'PC' course data to database.
 
-    5. The `update_pe_data` function:
+    4. The `update_pe_data` function:
         Updating the 'PE' course data to database.
 """
 import re
 
 import requests
 from requests.exceptions import JSONDecodeError
-from redis import Redis
 
 from snatcher.conf import settings
 from snatcher.db.mysql import get_db_connection
@@ -60,49 +47,6 @@ class ParseStudentID:
     @property
     def class_id(self):
         return self.major_id + self.student_class
-
-
-class RunningLogs:
-    def __init__(self, key: str):
-        _db_info = settings.DATABASES['redis']['log']
-        self._connection = Redis(**_db_info)
-        self.key = key
-        self.messages = {
-            'step-1_kch_id': {
-                1: '课程ID设置成功',
-                0: '课程ID设置失败'
-            },
-            'step-3_jxb_ids': {
-                1: '教学班ID设置成功',
-                0: '教学班ID设置失败'
-            },
-            'step-2_xkkz_id': {
-                1: 'xkkz_id设置成功',
-                0: 'xkkz_id设置失败'
-            },
-        }
-
-    def set(self, name: str, success: int):
-        self._connection.hset(self.key, name, self.messages[name][success])
-
-    def set_others(self, name: str, message: str):
-        self._connection.hset(self.key, name, message)
-
-    def timeout(self):
-        _timeout = self._connection.hget(self.key, 'timeout')
-        if _timeout:
-            _timeout = int(_timeout) + 1
-        else:
-            _timeout = 1
-        self._connection.hset(self.key, 'timeout', str(_timeout))
-
-    def retry(self):
-        _retry = self._connection.hget(self.key, 'retry')
-        if _retry:
-            _retry = int(_retry) + 1
-        else:
-            _retry = 1
-        self._connection.hset(self.key, 'retry', str(_retry))
 
 
 def update_data(grade: str = None):

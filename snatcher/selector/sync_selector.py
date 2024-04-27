@@ -14,7 +14,7 @@ from requests.exceptions import (
 
 from snatcher.session import get_session_manager
 from snatcher.db.redis import increasing_weight, decreasing_weight
-from .base import CourseSelector
+from .base import CourseSelector, RunningLogs
 
 
 class SynchronousCourseSelector(CourseSelector):
@@ -88,6 +88,7 @@ class SynchronousCourseSelector(CourseSelector):
 
     def select(self):
         manager = get_session_manager(self.username)
+        self.log = RunningLogs(self.log_key)
         retry = 0
         while retry < 3:
             cookie_string, port = manager.get_session_by_weight()

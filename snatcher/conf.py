@@ -1,7 +1,7 @@
 """
 The project settings.
 """
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class SingletonMetaClass(type):
@@ -75,12 +75,12 @@ class Settings(metaclass=SingletonMetaClass):
     PORTS: list[str] = ['5', '6', '7', '8', '9']
 
     def start_time(self):
-        return datetime.utcfromtimestamp(datetime(**self.START_TIME).timestamp())
+        return datetime.fromtimestamp(datetime(**self.START_TIME).timestamp(), timezone.utc)
 
     def countdown(self):
-        if self.start_time() <= datetime.utcnow():
+        if self.start_time() <= datetime.now(timezone.utc):
             return 0
-        return (self.start_time() - datetime.utcnow()).seconds
+        return (self.start_time() - datetime.now(timezone.utc)).seconds
 
 
 settings = Settings()

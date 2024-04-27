@@ -5,11 +5,13 @@ All asynchronous course selectors will use `aiohttp` package to send request.
 import re
 
 import aiohttp
-from asyncio import TimeoutError
-from aiohttp.client_exceptions import ContentTypeError
+from aiohttp.client_exceptions import (
+    ContentTypeError,
+    ClientConnectorError,
+)
 
 from snatcher.session import get_session_manager
-from .base import CourseSelector
+from .base import CourseSelector, AsyncRunningLogs
 
 
 class AsynchronousCourseSelector(CourseSelector):
@@ -22,30 +24,30 @@ class AsynchronousCourseSelector(CourseSelector):
         try:
             self.jxb_ids = json_data[0]['do_jxb_id']
         except IndexError:
-            self.log.set_others('step-3_error_in_set_jxb_ids', '表单数据异常')
+            await self.log.set_others('step-3_error_in_set_jxb_ids', '表单数据异常')
             self.mark_failed('表单数据异常')
         except ContentTypeError:
-            self.log.set_others('step-3_error_in_set_jxb_ids', 'json解码失败')
+            await self.log.set_others('step-3_error_in_set_jxb_ids', 'json解码失败')
             self.mark_failed('json解码失败')
         except TypeError:
-            self.log.set_others('step-3_error_in_set_jxb_ids', '非法请求')
+            await self.log.set_others('step-3_error_in_set_jxb_ids', '非法请求')
             self.mark_failed('非法请求')
 
     async def prepare_for_selecting(self):
-        self.log.set_others('step-0_found_course', self.real_name)
-        self.log.set('step-1_kch_id', 1)
+        await self.log.set_others('step-0_found_course', self.real_name)
+        await self.log.set('step-1_kch_id', 1)
 
         await self.set_xkkz_id()
         if self.xkkz_id is None:
-            self.log.set('step-2_xkkz_id', 0)
+            await self.log.set('step-2_xkkz_id', 0)
             return 0
-        self.log.set('step-2_xkkz_id', 1)
+        await self.log.set('step-2_xkkz_id', 1)
 
         await self.set_jxb_ids()
         if self.jxb_ids is None:
-            self.log.set('step-3_jxb_ids', 0)
+            await self.log.set('step-3_jxb_ids', 0)
             return 0
-        self.log.set('step-3_jxb_ids', 1)
+        await self.log.set('step-3_jxb_ids', 1)
         return 1
 
     async def simulate_request(self):
@@ -62,14 +64,14 @@ class AsynchronousCourseSelector(CourseSelector):
         try:
             json_data = await response.json()
         except ContentTypeError:
-            self.log.set_others('step-4_json_decode_error_in_select', '选课异常')
+            await self.log.set_others('step-4_json_decode_error_in_select', '选课异常')
             self.mark_failed('选课异常')
             return 0
         else:
             if json_data['flag'] == '1':
-                self.log.set_others('step-4', '选课成功')
+                await self.log.set_others('step-4', '选课成功')
                 return 1
-            self.log.set_others('step-4_server_response', json_data['msg'])
+            await self.log.set_others('step-4_server_response', json_data['msg'])
             self.mark_failed(json_data['msg'])
             return -2
         finally:
@@ -78,23 +80,24 @@ class AsynchronousCourseSelector(CourseSelector):
 
     async def select(self):
         manager = get_session_manager(self.username)
-        retry = 0
-        while retry < 3:
-            cookie_string, port = manager.get_session_by_weight()
-            self.update_or_set_cookie(cookie_string, port)
-            try:
-                result = await self.simulate_request()
-            except TimeoutError:
-                self.log.retry()
-                self.log.timeout()
-                retry += 1
-            else:
-                if result == 1:
-                    self.log.set_others('task_status', f'{self.real_name} 成功')
-                    return 1
-                return 0
-        self.mark_failed('超出最大重试次数')
-        return 0
+        async with AsyncRunningLogs(self.log_key) as self.log:
+            retry = 0
+            while retry < 3:
+                cookie_string, port = manager.get_session_by_weight()
+                self.update_or_set_cookie(cookie_string, port)
+                try:
+                    result = await self.simulate_request()
+                except (TimeoutError, ClientConnectorError):
+                    await self.log.retry()
+                    await self.log.timeout()
+                    retry += 1
+                else:
+                    if result == 1:
+                        await self.log.set_others('task_status', f'{self.real_name} 成功')
+                        return 1
+                    return 0
+            self.mark_failed('超出最大重试次数')
+            return 0
 
 
 class AsynchronousPublicChoiceCourseSelector(AsynchronousCourseSelector):

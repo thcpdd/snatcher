@@ -18,14 +18,17 @@ The course selector base module.
     2. The `CourseSelector` class:
         The father class of course selector.
 """
+from typing import Union
+
 from snatcher.conf import settings
 from snatcher.db.mysql import (
     create_failed_data,
     create_selected_data,
 )
 from snatcher.mail import send_email
-from snatcher.utils import (
+from snatcher.db.redis import (
     RunningLogs,
+    AsyncRunningLogs
     # ParseStudentID
 )
 
@@ -60,6 +63,7 @@ class BaseCourseSelector:
         #     'xkkz_id': ''  # 选课的时间，课程的类型（主修、体育、特殊、通识）
         # }
         self.get_jxb_ids_data = {
+            'bklx_id': 0,  # 补考类型id
             'njdm_id': '20' + username[:2],  # 年级ID，必须  2022
             'xkxnm': self.select_course_year,  # 选课学年码
             'xkxqm': self.term,  # 选课学期码（上下学期，上学期 3，下学期 12）
@@ -75,7 +79,8 @@ class BaseCourseSelector:
         }
         self.timeout = settings.TIMEOUT
         self.real_name = None
-        self.log: RunningLogs | None = None
+        self.log_key = None
+        self.log: Union[RunningLogs, AsyncRunningLogs, None] = None
         self.session = None
         self.cookies = None
         self.select_course_api = None
@@ -123,8 +128,9 @@ class BaseCourseSelector:
         """update relative information"""
         self.real_name = course_name
         self.kch_id = course_id
-        self.log = RunningLogs(f'{self.username}-{course_name}')
-        create_selected_data(self.username, email, course_name, self.log.key)
+        self.log_key = f'{self.username}-{course_name}'
+        # self.log = RunningLogs(f'{self.username}-{course_name}')
+        create_selected_data(self.username, email, course_name, self.log_key)
 
     def mark_failed(self, failed_reason: str):
         """create a fail data into mysql"""
