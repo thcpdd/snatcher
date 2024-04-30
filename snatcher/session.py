@@ -55,7 +55,7 @@ from Crypto.PublicKey import RSA
 from redis import Redis
 
 from snatcher.conf import settings
-from snatcher.db.mysql import create_failed_data
+from snatcher.db.mysql import fd_querier
 from snatcher.db.redis import (
     optimal_port_generator,
     decreasing_weight,
@@ -187,7 +187,7 @@ def check_and_set_session(username: str, password: str):
         set_session(username, password)
         retry += 1
     if not manager.has_sessions():
-        create_failed_data(username, '', '', '模拟登录失败', 0)
+        fd_querier.insert(username, '', '', '模拟登录失败', 0)
         send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
         return -1
     return 1
@@ -207,7 +207,7 @@ async def async_check_and_set_session(username: str, password: str):
         await async_set_session(username, password)
         retry += 1
     if not manager.has_sessions():
-        create_failed_data(username, '', '', '模拟登录失败', 0)
+        fd_querier.insert(username, '', '', '模拟登录失败', 0)
         send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
         return -1
     return 1

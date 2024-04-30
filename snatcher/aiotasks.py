@@ -24,7 +24,7 @@ from snatcher.selector.async_selector import (
     AsynchronousPhysicalEducationCourseSelector as AsyncPESelector
 )
 from snatcher.selector.performers import async_selector_performer
-from snatcher.db.mysql import create_failed_data
+from snatcher.db.mysql import fd_querier
 from snatcher.session import async_check_and_set_session
 
 
@@ -67,7 +67,7 @@ async def async_select_course(
     task: AnnotatedTask | None = aiotasks.get(course_type)
     username = users.get('username')
     if task is None:
-        create_failed_data(username, '', '', '选择了不支持的课程类型', 0)
+        fd_querier.insert(username, '', '', '选择了不支持的课程类型', 0)
         return
     password = users.get('password')
     result = await async_check_and_set_session(username, password)

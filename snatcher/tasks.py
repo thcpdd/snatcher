@@ -24,7 +24,7 @@ from snatcher.selector.sync_selector import (
     SynchronousPublicChoiceCourseSelector as PCSelector,
 )
 from snatcher.selector.performers import selector_performer
-from snatcher.db.mysql import create_failed_data
+from snatcher.db.mysql import fd_querier
 
 
 backend = 'redis://127.0.0.1:6379/1'
@@ -68,7 +68,7 @@ def select_course(
     task: Task | None = tasks.get(course_type)
     username = users.get('username')
     if task is None:
-        create_failed_data(username, '', '', '选择了不支持的课程类型', 0)
+        fd_querier.insert(username, '', '', '选择了不支持的课程类型', 0)
         return
     password = users.get('password')
     result = check_and_set_session(username, password)

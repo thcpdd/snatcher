@@ -14,17 +14,11 @@ from .pydantic import (
     PEPydantic
 )
 from snatcher.db.mysql import (
-    query_all_selected_data,
-    query_selected_data_count,
-    query_failed_data_count,
-    query_failed_data,
-    query_all_verify_codes,
-    query_verify_code_count,
-    generate_verify_code,
-    query_pe_course_count,
-    query_pc_course_count,
-    query_all_pc_course,
-    query_all_pe_course
+    scd_querier,
+    fd_querier,
+    vc_querier,
+    pe_querier,
+    pc_querier
 )
 
 
@@ -67,7 +61,7 @@ def get_all_selected_data_count(request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return query_selected_data_count()
+    return scd_querier.count()
 
 
 @router.get('/selected/{page}', response_model=list[AllSelectedDataPydantic], tags=['查询所有已选课程信息'])
@@ -75,7 +69,7 @@ def get_all_selected_data(page: int, request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return query_all_selected_data(page)
+    return scd_querier.pagination_query(page)
 
 
 @router.get('/failed/count', tags=['查询所有选课失败的数量'])
@@ -83,7 +77,7 @@ def get_failed_data_count(request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return query_failed_data_count()
+    return fd_querier.count()
 
 
 @router.get('/failed/{page}', tags=['查询所有失败选课信息'], response_model=list[FailedDataPydantic])
@@ -91,7 +85,7 @@ def get_failed_data(page: int, request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return query_failed_data(page)
+    return fd_querier.pagination_query(page)
 
 
 @router.get('/codes/count', tags=['查询所有验证码数量'])
@@ -99,7 +93,7 @@ def get_verify_code_count(request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return query_verify_code_count()
+    return vc_querier.count()
 
 
 @router.get('/codes/{page}', tags=['查询所有验证码'], response_model=list[VerifyCodePydantic])
@@ -107,7 +101,7 @@ def get_verify_code(page: int, request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return query_all_verify_codes(page)
+    return vc_querier.pagination_query(page)
 
 
 @router.post('/codes', tags=['生成验证码'])
@@ -115,7 +109,7 @@ def create_verify_code(username: str, request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return generate_verify_code(username)
+    return vc_querier.insert(username)
 
 
 @router.get('/pc/count', tags=['查询公选课总数'])
@@ -123,7 +117,7 @@ def get_pc_course_count(request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return query_pc_course_count()
+    return pc_querier.count()
 
 
 @router.get('/pe/count', tags=['查询体育课总数'])
@@ -131,7 +125,7 @@ def get_pe_course_count(request: Request):
     response = identity_validator(request)
     if response:
         return response
-    return query_pe_course_count()
+    return pe_querier.count()
 
 
 @router.get('/pc/{page}', response_model=list[PCPydantic], tags=['查询公选课列表'])
@@ -139,7 +133,7 @@ def get_pc_course(request: Request, page: int = 1):
     response = identity_validator(request)
     if response:
         return response
-    return query_all_pc_course(page)
+    return pc_querier.pagination_query(page)
 
 
 @router.get('/pe/{page}', response_model=list[PEPydantic], tags=['查询体育课列表'])
@@ -147,7 +141,7 @@ def get_pe_course(request: Request, page: int = 1):
     response = identity_validator(request)
     if response:
         return response
-    return query_all_pe_course(page)
+    return pe_querier.pagination_query(page)
 
 
 @router.post('/login', tags=['超级管理员登录'])

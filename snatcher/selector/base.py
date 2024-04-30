@@ -22,8 +22,8 @@ from typing import Union
 
 from snatcher.conf import settings
 from snatcher.db.mysql import (
-    create_failed_data,
-    create_selected_data,
+    fd_querier,
+    scd_querier,
 )
 from snatcher.mail import send_email
 from snatcher.db.redis import (
@@ -129,8 +129,7 @@ class BaseCourseSelector:
         self.real_name = course_name
         self.kch_id = course_id
         self.log_key = f'{self.username}-{course_name}'
-        # self.log = RunningLogs(f'{self.username}-{course_name}')
-        create_selected_data(self.username, email, course_name, self.log_key)
+        scd_querier.insert(self.username, email, course_name, self.log_key)
 
     def mark_failed(self, failed_reason: str):
         """create a fail data into mysql"""
@@ -141,12 +140,12 @@ class BaseCourseSelector:
             False,
             failed_reason
         )
-        create_failed_data(
+        fd_querier.insert(
             self.username,
             self.real_name,
             self.log.key,
             failed_reason,
-            self.port
+            int(self.port)
         )
 
 

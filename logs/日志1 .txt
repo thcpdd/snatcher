@@ -1,0 +1,385 @@
+[2024-04-22 13:49:48,039: INFO/MainProcess] Task snatcher.tasks.select_course[12c97287-d04e-4a05-a68b-580bdf7fdfc2] received
+[2024-04-22 13:49:48,039: INFO/MainProcess] Task snatcher.tasks.select_course[5572f170-b0e4-489e-ae57-80718b100ac2] received
+[2024-04-22 13:49:48,039: INFO/MainProcess] Task snatcher.tasks.select_course[02a2af7c-29a4-4bf4-8140-f8300dbfc2a1] received
+[2024-04-22 13:49:48,052: INFO/MainProcess] Task snatcher.tasks.select_course[14c97b71-8ff3-484f-92cd-37f3a85d37b8] received
+[2024-04-22 13:49:48,060: INFO/MainProcess] Task snatcher.tasks.public_choice_task[6ce7f067-3034-4f64-ae4e-87db939dd557] received
+[2024-04-22 13:49:48,060: INFO/MainProcess] Task snatcher.tasks.select_course[12c97287-d04e-4a05-a68b-580bdf7fdfc2] succeeded in 0.014999999999417923s: None
+[2024-04-22 13:49:48,060: INFO/MainProcess] Task snatcher.tasks.public_choice_task[66833ea0-f2a2-45eb-ac03-e6d56abf9f47] received
+[2024-04-22 13:49:48,079: INFO/MainProcess] Task snatcher.tasks.select_course[14c97b71-8ff3-484f-92cd-37f3a85d37b8] succeeded in 0.01600000000325963s: None
+[2024-04-22 13:49:48,081: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e5447b5f-eeff-4aa8-b1bd-5abe51789600] received
+[2024-04-22 13:49:48,085: INFO/MainProcess] Task snatcher.tasks.public_choice_task[13c0b851-ecea-45a2-80bf-aef4afb934c0] received
+[2024-04-22 13:49:48,086: INFO/MainProcess] Task snatcher.tasks.select_course[5572f170-b0e4-489e-ae57-80718b100ac2] succeeded in 0.04700000000593718s: None
+[2024-04-22 13:49:48,089: INFO/MainProcess] Task snatcher.tasks.select_course[02a2af7c-29a4-4bf4-8140-f8300dbfc2a1] succeeded in 0.04700000000593718s: None
+[2024-04-22 13:51:24,005: INFO/MainProcess] Task snatcher.tasks.select_course[b7998e46-95b9-4eea-b4ce-3ef1e1d57ca8] received
+[2024-04-22 13:51:24,023: INFO/MainProcess] Task snatcher.tasks.public_choice_task[3062d316-aed7-4400-ab41-8beeecd828f0] received
+[2024-04-22 13:51:24,025: INFO/MainProcess] Task snatcher.tasks.select_course[b7998e46-95b9-4eea-b4ce-3ef1e1d57ca8] succeeded in 0.031000000002677552s: None
+[2024-04-22 13:54:44,851: INFO/MainProcess] Task snatcher.tasks.select_course[71c0eefd-ba4b-4993-95be-c78b064729c3] received
+[2024-04-22 13:54:44,911: INFO/MainProcess] Task snatcher.tasks.public_choice_task[3808b86d-8158-4803-b5db-00f82a0b6a13] received
+[2024-04-22 13:54:44,915: INFO/MainProcess] Task snatcher.tasks.select_course[71c0eefd-ba4b-4993-95be-c78b064729c3] succeeded in 0.0629999999946449s: None
+[2024-04-22 13:54:49,199: INFO/MainProcess] Task snatcher.tasks.public_choice_task[66833ea0-f2a2-45eb-ac03-e6d56abf9f47] succeeded in 301.125s: None
+[2024-04-22 13:54:50,822: INFO/MainProcess] Task snatcher.tasks.public_choice_task[6ce7f067-3034-4f64-ae4e-87db939dd557] succeeded in 302.76600000000326s: None
+[2024-04-22 13:54:53,711: INFO/MainProcess] Task snatcher.tasks.public_choice_task[13c0b851-ecea-45a2-80bf-aef4afb934c0] succeeded in 305.625s: None
+[2024-04-22 13:54:58,616: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e5447b5f-eeff-4aa8-b1bd-5abe51789600] succeeded in 310.54700000000594s: None
+[2024-04-22 13:55:43,957: INFO/MainProcess] Task snatcher.tasks.public_choice_task[3062d316-aed7-4400-ab41-8beeecd828f0] succeeded in 259.9219999999914s: None
+[2024-04-22 13:56:05,321: INFO/MainProcess] Task snatcher.tasks.select_course[aa719ec0-b706-4980-8a33-e5f65a128de0] received
+[2024-04-22 13:56:05,328: INFO/MainProcess] Task snatcher.tasks.public_choice_task[cd008515-cf3f-4606-a1a7-988c7986bc47] received
+[2024-04-22 13:56:05,330: INFO/MainProcess] Task snatcher.tasks.select_course[aa719ec0-b706-4980-8a33-e5f65a128de0] succeeded in 0.0s: None
+[2024-04-22 13:56:44,013: INFO/MainProcess] Task snatcher.tasks.select_course[57ed0531-0618-4677-b863-9bace3969b58] received
+[2024-04-22 13:56:44,021: INFO/MainProcess] Task snatcher.tasks.public_choice_task[9f1dfb30-9e80-47f8-9ee1-d3b9c51f05e5] received
+[2024-04-22 13:56:44,023: INFO/MainProcess] Task snatcher.tasks.select_course[57ed0531-0618-4677-b863-9bace3969b58] succeeded in 0.01600000000325963s: None
+[2024-04-22 13:57:46,798: INFO/MainProcess] Task snatcher.tasks.public_choice_task[3808b86d-8158-4803-b5db-00f82a0b6a13] succeeded in 181.875s: None
+[2024-04-22 13:58:24,546: INFO/MainProcess] Task snatcher.tasks.public_choice_task[cd008515-cf3f-4606-a1a7-988c7986bc47] succeeded in 139.21899999999732s: None
+[2024-04-22 13:59:28,147: INFO/MainProcess] Task snatcher.tasks.public_choice_task[9f1dfb30-9e80-47f8-9ee1-d3b9c51f05e5] succeeded in 164.125s: None
+[2024-04-22 14:00:23,988: INFO/MainProcess] Task snatcher.tasks.select_course[6c6e4f8b-43e4-4067-a013-07b564fb1b29] received
+[2024-04-22 14:00:23,992: INFO/MainProcess] Task snatcher.tasks.public_choice_task[69dc8ca5-8a17-4683-abc7-a1039632ed00] received
+[2024-04-22 14:00:23,992: INFO/MainProcess] Task snatcher.tasks.select_course[6c6e4f8b-43e4-4067-a013-07b564fb1b29] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:02:36,479: INFO/MainProcess] Task snatcher.tasks.select_course[bf08c4c1-ebfb-499e-99e5-15115279060c] received
+[2024-04-22 14:02:36,491: INFO/MainProcess] Task snatcher.tasks.public_choice_task[cb430302-3195-48f7-bf06-0fc2795425bf] received
+[2024-04-22 14:02:36,499: INFO/MainProcess] Task snatcher.tasks.select_course[bf08c4c1-ebfb-499e-99e5-15115279060c] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:03:44,836: INFO/MainProcess] Task snatcher.tasks.select_course[17acbe6d-1fa4-4c7e-98f1-0e9b8d188b27] received
+[2024-04-22 14:03:44,838: INFO/MainProcess] Task snatcher.tasks.public_choice_task[1754b9b1-358a-49ea-bd26-5fac7afcfb36] received
+[2024-04-22 14:03:44,845: INFO/MainProcess] Task snatcher.tasks.select_course[17acbe6d-1fa4-4c7e-98f1-0e9b8d188b27] succeeded in 0.0s: None
+[2024-04-22 14:05:06,239: INFO/MainProcess] Task snatcher.tasks.public_choice_task[69dc8ca5-8a17-4683-abc7-a1039632ed00] succeeded in 282.23399999999674s: None
+[2024-04-22 14:06:56,847: INFO/MainProcess] Task snatcher.tasks.select_course[17561961-03e6-470c-bee0-b89a339d517b] received
+[2024-04-22 14:06:56,854: INFO/MainProcess] Task snatcher.tasks.public_choice_task[d24a0cd6-24fe-41c2-8eb1-49909b1eb6b9] received
+[2024-04-22 14:06:56,856: INFO/MainProcess] Task snatcher.tasks.select_course[17561961-03e6-470c-bee0-b89a339d517b] succeeded in 0.014999999999417923s: None
+[2024-04-22 14:07:43,170: INFO/MainProcess] Task snatcher.tasks.public_choice_task[cb430302-3195-48f7-bf06-0fc2795425bf] succeeded in 306.6719999999914s: None
+[2024-04-22 14:07:46,348: INFO/MainProcess] Task snatcher.tasks.select_course[4a1ffed3-e18e-4900-8795-52bbea683fd8] received
+[2024-04-22 14:07:46,356: INFO/MainProcess] Task snatcher.tasks.public_choice_task[32eb7e8d-b120-4472-8fd7-6554444fdb12] received
+[2024-04-22 14:07:46,359: INFO/MainProcess] Task snatcher.tasks.select_course[4a1ffed3-e18e-4900-8795-52bbea683fd8] succeeded in 0.014999999999417923s: None
+[2024-04-22 14:08:52,423: INFO/MainProcess] Task snatcher.tasks.public_choice_task[1754b9b1-358a-49ea-bd26-5fac7afcfb36] succeeded in 307.57799999999406s: None
+[2024-04-22 14:11:07,213: INFO/MainProcess] Task snatcher.tasks.public_choice_task[468035b9-0383-422f-a471-9290fbd9c56c] received
+[2024-04-22 14:11:07,238: INFO/MainProcess] Task snatcher.tasks.public_choice_task[2f25ea11-11cd-4dc2-9823-7dc4c17724d2] received
+[2024-04-22 14:13:07,878: INFO/MainProcess] Task snatcher.tasks.select_course[8e31a4cf-c5db-4600-934b-986640821413] received
+[2024-04-22 14:13:07,885: INFO/MainProcess] Task snatcher.tasks.public_choice_task[00900d93-22b2-4853-8d17-a23474e40599] received
+[2024-04-22 14:13:07,888: INFO/MainProcess] Task snatcher.tasks.select_course[8e31a4cf-c5db-4600-934b-986640821413] succeeded in 0.014999999999417923s: None
+[2024-04-22 14:14:05,369: INFO/MainProcess] Task snatcher.tasks.public_choice_task[d24a0cd6-24fe-41c2-8eb1-49909b1eb6b9] succeeded in 428.51600000000326s: None
+[2024-04-22 14:14:50,627: INFO/MainProcess] Task snatcher.tasks.public_choice_task[32eb7e8d-b120-4472-8fd7-6554444fdb12] succeeded in 424.26600000000326s: None
+[2024-04-22 14:14:57,815: INFO/MainProcess] Task snatcher.tasks.select_course[e02248ab-4075-4c5e-8445-04d8c0da1156] received
+[2024-04-22 14:14:57,822: INFO/MainProcess] Task snatcher.tasks.public_choice_task[3351c554-9883-4d0a-a515-bb9278ee7c90] received
+[2024-04-22 14:14:57,822: INFO/MainProcess] Task snatcher.tasks.select_course[e02248ab-4075-4c5e-8445-04d8c0da1156] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:16:30,692: INFO/MainProcess] Task snatcher.tasks.public_choice_task[468035b9-0383-422f-a471-9290fbd9c56c] succeeded in 323.4679999999935s: None
+[2024-04-22 14:16:34,796: INFO/MainProcess] Task snatcher.tasks.public_choice_task[2f25ea11-11cd-4dc2-9823-7dc4c17724d2] succeeded in 327.56299999999464s: None
+[2024-04-22 14:17:04,725: INFO/MainProcess] Task snatcher.tasks.select_course[8aba9a26-3814-4612-8167-d0da746902e3] received
+[2024-04-22 14:17:04,732: INFO/MainProcess] Task snatcher.tasks.public_choice_task[14f20738-590f-43e5-97f7-6c23299c14c0] received
+[2024-04-22 14:17:04,737: INFO/MainProcess] Task snatcher.tasks.select_course[8aba9a26-3814-4612-8167-d0da746902e3] succeeded in 0.0s: None
+[2024-04-22 14:17:18,908: INFO/MainProcess] Task snatcher.tasks.public_choice_task[00900d93-22b2-4853-8d17-a23474e40599] succeeded in 251.01600000000326s: None
+[2024-04-22 14:17:36,732: INFO/MainProcess] Task snatcher.tasks.public_choice_task[3351c554-9883-4d0a-a515-bb9278ee7c90] succeeded in 158.90600000000268s: None
+[2024-04-22 14:18:45,937: INFO/MainProcess] Task snatcher.tasks.public_choice_task[14f20738-590f-43e5-97f7-6c23299c14c0] succeeded in 101.20299999999406s: None
+[2024-04-22 14:19:55,722: INFO/MainProcess] Task snatcher.tasks.select_course[835ecabd-f22a-4c11-9a00-440f2cc0403b] received
+[2024-04-22 14:26:56,493: INFO/MainProcess] Task snatcher.tasks.select_course[9d205922-c0f4-4e61-a4a0-51ab7854ac32] received
+[2024-04-22 14:26:56,495: INFO/MainProcess] Task snatcher.tasks.select_course[d51cda75-6620-490a-ae7c-3536d381f74b] received
+[2024-04-22 14:26:56,504: INFO/MainProcess] Task snatcher.tasks.select_course[8db00963-6742-401e-82df-4637655d590f] received
+[2024-04-22 14:26:56,507: INFO/MainProcess] Task snatcher.tasks.select_course[963f80e6-b070-4a9a-8e83-0cf2e1339f4e] received
+[2024-04-22 14:26:56,516: INFO/MainProcess] Task snatcher.tasks.select_course[7296d3d3-67ef-4b04-8afe-0906d0bc6d23] received
+[2024-04-22 14:26:56,524: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e16076bf-3691-4af5-b6f4-5a6776898d37] received
+[2024-04-22 14:26:56,531: INFO/MainProcess] Task snatcher.tasks.public_choice_task[885b9338-b275-486a-9c1b-b954d294e845] received
+[2024-04-22 14:26:56,533: INFO/MainProcess] Task snatcher.tasks.select_course[9d205922-c0f4-4e61-a4a0-51ab7854ac32] succeeded in 0.031000000002677552s: None
+[2024-04-22 14:26:56,540: INFO/MainProcess] Task snatcher.tasks.public_choice_task[b772e0bf-8682-4caf-b620-a0256977d01a] received
+[2024-04-22 14:26:56,541: INFO/MainProcess] Task snatcher.tasks.select_course[d51cda75-6620-490a-ae7c-3536d381f74b] succeeded in 0.046999999991385266s: None
+[2024-04-22 14:26:56,544: INFO/MainProcess] Task snatcher.tasks.public_choice_task[95b3a99d-f155-4438-b68d-e0a280ada244] received
+[2024-04-22 14:26:56,545: INFO/MainProcess] Task snatcher.tasks.select_course[8db00963-6742-401e-82df-4637655d590f] succeeded in 0.046999999991385266s: None
+[2024-04-22 14:26:56,548: INFO/MainProcess] Task snatcher.tasks.select_course[963f80e6-b070-4a9a-8e83-0cf2e1339f4e] succeeded in 0.03199999999196734s: None
+[2024-04-22 14:26:56,548: INFO/MainProcess] Task snatcher.tasks.public_choice_task[876501c6-a140-4354-ba0d-52ea7f5324a6] received
+[2024-04-22 14:26:56,551: INFO/MainProcess] Task snatcher.tasks.select_course[7296d3d3-67ef-4b04-8afe-0906d0bc6d23] succeeded in 0.015999999988707714s: None
+[2024-04-22 14:26:59,398: INFO/MainProcess] Task snatcher.tasks.select_course[835ecabd-f22a-4c11-9a00-440f2cc0403b] succeeded in 423.68700000000536s: None
+[2024-04-22 14:28:43,934: INFO/MainProcess] Task snatcher.tasks.select_course[4085869b-a781-4716-bdcc-d63a21852c24] received
+[2024-04-22 14:28:43,947: INFO/MainProcess] Task snatcher.tasks.public_choice_task[c2fc7bbe-0eb6-45cc-8ec7-b13a2c18ca73] received
+[2024-04-22 14:28:43,950: INFO/MainProcess] Task snatcher.tasks.select_course[4085869b-a781-4716-bdcc-d63a21852c24] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:28:45,812: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e16076bf-3691-4af5-b6f4-5a6776898d37] succeeded in 109.28099999998813s: None
+[2024-04-22 14:28:52,142: INFO/MainProcess] Task snatcher.tasks.public_choice_task[876501c6-a140-4354-ba0d-52ea7f5324a6] succeeded in 115.59300000000803s: None
+[2024-04-22 14:28:55,164: INFO/MainProcess] Task snatcher.tasks.public_choice_task[b772e0bf-8682-4caf-b620-a0256977d01a] succeeded in 118.625s: None
+[2024-04-22 14:29:00,105: INFO/MainProcess] Task snatcher.tasks.public_choice_task[885b9338-b275-486a-9c1b-b954d294e845] succeeded in 123.56200000000536s: None
+[2024-04-22 14:29:40,958: INFO/MainProcess] Task snatcher.tasks.select_course[4ec8f7e0-f884-449f-8c27-e644912c5df0] received
+[2024-04-22 14:29:40,963: INFO/MainProcess] Task snatcher.tasks.public_choice_task[267f395a-42fa-4702-91f3-7726073fbc06] received
+[2024-04-22 14:29:40,969: INFO/MainProcess] Task snatcher.tasks.select_course[4ec8f7e0-f884-449f-8c27-e644912c5df0] succeeded in 0.0s: None
+[2024-04-22 14:30:11,029: INFO/MainProcess] Task snatcher.tasks.public_choice_task[c2fc7bbe-0eb6-45cc-8ec7-b13a2c18ca73] succeeded in 87.07800000000861s: None
+[2024-04-22 14:30:14,518: INFO/MainProcess] Task snatcher.tasks.select_course[05a7ee18-45f3-4b2f-b74b-e957d8d4b48e] received
+[2024-04-22 14:30:14,533: INFO/MainProcess] Task snatcher.tasks.public_choice_task[b82ac400-2e05-4ea8-8a45-ac4df0fcd05f] received
+[2024-04-22 14:30:14,535: INFO/MainProcess] Task snatcher.tasks.select_course[05a7ee18-45f3-4b2f-b74b-e957d8d4b48e] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:30:19,734: INFO/MainProcess] Task snatcher.tasks.public_choice_task[95b3a99d-f155-4438-b68d-e0a280ada244] succeeded in 203.18700000000536s: None
+[2024-04-22 14:31:19,912: INFO/MainProcess] Task snatcher.tasks.public_choice_task[267f395a-42fa-4702-91f3-7726073fbc06] succeeded in 98.95299999999406s: None
+[2024-04-22 14:31:19,965: INFO/MainProcess] Task snatcher.tasks.select_course[92f90925-3516-46fd-8b87-d2773b4e322e] received
+[2024-04-22 14:33:08,082: INFO/MainProcess] Task snatcher.tasks.select_course[ae7959f2-9c9a-4989-aff6-9cb558e10352] received
+[2024-04-22 14:33:28,327: ERROR/MainProcess] Task snatcher.tasks.public_choice_task[b82ac400-2e05-4ea8-8a45-ac4df0fcd05f] raised unexpected: ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 537, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 466, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 1374, in getresponse
+    response.begin()
+  File "D:\Python311\Lib\http\client.py", line 318, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 287, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\retry.py", line 470, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\util.py", line 38, in reraise
+    raise value.with_traceback(tb)
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 537, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 466, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 1374, in getresponse
+    response.begin()
+  File "D:\Python311\Lib\http\client.py", line 318, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 287, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 477, in trace_task
+    R = retval = fun(*args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 760, in __protected_call__
+    return self.run(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\tasks.py", line 54, in public_choice_task
+    selector_performer(email, verify_code, goals, SynchronousPublicChoiceCourseSelector(username))
+  File "E:\Snatcher\snatcher\selector\base.py", line 260, in selector_performer
+    result = selector.select()
+             ^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 91, in select
+    result = self.simulate_request()
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 58, in simulate_request
+    success = self.prepare_for_selecting()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 48, in prepare_for_selecting
+    self.set_jxb_ids()
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 20, in set_jxb_ids
+    response = self.session.post(
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\adapters.py", line 501, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-04-22 14:35:51,727: INFO/MainProcess] Task snatcher.tasks.public_choice_task[8b86adaf-6483-4deb-8112-b81f039ebd32] received
+[2024-04-22 14:35:51,729: INFO/MainProcess] Task snatcher.tasks.select_course[ae7959f2-9c9a-4989-aff6-9cb558e10352] succeeded in 163.63999999999942s: None
+[2024-04-22 14:35:51,736: INFO/MainProcess] Task snatcher.tasks.public_choice_task[afbf698d-a3a9-4143-8d6b-02d33afd82a0] received
+[2024-04-22 14:35:51,739: INFO/MainProcess] Task snatcher.tasks.select_course[92f90925-3516-46fd-8b87-d2773b4e322e] succeeded in 271.7649999999994s: None
+[2024-04-22 14:36:33,111: INFO/MainProcess] Task snatcher.tasks.select_course[65dcabf2-4e4c-4469-985f-7df01556d689] received
+[2024-04-22 14:36:33,118: INFO/MainProcess] Task snatcher.tasks.public_choice_task[c6ed29bb-8ee7-467e-9710-b7e591973daf] received
+[2024-04-22 14:36:33,118: INFO/MainProcess] Task snatcher.tasks.select_course[65dcabf2-4e4c-4469-985f-7df01556d689] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:37:09,291: INFO/MainProcess] Task snatcher.tasks.select_course[0aa24092-10c6-42a5-96bb-f3d8effb9dfa] received
+[2024-04-22 14:37:09,294: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e7d35694-1f7e-44d5-96e0-56aee5dc0e16] received
+[2024-04-22 14:37:09,299: INFO/MainProcess] Task snatcher.tasks.select_course[0aa24092-10c6-42a5-96bb-f3d8effb9dfa] succeeded in 0.0s: None
+[2024-04-22 14:38:21,715: INFO/MainProcess] Task snatcher.tasks.select_course[d37dcb97-a4d6-44ad-bc0a-559d11b8662f] received
+[2024-04-22 14:38:21,727: INFO/MainProcess] Task snatcher.tasks.public_choice_task[0d44bacd-a6ab-44c3-8395-1e21a02bfdbb] received
+[2024-04-22 14:38:21,727: INFO/MainProcess] Task snatcher.tasks.select_course[d37dcb97-a4d6-44ad-bc0a-559d11b8662f] succeeded in 0.014999999999417923s: None
+[2024-04-22 14:38:40,887: INFO/MainProcess] Task snatcher.tasks.select_course[74bc42d3-c0b4-47b0-952a-e12b80b128ee] received
+[2024-04-22 14:38:40,894: INFO/MainProcess] Task snatcher.tasks.public_choice_task[fa553fb5-d392-43ed-af38-0b659538e9f2] received
+[2024-04-22 14:38:40,894: INFO/MainProcess] Task snatcher.tasks.select_course[74bc42d3-c0b4-47b0-952a-e12b80b128ee] succeeded in 0.0s: None
+[2024-04-22 14:38:59,611: INFO/MainProcess] Task snatcher.tasks.public_choice_task[8b86adaf-6483-4deb-8112-b81f039ebd32] succeeded in 187.875s: None
+[2024-04-22 14:38:59,855: INFO/MainProcess] Task snatcher.tasks.public_choice_task[afbf698d-a3a9-4143-8d6b-02d33afd82a0] succeeded in 188.125s: None
+[2024-04-22 14:39:05,108: INFO/MainProcess] Task snatcher.tasks.public_choice_task[c6ed29bb-8ee7-467e-9710-b7e591973daf] succeeded in 151.98399999999674s: None
+[2024-04-22 14:39:36,002: INFO/MainProcess] Task snatcher.tasks.select_course[f2a5a6ea-28a6-41b1-8142-ee51b78fe1b5] received
+[2024-04-22 14:39:36,013: INFO/MainProcess] Task snatcher.tasks.public_choice_task[96185460-5e9a-42ae-83bd-1cb9fde2eb82] received
+[2024-04-22 14:39:36,013: INFO/MainProcess] Task snatcher.tasks.select_course[f2a5a6ea-28a6-41b1-8142-ee51b78fe1b5] succeeded in 0.014999999999417923s: None
+[2024-04-22 14:39:56,553: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e7d35694-1f7e-44d5-96e0-56aee5dc0e16] succeeded in 167.26499999999942s: None
+[2024-04-22 14:40:13,457: INFO/MainProcess] Task snatcher.tasks.select_course[60bd2502-aa9d-49a6-899f-259e990c3603] received
+[2024-04-22 14:40:13,462: INFO/MainProcess] Task snatcher.tasks.public_choice_task[f5c2bc20-c8db-4a43-81aa-7f566f07f101] received
+[2024-04-22 14:40:13,467: INFO/MainProcess] Task snatcher.tasks.select_course[60bd2502-aa9d-49a6-899f-259e990c3603] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:40:37,091: INFO/MainProcess] Task snatcher.tasks.public_choice_task[0d44bacd-a6ab-44c3-8395-1e21a02bfdbb] succeeded in 135.36000000000058s: None
+[2024-04-22 14:40:46,057: INFO/MainProcess] Task snatcher.tasks.public_choice_task[fa553fb5-d392-43ed-af38-0b659538e9f2] succeeded in 125.17199999999139s: None
+[2024-04-22 14:41:57,190: INFO/MainProcess] Task snatcher.tasks.public_choice_task[f5c2bc20-c8db-4a43-81aa-7f566f07f101] succeeded in 103.71799999999348s: None
+[2024-04-22 14:43:09,464: INFO/MainProcess] Task snatcher.tasks.select_course[79fadfbd-d437-4720-884d-d434f3240607] received
+[2024-04-22 14:43:09,472: INFO/MainProcess] Task snatcher.tasks.public_choice_task[b5d1e44a-983f-4742-aaa9-bf5dcaf22c94] received
+[2024-04-22 14:43:09,473: INFO/MainProcess] Task snatcher.tasks.select_course[79fadfbd-d437-4720-884d-d434f3240607] succeeded in 0.0s: None
+[2024-04-22 14:43:21,616: INFO/MainProcess] Task snatcher.tasks.public_choice_task[96185460-5e9a-42ae-83bd-1cb9fde2eb82] succeeded in 225.61000000000058s: None
+[2024-04-22 14:44:09,456: INFO/MainProcess] Task snatcher.tasks.select_course[be6eaf30-ebf4-4758-9e28-d694f1e54bdc] received
+[2024-04-22 14:44:09,462: INFO/MainProcess] Task snatcher.tasks.public_choice_task[9860a764-884f-4bb7-a492-503d13328830] received
+[2024-04-22 14:44:09,462: INFO/MainProcess] Task snatcher.tasks.select_course[be6eaf30-ebf4-4758-9e28-d694f1e54bdc] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:44:31,459: INFO/MainProcess] Task snatcher.tasks.select_course[7c014ed6-f639-4be0-ae33-25030537b9e5] received
+[2024-04-22 14:44:31,488: INFO/MainProcess] Task snatcher.tasks.public_choice_task[4e83514b-efa5-4a46-9b3e-a936db49af7d] received
+[2024-04-22 14:44:31,497: INFO/MainProcess] Task snatcher.tasks.select_course[7c014ed6-f639-4be0-ae33-25030537b9e5] succeeded in 0.031000000002677552s: None
+[2024-04-22 14:44:37,115: INFO/MainProcess] Task snatcher.tasks.public_choice_task[b5d1e44a-983f-4742-aaa9-bf5dcaf22c94] succeeded in 87.65600000000268s: None
+[2024-04-22 14:45:59,370: INFO/MainProcess] Task snatcher.tasks.public_choice_task[9860a764-884f-4bb7-a492-503d13328830] succeeded in 109.90600000000268s: None
+[2024-04-22 14:46:02,927: INFO/MainProcess] Task snatcher.tasks.public_choice_task[4e83514b-efa5-4a46-9b3e-a936db49af7d] succeeded in 91.42199999999139s: None
+[2024-04-22 14:46:20,582: INFO/MainProcess] Task snatcher.tasks.select_course[21ad957c-7f9c-4278-9148-e701c40d2aba] received
+[2024-04-22 14:46:20,586: INFO/MainProcess] Task snatcher.tasks.public_choice_task[75cd5848-d9e9-445b-99b7-62762919fd87] received
+[2024-04-22 14:46:20,586: INFO/MainProcess] Task snatcher.tasks.select_course[21ad957c-7f9c-4278-9148-e701c40d2aba] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:49:32,356: INFO/MainProcess] Task snatcher.tasks.select_course[9cecb4a0-d2b4-448e-920a-1f2d4172a60f] received
+[2024-04-22 14:49:32,375: INFO/MainProcess] Task snatcher.tasks.public_choice_task[904e1a55-78ad-4c4f-a405-8b5bb3338f1c] received
+[2024-04-22 14:49:32,377: INFO/MainProcess] Task snatcher.tasks.select_course[9cecb4a0-d2b4-448e-920a-1f2d4172a60f] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:50:05,793: INFO/MainProcess] Task snatcher.tasks.select_course[53c3758c-3022-4f26-8289-74661c2613f9] received
+[2024-04-22 14:50:05,802: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e380b57e-34d8-40ff-b02c-f72f34729626] received
+[2024-04-22 14:50:05,802: INFO/MainProcess] Task snatcher.tasks.select_course[53c3758c-3022-4f26-8289-74661c2613f9] succeeded in 0.0s: None
+[2024-04-22 14:50:40,185: INFO/MainProcess] Task snatcher.tasks.public_choice_task[75cd5848-d9e9-445b-99b7-62762919fd87] succeeded in 259.5929999999935s: None
+[2024-04-22 14:51:26,649: INFO/MainProcess] Task snatcher.tasks.public_choice_task[904e1a55-78ad-4c4f-a405-8b5bb3338f1c] succeeded in 114.28100000000268s: None
+[2024-04-22 14:51:33,535: INFO/MainProcess] Task snatcher.tasks.select_course[86289d48-5539-4801-a7f4-995864718d2a] received
+[2024-04-22 14:51:33,574: INFO/MainProcess] Task snatcher.tasks.public_choice_task[5c8d06c1-af87-4752-838c-52f390d23bd7] received
+[2024-04-22 14:51:33,579: INFO/MainProcess] Task snatcher.tasks.select_course[86289d48-5539-4801-a7f4-995864718d2a] succeeded in 0.031000000002677552s: None
+[2024-04-22 14:51:56,578: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e380b57e-34d8-40ff-b02c-f72f34729626] succeeded in 110.78100000000268s: None
+[2024-04-22 14:53:36,991: INFO/MainProcess] Task snatcher.tasks.select_course[7b420f74-fa71-4284-a7cb-836d4b76932e] received
+[2024-04-22 14:53:37,003: INFO/MainProcess] Task snatcher.tasks.public_choice_task[16270fc5-687f-4624-b468-d130e9267daf] received
+[2024-04-22 14:53:37,005: INFO/MainProcess] Task snatcher.tasks.select_course[7b420f74-fa71-4284-a7cb-836d4b76932e] succeeded in 0.0s: None
+[2024-04-22 14:56:49,858: INFO/MainProcess] Task snatcher.tasks.public_choice_task[5c8d06c1-af87-4752-838c-52f390d23bd7] succeeded in 316.2810000000027s: None
+[2024-04-22 14:57:01,095: INFO/MainProcess] Task snatcher.tasks.public_choice_task[16270fc5-687f-4624-b468-d130e9267daf] succeeded in 204.09399999999732s: None
+[2024-04-22 14:57:05,328: INFO/MainProcess] Task snatcher.tasks.select_course[71725ed6-2a20-4275-8a44-b55f168d147a] received
+[2024-04-22 14:57:05,331: INFO/MainProcess] Task snatcher.tasks.public_choice_task[d0c1199f-974a-4b4f-a96f-a37789b7f396] received
+[2024-04-22 14:57:05,337: INFO/MainProcess] Task snatcher.tasks.select_course[71725ed6-2a20-4275-8a44-b55f168d147a] succeeded in 0.01600000000325963s: None
+[2024-04-22 14:57:56,297: INFO/MainProcess] Task snatcher.tasks.select_course[7a13b6aa-efd2-4380-9426-a298f1521ef6] received
+[2024-04-22 14:57:56,300: INFO/MainProcess] Task snatcher.tasks.public_choice_task[7289a327-f22f-47f2-b888-8b8c816ec4bc] received
+[2024-04-22 14:57:56,306: INFO/MainProcess] Task snatcher.tasks.select_course[7a13b6aa-efd2-4380-9426-a298f1521ef6] succeeded in 0.014999999999417923s: None
+[2024-04-22 14:58:55,783: INFO/MainProcess] Task snatcher.tasks.public_choice_task[d0c1199f-974a-4b4f-a96f-a37789b7f396] succeeded in 110.43700000000536s: None
+[2024-04-22 14:59:49,542: INFO/MainProcess] Task snatcher.tasks.select_course[3f320c94-44e0-4e7e-b475-b1c90fcc79fd] received
+[2024-04-22 14:59:49,552: INFO/MainProcess] Task snatcher.tasks.public_choice_task[c3c37c94-a4db-4684-8301-540577b0ab58] received
+[2024-04-22 14:59:49,552: INFO/MainProcess] Task snatcher.tasks.select_course[3f320c94-44e0-4e7e-b475-b1c90fcc79fd] succeeded in 0.0s: None
+[2024-04-22 14:59:51,340: INFO/MainProcess] Task snatcher.tasks.public_choice_task[7289a327-f22f-47f2-b888-8b8c816ec4bc] succeeded in 115.03200000000652s: None
+[2024-04-22 15:01:27,734: INFO/MainProcess] Task snatcher.tasks.public_choice_task[c3c37c94-a4db-4684-8301-540577b0ab58] succeeded in 98.18700000000536s: None
+[2024-04-22 15:02:37,468: INFO/MainProcess] Task snatcher.tasks.select_course[8da406df-046f-4a5e-b253-63e6b0cd8219] received
+[2024-04-22 15:02:37,478: INFO/MainProcess] Task snatcher.tasks.public_choice_task[32a1a737-6f4d-48a1-b2cc-46b56262b55e] received
+[2024-04-22 15:02:37,478: INFO/MainProcess] Task snatcher.tasks.select_course[8da406df-046f-4a5e-b253-63e6b0cd8219] succeeded in 0.014999999999417923s: None
+[2024-04-22 15:04:27,885: INFO/MainProcess] Task snatcher.tasks.public_choice_task[32a1a737-6f4d-48a1-b2cc-46b56262b55e] succeeded in 110.40600000000268s: None
+[2024-04-22 15:05:06,418: INFO/MainProcess] Task snatcher.tasks.select_course[5be0fcba-9d67-4783-b7f7-4d1ebf0553f7] received
+[2024-04-22 15:05:06,421: INFO/MainProcess] Task snatcher.tasks.public_choice_task[bcac6bd6-2fcf-40bc-874a-14b06361d7d2] received
+[2024-04-22 15:05:06,427: INFO/MainProcess] Task snatcher.tasks.select_course[5be0fcba-9d67-4783-b7f7-4d1ebf0553f7] succeeded in 0.0s: None
+[2024-04-22 15:06:47,088: INFO/MainProcess] Task snatcher.tasks.select_course[324c0474-7923-4915-a8fe-8ddffd8cefee] received
+[2024-04-22 15:06:47,094: INFO/MainProcess] Task snatcher.tasks.public_choice_task[a75e882f-b34a-404f-aa90-111a44811c35] received
+[2024-04-22 15:06:47,096: INFO/MainProcess] Task snatcher.tasks.select_course[324c0474-7923-4915-a8fe-8ddffd8cefee] succeeded in 0.0s: None
+[2024-04-22 15:10:08,961: INFO/MainProcess] Task snatcher.tasks.public_choice_task[a75e882f-b34a-404f-aa90-111a44811c35] succeeded in 201.875s: None
+[2024-04-22 15:10:32,722: INFO/MainProcess] Task snatcher.tasks.public_choice_task[bcac6bd6-2fcf-40bc-874a-14b06361d7d2] succeeded in 326.29700000000594s: None
+[2024-04-22 15:18:18,055: INFO/MainProcess] Task snatcher.tasks.select_course[36270ff3-0dc3-4b29-bdad-060d681fa943] received
+[2024-04-22 15:18:18,061: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e332b9d6-b46f-4c4e-9bdf-151d9c289683] received
+[2024-04-22 15:18:18,065: INFO/MainProcess] Task snatcher.tasks.select_course[36270ff3-0dc3-4b29-bdad-060d681fa943] succeeded in 0.0s: None
+[2024-04-22 15:20:17,664: INFO/MainProcess] Task snatcher.tasks.public_choice_task[e332b9d6-b46f-4c4e-9bdf-151d9c289683] succeeded in 119.61000000000058s: None
+[2024-04-22 15:28:15,167: INFO/MainProcess] Task snatcher.tasks.select_course[7fa90f9b-4b02-4cb9-b6fa-f0e79e6dcf7f] received
+[2024-04-22 15:28:15,175: INFO/MainProcess] Task snatcher.tasks.public_choice_task[cf421e82-7d88-40a8-bf8c-55ccd44a2fa1] received
+[2024-04-22 15:28:15,176: INFO/MainProcess] Task snatcher.tasks.select_course[7fa90f9b-4b02-4cb9-b6fa-f0e79e6dcf7f] succeeded in 0.0s: None
+[2024-04-22 15:29:47,868: INFO/MainProcess] Task snatcher.tasks.select_course[e6550ba7-379d-4b5a-a32d-ff7b0c02534a] received
+[2024-04-22 15:29:47,872: INFO/MainProcess] Task snatcher.tasks.public_choice_task[8db44047-0c76-47e3-8752-34675bb34d84] received
+[2024-04-22 15:29:47,878: INFO/MainProcess] Task snatcher.tasks.select_course[e6550ba7-379d-4b5a-a32d-ff7b0c02534a] succeeded in 0.0s: None
+[2024-04-22 15:30:01,833: INFO/MainProcess] Task snatcher.tasks.public_choice_task[cf421e82-7d88-40a8-bf8c-55ccd44a2fa1] succeeded in 106.65600000000268s: None
+[2024-04-22 15:30:54,273: INFO/MainProcess] Task snatcher.tasks.public_choice_task[8db44047-0c76-47e3-8752-34675bb34d84] succeeded in 66.40600000000268s: None
+[2024-04-22 15:31:59,511: INFO/MainProcess] Task snatcher.tasks.select_course[6d9796bf-808c-438e-a079-5481ef8d1b54] received
+[2024-04-22 15:31:59,522: INFO/MainProcess] Task snatcher.tasks.public_choice_task[74c382c6-6179-4a21-b9bd-5c1094103f80] received
+[2024-04-22 15:31:59,524: INFO/MainProcess] Task snatcher.tasks.select_course[6d9796bf-808c-438e-a079-5481ef8d1b54] succeeded in 0.01600000000325963s: None
+[2024-04-22 15:33:37,774: INFO/MainProcess] Task snatcher.tasks.select_course[00e859b5-17da-40ab-877b-f65858f29758] received
+[2024-04-22 15:38:27,459: ERROR/MainProcess] Task snatcher.tasks.public_choice_task[74c382c6-6179-4a21-b9bd-5c1094103f80] raised unexpected: ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 537, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 466, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 1374, in getresponse
+    response.begin()
+  File "D:\Python311\Lib\http\client.py", line 318, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 287, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\retry.py", line 470, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\util.py", line 38, in reraise
+    raise value.with_traceback(tb)
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 537, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 466, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 1374, in getresponse
+    response.begin()
+  File "D:\Python311\Lib\http\client.py", line 318, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 287, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 477, in trace_task
+    R = retval = fun(*args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 760, in __protected_call__
+    return self.run(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\tasks.py", line 54, in public_choice_task
+    selector_performer(email, verify_code, goals, SynchronousPublicChoiceCourseSelector(username))
+  File "E:\Snatcher\snatcher\selector\base.py", line 260, in selector_performer
+    result = selector.select()
+             ^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 91, in select
+    result = self.simulate_request()
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 64, in simulate_request
+    response = self.session.post(
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\adapters.py", line 501, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-04-22 15:38:27,490: INFO/MainProcess] Task snatcher.tasks.public_choice_task[836a3e0c-1e06-4b47-810b-afbbeeb8fa10] received
+[2024-04-22 15:38:27,492: INFO/MainProcess] Task snatcher.tasks.select_course[00e859b5-17da-40ab-877b-f65858f29758] succeeded in 289.7189999999973s: None
+[2024-04-22 15:40:45,386: INFO/MainProcess] Task snatcher.tasks.public_choice_task[836a3e0c-1e06-4b47-810b-afbbeeb8fa10] succeeded in 137.88999999999942s: None
+[2024-04-22 15:54:00,582: INFO/MainProcess] Task snatcher.tasks.select_course[db6450d4-5276-4dae-84f5-8e0e6740e34e] received
+[2024-04-22 15:54:00,592: INFO/MainProcess] Task snatcher.tasks.public_choice_task[a9b5f3d2-f220-46eb-98cd-2b10a8ceeaa8] received
+[2024-04-22 15:54:00,594: INFO/MainProcess] Task snatcher.tasks.select_course[db6450d4-5276-4dae-84f5-8e0e6740e34e] succeeded in 0.01600000000325963s: None
+[2024-04-22 15:55:47,335: INFO/MainProcess] Task snatcher.tasks.public_choice_task[a9b5f3d2-f220-46eb-98cd-2b10a8ceeaa8] succeeded in 106.75s: None

@@ -1,0 +1,267 @@
+[2024-04-22 12:02:15,658: ERROR/MainProcess] Task snatcher.tasks.select_course[73f6d954-0566-4108-a311-a2dcfb6a8ff6] raised unexpected: RuntimeError('Cannot run the event loop while another loop is running')
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 477, in trace_task
+    R = retval = fun(*args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 760, in __protected_call__
+    return self.run(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\tasks.py", line 72, in select_course
+    result = check_and_set_session(username, password)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\session.py", line 185, in check_and_set_session
+    set_session(username, password)
+  File "E:\Snatcher\snatcher\session.py", line 171, in set_session
+    loop.run_until_complete(async_set_session(username, password))
+  File "D:\Python311\Lib\asyncio\base_events.py", line 629, in run_until_complete
+    self._check_running()
+  File "D:\Python311\Lib\asyncio\base_events.py", line 590, in _check_running
+    raise RuntimeError(
+RuntimeError: Cannot run the event loop while another loop is running
+
+
+
+
+
+[2024-04-22 12:02:15,659: WARNING/MainProcess] E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py:290: RuntimeWarning: coroutine 'async_set_session' was never awaited
+  tb.tb_frame.f_locals
+
+
+
+[2024-04-22 12:58:07,349: ERROR/MainProcess] Task snatcher.tasks.public_choice_task[13a12177-b448-4954-a0d3-0488e2f0c0a7] raised unexpected: ConnectTimeout(MaxRetryError("HTTPConnectionPool(host='10.3.132.7', port=80): Max retries exceeded with url: /jwglxt/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x0000022BF9504690>, 'Connection to 10.3.132.7 timed out. (connect timeout=1200)'))"))
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\connection.py", line 85, in create_connection
+    raise err
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\connection.py", line 73, in create_connection
+    sock.connect(sa)
+  File "E:\Snatcher\venv\Lib\site-packages\eventlet\greenio\base.py", line 265, in connect
+    socket_checkerr(fd)
+  File "E:\Snatcher\venv\Lib\site-packages\eventlet\greenio\base.py", line 50, in socket_checkerr
+    raise OSError(err, errno.errorcode[err])
+TimeoutError: [Errno 10060] WSAETIMEDOUT
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 496, in _make_request
+    conn.request(
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 400, in request
+    self.endheaders()
+  File "D:\Python311\Lib\http\client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "D:\Python311\Lib\http\client.py", line 1037, in _send_output
+    self.send(msg)
+  File "D:\Python311\Lib\http\client.py", line 975, in send
+    self.connect()
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 238, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 207, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPConnection object at 0x0000022BF9504690>, 'Connection to 10.3.132.7 timed out. (connect timeout=1200)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\retry.py", line 515, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.3.132.7', port=80): Max retries exceeded with url: /jwglxt/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x0000022BF9504690>, 'Connection to 10.3.132.7 timed out. (connect timeout=1200)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 477, in trace_task
+    R = retval = fun(*args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 760, in __protected_call__
+    return self.run(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\tasks.py", line 54, in public_choice_task
+    selector_performer(email, verify_code, goals, SynchronousPublicChoiceCourseSelector(username))
+  File "E:\Snatcher\snatcher\selector\base.py", line 260, in selector_performer
+    result = selector.select()
+             ^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 91, in select
+    result = self.simulate_request()
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 58, in simulate_request
+    success = self.prepare_for_selecting()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 42, in prepare_for_selecting
+    self.set_xkkz_id()
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 111, in set_xkkz_id
+    html = self.session.get(self.index_url, timeout=self.timeout).text
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\adapters.py", line 507, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPConnectionPool(host='10.3.132.7', port=80): Max retries exceeded with url: /jwglxt/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x0000022BF9504690>, 'Connection to 10.3.132.7 timed out. (connect timeout=1200)'))
+
+
+
+[2024-04-22 13:19:51,489: ERROR/MainProcess] Task snatcher.tasks.public_choice_task[0a0a5543-ddec-4617-bc75-a4f00c72e4b7] raised unexpected: SMTPDataError(550, b'The recipient may contain a non-existent account, please check the recipient address.')
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 477, in trace_task
+    R = retval = fun(*args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 760, in __protected_call__
+    return self.run(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\tasks.py", line 54, in public_choice_task
+    selector_performer(email, verify_code, goals, SynchronousPublicChoiceCourseSelector(username))
+  File "E:\Snatcher\snatcher\selector\base.py", line 263, in selector_performer
+    send_email(email, selector.username, course_name)
+  File "E:\Snatcher\snatcher\mail.py", line 67, in send_email
+    EmailSender(receiver_email, subject, content).send()
+  File "E:\Snatcher\snatcher\mail.py", line 39, in send
+    self.smtp.sendmail(from_addr=self.email_from, to_addrs=self.receiver_email, msg=message.as_string())
+  File "D:\Python311\Lib\smtplib.py", line 908, in sendmail
+    raise SMTPDataError(code, resp)
+smtplib.SMTPDataError: (550, b'The recipient may contain a non-existent account, please check the recipient address.')
+
+
+
+
+[2024-04-22 13:19:53,574: ERROR/MainProcess] Task snatcher.tasks.public_choice_task[65f2522b-4162-4fff-b7e0-78d7df0836dc] raised unexpected: SMTPServerDisconnected('Connection unexpectedly closed')
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 477, in trace_task
+    R = retval = fun(*args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 760, in __protected_call__
+    return self.run(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\tasks.py", line 54, in public_choice_task
+    selector_performer(email, verify_code, goals, SynchronousPublicChoiceCourseSelector(username))
+  File "E:\Snatcher\snatcher\selector\base.py", line 263, in selector_performer
+    send_email(email, selector.username, course_name)
+  File "E:\Snatcher\snatcher\mail.py", line 67, in send_email
+    EmailSender(receiver_email, subject, content).send()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\mail.py", line 31, in __init__
+    self.smtp.login(user=self.email_from, password=email_config['verify_code'])
+  File "D:\Python311\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "D:\Python311\Lib\smtplib.py", line 642, in auth
+    (code, resp) = self.docmd("AUTH", mechanism + " " + response)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\smtplib.py", line 432, in docmd
+    return self.getreply()
+           ^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\smtplib.py", line 405, in getreply
+    raise SMTPServerDisconnected("Connection unexpectedly closed")
+smtplib.SMTPServerDisconnected: Connection unexpectedly closed
+
+
+
+
+[2024-04-22 13:41:59,627: ERROR/MainProcess] Task snatcher.tasks.public_choice_task[184d4d27-8b37-4f5a-a317-577279f5f2a4] raised unexpected: ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 537, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 466, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 1374, in getresponse
+    response.begin()
+  File "D:\Python311\Lib\http\client.py", line 318, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 287, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\retry.py", line 470, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\util\util.py", line 38, in reraise
+    raise value.with_traceback(tb)
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connectionpool.py", line 537, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\urllib3\connection.py", line 466, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 1374, in getresponse
+    response.begin()
+  File "D:\Python311\Lib\http\client.py", line 318, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "D:\Python311\Lib\http\client.py", line 287, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 477, in trace_task
+    R = retval = fun(*args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\celery\app\trace.py", line 760, in __protected_call__
+    return self.run(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\tasks.py", line 54, in public_choice_task
+    selector_performer(email, verify_code, goals, SynchronousPublicChoiceCourseSelector(username))
+  File "E:\Snatcher\snatcher\selector\base.py", line 260, in selector_performer
+    result = selector.select()
+             ^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 91, in select
+    result = self.simulate_request()
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 58, in simulate_request
+    success = self.prepare_for_selecting()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 48, in prepare_for_selecting
+    self.set_jxb_ids()
+  File "E:\Snatcher\snatcher\selector\sync_selector.py", line 20, in set_jxb_ids
+    response = self.session.post(
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Snatcher\venv\Lib\site-packages\requests\adapters.py", line 501, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
