@@ -7,8 +7,8 @@ from .pydantic import (
     BookPCPydantic
 )
 from snatcher import (
-    public_choice,
-    physical_education
+    async_public_choice,
+    async_physical_education
 )
 from snatcher.db.mysql import (
     pe_querier,
@@ -51,24 +51,24 @@ def search_pc_course(keyword: str):
 
 
 @router.post('/pc', tags=['预约公选课'])
-def book_pc_course(data: BookPCPydantic):
+async def book_pc_course(data: BookPCPydantic):
     verify_code = vc_querier.query(data.username, data.verify_code)
     if not verify_code:
         return {'success': 0, 'msg': '无效的抢课码'}
     if verify_code[0] == 1:
         return {'success': 0, 'msg': '该抢课码已被使用'}
     goals = data.packing_data()
-    public_choice(goals, **data.users())
+    await async_public_choice(goals, **data.users())
     return {'success': 1}
 
 
 @router.post('/pe', tags=['预约体育课'])
-def book_pe_course(data: BookPEPydantic):
+async def book_pe_course(data: BookPEPydantic):
     verify_code = vc_querier.query(data.username, data.verify_code)
     if not verify_code:
         return {'success': 0, 'msg': '无效的抢课码'}
     if verify_code[0] == 1:
         return {'success': 0, 'msg': '该抢课码已被使用'}
     goals = data.packing_data()
-    physical_education(goals, **data.users())
+    await async_physical_education(goals, **data.users())
     return {'success': 1}

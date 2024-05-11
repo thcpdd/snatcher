@@ -29,7 +29,6 @@ from snatcher.mail import send_email
 from snatcher.db.redis import (
     RunningLogs,
     AsyncRunningLogs
-    # ParseStudentID
 )
 
 
@@ -41,27 +40,7 @@ class BaseCourseSelector:
 
     def __init__(self, username: str):
         self.username = username  # 学号
-        # self.parser = ParseStudentID(username)  # 解析学号
         # 获取教学班ids所需的表单数据
-        # self.get_jxb_ids_data = {
-        #     'bklx_id': 0,  # 补考类型id
-        #     'xqh_id': 3,  # 校区号id
-        #     'jg_id': '206',  # 学院id
-        #     'zyfx_id': 'wfx',  # 专业方向 无方向
-        #     'njdm_id': self.parser.year,  # 年级ID，必须  2022
-        #     'bh_id': self.parser.class_id,  # 班级ID  0425221
-        #     'xbm': 1,  # 性别 男 1  女 2
-        #     'xslbdm': 'wlb',  # 学生类别代码 无类别
-        #     'mzm': 13,  # 民族码
-        #     'xz': 4,  # 学制
-        #     'ccdm': 3,  # 层次代码
-        #     'xsbj': 4,  # 学生标记，国内学生 4
-        #     'xkxnm': self.select_course_year,  # 选课学年码
-        #     'xkxqm': self.term,  # 选课学期码（上下学期，上学期 3，下学期 12）
-        #     'kklxdm': '',  # 开课类型代码，公选课10，体育课05、主修课程01，特殊课程09
-        #     'kch_id': '',  # 课程id
-        #     'xkkz_id': ''  # 选课的时间，课程的类型（主修、体育、特殊、通识）
-        # }
         self.get_jxb_ids_data = {
             'bklx_id': 0,  # 补考类型id
             'njdm_id': '20' + username[:2],  # 年级ID，必须  2022
@@ -78,14 +57,14 @@ class BaseCourseSelector:
             'qz': 0  # 权重
         }
         self.timeout = settings.TIMEOUT
+        self.log: Union[RunningLogs, AsyncRunningLogs, None] = None
+        self.select_course_api = '/xsxk/zzxkyzbjk_xkBcZyZzxkYzb.html?gnmkdm=N253512'  # 选课api
+        self.index_url = '/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default'  # 选课首页
+        self.jxb_ids_api = '/xsxk/zzxkyzbjk_cxJxbWithKchZzxkYzb.html?gnmkdm=N253512'  # 获取教学班ids的api
         self.real_name = None
         self.log_key = None
-        self.log: Union[RunningLogs, AsyncRunningLogs, None] = None
         self.session = None
         self.cookies = None
-        self.select_course_api = None
-        self.index_url = None
-        self.jxb_ids_api = None
         self.base_url = None
         self.port = None
         self.kch_id = None  # 课程ID
@@ -118,9 +97,9 @@ class BaseCourseSelector:
             return
         self.cookies = {'JSESSIONID': cookie_string}
         base_url = ''.join(['http:', '//10.3.132.', port, '/jwglxt'])
-        self.select_course_api = base_url + '/xsxk/zzxkyzbjk_xkBcZyZzxkYzb.html?gnmkdm=N253512'  # 选课api
-        self.index_url = base_url + '/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default'  # 选课首页
-        self.jxb_ids_api = base_url + '/xsxk/zzxkyzbjk_cxJxbWithKchZzxkYzb.html?gnmkdm=N253512'  # 获取教学班ids的api
+        self.select_course_api = base_url + self.select_course_api
+        self.index_url = base_url + self.index_url
+        self.jxb_ids_api = base_url + self.jxb_ids_api
         self.base_url = base_url
         self.port = port
 
