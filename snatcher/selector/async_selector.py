@@ -11,7 +11,7 @@ from aiohttp.client_exceptions import (
 )
 
 from snatcher.session import get_session_manager
-from .base import CourseSelector, AsyncRunningLogs
+from .base import CourseSelector, AsyncRunningLogger
 
 
 class AsynchronousCourseSelector(CourseSelector):
@@ -37,11 +37,17 @@ class AsynchronousCourseSelector(CourseSelector):
         await self.log.set_others('step-0_found_course', self.real_name)
         await self.log.set('step-1_kch_id', 1)
 
-        await self.set_xkkz_id()
+        cache_xkkz_id = self.session_manager.get_xkkz_id()
+        if cache_xkkz_id:
+            self.xkkz_id = cache_xkkz_id
+        else:
+            await self.set_xkkz_id()
+
         if self.xkkz_id is None:
             await self.log.set('step-2_xkkz_id', 0)
             return 0
         await self.log.set('step-2_xkkz_id', 1)
+        self.session_manager.save_xkkz_id(self.xkkz_id)
 
         await self.set_jxb_ids()
         if self.jxb_ids is None:
@@ -51,11 +57,13 @@ class AsynchronousCourseSelector(CourseSelector):
         return 1
 
     async def simulate_request(self):
-        timeout = aiohttp.ClientTimeout(total=self.timeout)
-        self.session = aiohttp.ClientSession(cookies=self.cookies, timeout=timeout)
+        if self.session is None:
+            timeout = aiohttp.ClientTimeout(total=self.timeout)
+            self.session = aiohttp.ClientSession(timeout=timeout)
+        self.session.cookie_jar.update_cookies(self.cookies)
         success = await self.prepare_for_selecting()
         if not success:
-            self.mark_failed('选课参数异常')
+            self.mark_failed('选课参数不完整')
             await self.session.close()
             return 0
         self.select_course_data['kch_id'] = self.kch_id
@@ -79,18 +87,22 @@ class AsynchronousCourseSelector(CourseSelector):
             await self.session.close()
 
     async def select(self):
-        manager = get_session_manager(self.username)
-        async with AsyncRunningLogs(self.log_key) as self.log:
+        if self.session_manager is None:
+            self.session_manager = get_session_manager(self.username)
+        async with AsyncRunningLogger(self.log_key) as self.log:
             retry = 0
             while retry < 3:
-                cookie_string, port = manager.get_session_by_weight()
+                cookie_string, port = self.session_manager.get_session_by_weight()
                 self.update_or_set_cookie(cookie_string, port)
                 try:
                     result = await self.simulate_request()
                 except (TimeoutError, ClientConnectorError):
                     await self.log.retry()
-                    await self.log.timeout()
                     retry += 1
+                except Exception as exception:
+                    await self.log.set_others('step-4_error_in_select', str(exception))
+                    self.mark_failed(str(exception))
+                    return 0
                 else:
                     if result == 1:
                         await self.log.set_others('task_status', f'{self.real_name} 成功')

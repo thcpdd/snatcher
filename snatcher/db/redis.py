@@ -119,24 +119,25 @@ class RunningLogs:
         self._connection.hset(self.key, 'retry', str(_retry))
 
 
-class AsyncRunningLogs:
+class AsyncRunningLogger:
     """
-    You must call close method before function was garbage collected.
+    You must call `close` method before function was garbage collected.
     Example:
-        The base usage in coroutine function:
+         (Recommendation) Using it as a context manager in the coroutine function:
+            async def test():
+                async with AsyncRunningLogs('your_key') as logs:
+                    ...  # your operations
+        You can also use it by creating object, but don't forget to call `close` method:
             async def test():
                 logs = AsyncRunningLogs('your_key')
                 ...  # your operations
                 await logs.close()  # It is must !!!
-        You can also use it as a context manager in the coroutine function:
-            async def test():
-                async with AsyncRunningLogs('your_key') as logs:
-                    ...  # your operations
     """
     def __init__(self, key: str):
         _db_info = settings.DATABASES['redis']['log']
         self._connection = AIORedis(**_db_info)
         self.key = key
+        self.count = 1
         self.messages = {
             'step-1_kch_id': {
                 1: '课程ID设置成功',
@@ -158,11 +159,14 @@ class AsyncRunningLogs:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
 
+    def wrapper(self, name: str):
+        return name + '-' + str(self.count)
+
     async def set(self, name: str, success: int):
-        await self._connection.hset(self.key, name, self.messages[name][success])
+        await self._connection.hset(self.key, self.wrapper(name), self.messages[name][success])
 
     async def set_others(self, name: str, message: str):
-        await self._connection.hset(self.key, name, message)
+        await self._connection.hset(self.key, self.wrapper(name), message)
 
     async def timeout(self):
         _timeout = await self._connection.hget(self.key, 'timeout')
@@ -178,8 +182,9 @@ class AsyncRunningLogs:
             _retry = int(_retry) + 1
         else:
             _retry = 1
+        self.count += 1
         await self._connection.hset(self.key, 'retry', str(_retry))
 
     async def close(self):
-        """you must call this before function was garbage collected."""
+        """You must call this before function was garbage collected."""
         await self._connection.aclose()

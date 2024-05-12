@@ -13,7 +13,7 @@ class SingletonMetaClass(type):
 
 
 class Settings(metaclass=SingletonMetaClass):
-    # database configurations
+    # Database configurations.
     DATABASES: dict = {
         'redis': {
             'log': {
@@ -38,21 +38,24 @@ class Settings(metaclass=SingletonMetaClass):
         }
     }
 
-    # global request timeout, unit is second
+    # Global request timeout(except at setting session), unit is second.
     TIMEOUT: int = 60 * 60
 
-    # study term
-    # last term is 3, next term is 12
+    # It was used in setting session timeout, unit is second.
+    SETTING_SESSION_TIMEOUT: int = 60 * 30
+
+    # Study term.
+    # Last term is 3, next term is 12.
     TERM: int = 12
 
     # study year
     SELECT_COURSE_YEAR: int = 2023
 
-    # study term period
-    # The first half of the term is 1, the second half of the term is 2
+    # Study term period.
+    # The first half of the term is 1, the second half of the term is 2.
     PERIOD: int = 2
 
-    # select course beginning time
+    # Selecting course start time.
     START_TIME: dict = {
         'year': 2024,
         'month': 4,
@@ -62,22 +65,24 @@ class Settings(metaclass=SingletonMetaClass):
         'second': 1
     }
 
-    # the email configurations
+    # The email configurations.
     EMAIL_CONFIG: dict = {
         'email_from': 'rainbow59216@foxmail.com',  # your email address
-        'name': 'Rainbow',  # your name
+        'name': '智能抢课系统-邮箱小助手',  # your name
         'verify_code': 'egpzpjrwjhzsdcbb',  # your email verify code
         'host': 'smtp.qq.com',  # current email host
-        'port': 587  # current email port
+        'port': 465  # current email port
     }
 
-    # all request ports
+    # All request ports(host number).
     PORTS: list[str] = ['5', '6', '7', '8', '9']
 
-    def start_time(self):
+    def start_time(self) -> datetime:
+        """The `START_TIME` convert to datatime object."""
         return datetime.fromtimestamp(datetime(**self.START_TIME).timestamp(), timezone.utc)
 
-    def countdown(self):
+    def countdown(self) -> int:
+        """The countdown time of start time."""
         if self.start_time() <= datetime.now(timezone.utc):
             return 0
         return (self.start_time() - datetime.now(timezone.utc)).seconds

@@ -21,7 +21,7 @@ def selector_performer(
             vc_querier.update(selector.username, verify_code)
             success, exception = send_email(email, selector.username, course_name)
             if not success:
-                selector.log.set_others('send_email_failed', str(exception))
+                selector.log.set_others('send_email_failed', exception)
             break
 
 
@@ -38,5 +38,5 @@ async def async_selector_performer(
             vc_querier.update(selector.username, verify_code)
             success, exception = send_email(email, selector.username, course_name)
             if not success:
-                selector.log.set_others('send_email_failed', str(exception))
+                selector.log.set_others('send_email_failed', exception)
             break

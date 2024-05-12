@@ -75,9 +75,24 @@ class SessionManager:
             return res
         return ''
 
-    def set(self, cookie: str, port: str):
+    def save_cookie(self, cookie: str, port: str):
         if cookie and port:
             self._session_cache.hset(self.username, port, cookie)
+
+    def save_xkkz_id(self, xkkz_id: str):
+        _grade = self.username[:2]
+        if not self._session_cache.hexists(self.username, 'xkkz_id'):
+            self._session_cache.hset(self.username, 'xkkz_id', xkkz_id)
+        if not self._session_cache.hexists('xkkz_id', _grade):
+            self._session_cache.hset('xkkz_id', _grade, xkkz_id)
+
+    def get_xkkz_id(self) -> str:
+        _grade = self.username[:2]
+        if self._session_cache.hexists('xkkz_id', _grade):
+            return self._session_cache.hget('xkkz_id', _grade)
+        if self._session_cache.hexists(self.username, 'xkkz_id'):
+            return self._session_cache.hget(self.username, 'xkkz_id')
+        return ''
 
     def all_sessions(self) -> dict:
         return self._session_cache.hgetall(self.username)
@@ -135,7 +150,7 @@ class AsyncSessionSetter:
         可以通过设置aiohttp.CookieJar 的 unsafe=True 来配置
         """
         cookie_jar = aiohttp.CookieJar(unsafe=True)
-        timeout = aiohttp.ClientTimeout(total=settings.TIMEOUT)
+        timeout = aiohttp.ClientTimeout(total=settings.SETTING_SESSION_TIMEOUT)
         try:
             async with aiohttp.ClientSession(cookie_jar=cookie_jar, timeout=timeout) as self.session:
                 encrypt_password = await self.decrypt_password()
@@ -164,7 +179,7 @@ async def async_set_session(username: str, password: str):
     manager = get_session_manager(username)
     for cookie_info in cookies_info:
         cookie, port = cookie_info
-        manager.set(cookie, port)
+        manager.save_cookie(cookie, port)
 
 
 def set_session(username: str, password: str):

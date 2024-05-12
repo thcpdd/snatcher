@@ -26,7 +26,7 @@ class EmailSender:
         self.receiver_email = receiver_email
         self.subject = subject
         self.content = content
-        self.smtp = smtplib.SMTP()
+        self.smtp = smtplib.SMTP_SSL(email_config['host'])
         self.smtp.connect(email_config['host'], port=email_config['port'])
         self.smtp.login(user=self.email_from, password=email_config['verify_code'])
 
@@ -47,7 +47,8 @@ class EmailSender:
         name = self.sender_name
         if include_chinese(name):
             name = base64.b64encode(name.encode('utf-8')).decode('utf-8')
-        return f'=?utf-8?B?{name}?= <{self.email_from}>'
+            return f'=?utf-8?B?{name}?= <{self.email_from}>'
+        return f'{name} <{self.email_from}>'
 
 
 def send_email(
@@ -67,8 +68,8 @@ def send_email(
         content = "学号为 %s 的意向课程 <%s> 选课失败，原因：%s" % (username, course_name, failed_reason)
     try:
         EmailSender(receiver_email, subject, content).send()
-    except smtplib.SMTPException as exception:
-        return 0, exception
+    except Exception as exception:
+        return 0, str(exception)
     return 1, ''
 
 
