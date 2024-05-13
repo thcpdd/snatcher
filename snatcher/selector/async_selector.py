@@ -10,6 +10,7 @@ from aiohttp.client_exceptions import (
     ClientConnectorError,
 )
 
+from snatcher.db.redis import add_using_number, reduce_using_number
 from snatcher.session import get_session_manager
 from .base import CourseSelector, AsyncRunningLogger
 
@@ -20,8 +21,8 @@ class AsynchronousCourseSelector(CourseSelector):
         self.get_jxb_ids_data['kch_id'] = self.kch_id
         self.get_jxb_ids_data['kklxdm'] = self.course_type
         response = await self.session.post(self.jxb_ids_api, data=self.get_jxb_ids_data)
-        json_data = await response.json()
         try:
+            json_data = await response.json()
             self.jxb_ids = json_data[0]['do_jxb_id']
         except IndexError:
             await self.log.set_others('step-3_error_in_set_jxb_ids', '表单数据异常')
@@ -57,13 +58,9 @@ class AsynchronousCourseSelector(CourseSelector):
         return 1
 
     async def simulate_request(self):
-        if self.session is None:
-            timeout = aiohttp.ClientTimeout(total=self.timeout)
-            self.session = aiohttp.ClientSession(timeout=timeout)
-        self.session.cookie_jar.update_cookies(self.cookies)
+        self.session = aiohttp.ClientSession(timeout=self.timeout, cookies=self.cookies)
         success = await self.prepare_for_selecting()
         if not success:
-            self.mark_failed('选课参数不完整')
             await self.session.close()
             return 0
         self.select_course_data['kch_id'] = self.kch_id
@@ -89,25 +86,33 @@ class AsynchronousCourseSelector(CourseSelector):
     async def select(self):
         if self.session_manager is None:
             self.session_manager = get_session_manager(self.username)
+        if isinstance(self.timeout, int):
+            self.timeout = aiohttp.ClientTimeout(total=self.timeout)
         async with AsyncRunningLogger(self.log_key) as self.log:
             retry = 0
             while retry < 3:
                 cookie_string, port = self.session_manager.get_session_by_weight()
                 self.update_or_set_cookie(cookie_string, port)
+                add_using_number(port)
                 try:
                     result = await self.simulate_request()
                 except (TimeoutError, ClientConnectorError):
+                    add_using_number(port, 9999)
                     await self.log.retry()
                     retry += 1
                 except Exception as exception:
+                    add_using_number(port, 9999)
                     await self.log.set_others('step-4_error_in_select', str(exception))
                     self.mark_failed(str(exception))
                     return 0
                 else:
                     if result == 1:
+                        reduce_using_number(port)
                         await self.log.set_others('task_status', f'{self.real_name} 成功')
                         return 1
+                    reduce_using_number(port)
                     return 0
+            reduce_using_number(port)
             self.mark_failed('超出最大重试次数')
             return 0
 

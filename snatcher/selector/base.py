@@ -59,9 +59,12 @@ class BaseCourseSelector:
             'qz': 0  # 权重
         }
         self.timeout: int = settings.TIMEOUT
-        self.select_course_api: str = '/xsxk/zzxkyzbjk_xkBcZyZzxkYzb.html?gnmkdm=N253512'  # 选课api
-        self.index_url: str = '/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default'  # 选课首页
-        self.jxb_ids_api: str = '/xsxk/zzxkyzbjk_cxJxbWithKchZzxkYzb.html?gnmkdm=N253512'  # 获取教学班ids的api
+        self.sub_select_course_api: str = '/xsxk/zzxkyzbjk_xkBcZyZzxkYzb.html?gnmkdm=N253512'
+        self.sub_index_url: str = '/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default'
+        self.sub_jxb_ids_api: str = '/xsxk/zzxkyzbjk_cxJxbWithKchZzxkYzb.html?gnmkdm=N253512'
+        self.select_course_api: Optional[str] = None  # 选课api
+        self.index_url: Optional[str] = None  # 选课首页
+        self.jxb_ids_api: Optional[str] = None  # 获取教学班ids的api
         self.log: Optional[RunningLogs, AsyncRunningLogger] = None
         self.real_name: Optional[str] = None
         self.log_key: Optional[str] = None
@@ -100,9 +103,9 @@ class BaseCourseSelector:
             return
         self.cookies = {'JSESSIONID': cookie_string}
         base_url = ''.join(['http:', '//10.3.132.', port, '/jwglxt'])
-        self.select_course_api = base_url + self.select_course_api
-        self.index_url = base_url + self.index_url
-        self.jxb_ids_api = base_url + self.jxb_ids_api
+        self.select_course_api = base_url + self.sub_select_course_api
+        self.index_url = base_url + self.sub_index_url
+        self.jxb_ids_api = base_url + self.sub_jxb_ids_api
         self.base_url = base_url
         self.port = port
 

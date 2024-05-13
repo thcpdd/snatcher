@@ -35,10 +35,21 @@ class PortWeightManager:
         def inner() -> list:
             nonlocal rank
 
-            port_list = self.weights_cache.zrevrange('weights', rank, rank)
+            port_list = self.weights_cache.zrange('weights', rank, rank)
             rank += 1
             return port_list
         return inner
+
+    def add_using_number(self, port: str, num: int | float = None):
+        if num is None:
+            weight = self.weights_cache.zscore('weights', port) + 1
+        else:
+            weight = num
+        self.weights_cache.zadd('weights', {port: weight})
+
+    def reduce_using_number(self, port: str):
+        weight = self.weights_cache.zscore('weights', port)
+        self.weights_cache.zadd('weights', {port: weight - 1})
 
     def decrease_weight(self, port: str, decrease_size: int | float = 20):
         weight = self.weights_cache.zscore('weights', port)
@@ -74,6 +85,16 @@ def decreasing_weight(port: str, decrease_size: int | float = 20):
 def increasing_weight(port: str, increase_size: int | float = 10):
     with PortWeightManager() as manager:
         manager.increase_weight(port, increase_size)
+
+
+def add_using_number(port: str, num: int | float = None):
+    with PortWeightManager() as manager:
+        manager.add_using_number(port, num)
+
+
+def reduce_using_number(port: str):
+    with PortWeightManager() as manager:
+        manager.reduce_using_number(port)
 
 
 class RunningLogs:

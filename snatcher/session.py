@@ -56,11 +56,7 @@ from redis import Redis
 
 from snatcher.conf import settings
 from snatcher.db.mysql import fd_querier
-from snatcher.db.redis import (
-    optimal_port_generator,
-    decreasing_weight,
-    increasing_weight
-)
+from snatcher.db.redis import optimal_port_generator
 from snatcher.mail import send_email
 
 
@@ -88,10 +84,10 @@ class SessionManager:
 
     def get_xkkz_id(self) -> str:
         _grade = self.username[:2]
-        if self._session_cache.hexists('xkkz_id', _grade):
-            return self._session_cache.hget('xkkz_id', _grade)
-        if self._session_cache.hexists(self.username, 'xkkz_id'):
-            return self._session_cache.hget(self.username, 'xkkz_id')
+        if cache_xkkz_id := self._session_cache.hget('xkkz_id', _grade):
+            return cache_xkkz_id
+        if user_xkkz_id := self._session_cache.hget(self.username, 'xkkz_id'):
+            return user_xkkz_id
         return ''
 
     def all_sessions(self) -> dict:
@@ -135,7 +131,7 @@ class AsyncSessionSetter:
         async with await self.session.get(url) as response:
             return await response.json()
 
-    async def decrypt_password(self):
+    async def encrypt_password(self):
         public_key = await self.get_public_key()
         n, e = (int(base64.b64decode(value.encode()).hex(), 16)
                 for value in public_key.values())
@@ -153,7 +149,7 @@ class AsyncSessionSetter:
         timeout = aiohttp.ClientTimeout(total=settings.SETTING_SESSION_TIMEOUT)
         try:
             async with aiohttp.ClientSession(cookie_jar=cookie_jar, timeout=timeout) as self.session:
-                encrypt_password = await self.decrypt_password()
+                encrypt_password = await self.encrypt_password()
                 url = self.base_url + '/xtgl/login_slogin.html'
                 data = {
                     'language': 'zh_CN',
@@ -163,11 +159,9 @@ class AsyncSessionSetter:
                 async with await self.session.post(url, data=data, allow_redirects=False) as response:
                     if response.status == 302:  # 302表示将要重定向，登录成功
                         cookies = self.session.cookie_jar.filter_cookies(URL(url))
-                        increasing_weight(self.port)
                         return cookies.get('JSESSIONID').value, self.port
                     return '', self.port
         except TimeoutError:
-            decreasing_weight(self.port)
             return '', self.port
 
 

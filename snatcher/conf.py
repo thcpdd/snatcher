@@ -58,8 +58,8 @@ class Settings(metaclass=SingletonMetaClass):
     # Selecting course start time.
     START_TIME: dict = {
         'year': 2024,
-        'month': 4,
-        'day': 22,
+        'month': 5,
+        'day': 14,
         'hour': 12,
         'minute': 30,
         'second': 1
