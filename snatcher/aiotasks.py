@@ -39,7 +39,7 @@ async def async_physical_education_task(
     verify_code: str,
     goals: list[tuple[str, str]]
 ):
-    await async_selector_performer(email, verify_code, goals, AsyncPESelector(username))
+    await async_selector_performer(AsyncPESelector, username, email, verify_code, goals)
 
 
 @application.task(name='snatcher.aiotasks.async_public_choice_task')
@@ -49,7 +49,7 @@ async def async_public_choice_task(
     verify_code: str,
     goals: list[tuple[str, str]]
 ):
-    await async_selector_performer(email, verify_code, goals, AsyncPCSelector(username))
+    await async_selector_performer(AsyncPCSelector, username, email, verify_code, goals)
 
 
 aiotasks = {

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-cn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <style>
+        .main {
+            background-color: #f8f8f8;
+            text-align: center;
+            padding-bottom: 28px;
+        }
+        .content {
+            border: solid 1px #E3E9ED;
+            width: 50%;
+            margin: 0 auto;
+        }
+        .logo {
+            padding-top: 5px;
+        }
+        .logo img {
+            width: 30%;
+        }
+        .title {
+            text-align: left;
+            padding-top: 11px;
+            font-size: large;
+            padding-left: 23px;
+            padding-bottom: 11px;
+            font-weight: bold;
+            border-top: solid 2px #4daff9;
+            border-bottom: solid 1px #E3E9ED;
+        }
+        .detail {
+            background: white;
+            text-align: left;
+            font-size: 15px;
+            padding: 27px 23px 21px 23px;
+        }
+        @media(max-width: 560px) {
+            .content {
+                border: solid 1px #E3E9ED;
+                margin: 0 auto;
+                width: 100%;
+            }
+            .logo img {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+<!--        <div class="logo"><img src="./snatcher-low-quality.png" alt="logo"></div>-->
+        <div class="logo"><img src="cid:snatcher" alt="logo"></div>
+        <div class="content">
+            <div class="title"><span>选课成功通知</span></div>
+            <div class="detail">
+                <span>学号为 <b>{{ username }}</b> 的同学，你好：</span><br/><br/>
+                <span>恭喜你，选课成功！您的意向课程《<b>{{ course_name }}</b>》已经被“智能抢课系统-抢课小助手”抢到啦！</span><br/><br/>
+                <span>感谢您对我们的支持与信任，期待您的继续使用，祝您生活愉快！</span><br/><br/>
+                <span>智能抢课系统：
+                    <a href="https://snatcher.rainbow.hi.cn" style="color: #4faff3">https://snatcher.rainbow.hi.cn</a>
+                </span><br/><br/>
+                <span style="text-decoration: underline"><b>[本邮件由系统自动发送，请勿直接回复]</b></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

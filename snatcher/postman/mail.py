@@ -5,13 +5,17 @@ The wrapper of send email.
 import smtplib
 import base64
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 from email.header import Header
+
+from jinja2 import Template
 
 from snatcher.conf import settings
 
 
 def include_chinese(string: str):
-    """judge current string is including Chinese or not."""
+    """Judging current string is including Chinese or not."""
     for char in string:
         if u'\u4e00' <= char <= u'\u9fff':
             return True
@@ -32,10 +36,19 @@ class EmailSender:
 
     def send(self):
         """send email"""
-        message = MIMEText(self.content, 'plain', 'utf-8')
+        html_content = MIMEText(self.content, 'html', 'utf-8')
+        message = MIMEMultipart('related')
         message['From'] = Header(self.get_sender_name())
         message['To'] = Header(self.receiver_email, 'utf-8')
         message['Subject'] = Header(self.subject)
+
+        with open('./files/snatcher-low-quality.png', 'rb') as f:
+            image = MIMEImage(f.read())
+            image.add_header('Content-ID', '<snatcher>')
+
+        message.attach(html_content)
+        message.attach(image)
+
         self.smtp.sendmail(from_addr=self.email_from, to_addrs=self.receiver_email, msg=message.as_string())
         self.smtp.quit()  # quit session with smtp server
 
@@ -51,6 +64,14 @@ class EmailSender:
         return f'{name} <{self.email_from}>'
 
 
+def get_success_content(username: str, course_name: str) -> str:
+    """Reading and rendering the HTML mail content."""
+    with open('./files/mail.html', encoding='utf8') as f:
+        html_file = f.read()
+        template = Template(html_file)
+        return template.render(username=username, course_name=course_name)
+
+
 def send_email(
     receiver_email: str,
     username: str,
@@ -59,13 +80,12 @@ def send_email(
     failed_reason: str = None
 ):
     if success:
-        subject = 'Congratulations!'
-        content = "Student identity number %s:\n" \
-                  "Hello, your intention course <%s> was selected successfully!\n" \
-                  "Thank you for your trust in us." % (username, course_name)
+        subject = '恭喜你，选课成功！!'
+        content = get_success_content(username, course_name)
     else:
         subject = '选课失败通知'
         content = "学号为 %s 的意向课程 <%s> 选课失败，原因：%s" % (username, course_name, failed_reason)
+
     try:
         EmailSender(receiver_email, subject, content).send()
     except Exception as exception:
@@ -74,4 +94,4 @@ def send_email(
 
 
 if __name__ == '__main__':
-    send_email('1834763300@qq.com', '2204425143', '大学体育', True)
+    send_email('1834763300@qq.com', '2204425143', '人工智能应用零基础入门与零代码实战+无人驾驶实训营', True)

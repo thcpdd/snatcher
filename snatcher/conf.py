@@ -69,7 +69,7 @@ class Settings(metaclass=SingletonMetaClass):
     EMAIL_CONFIG: dict = {
         'email_from': 'rainbow59216@foxmail.com',  # your email address
         'name': '智能抢课系统-邮箱小助手',  # your name
-        'verify_code': 'egpzpjrwjhzsdcbb',  # your email verify code
+        'verify_code': 'updgvszsuymydajg',  # your email verify code
         'host': 'smtp.qq.com',  # current email host
         'port': 465  # current email port
     }

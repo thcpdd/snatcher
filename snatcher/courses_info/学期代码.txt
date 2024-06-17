@@ -1,2 +1,0 @@
-<option value="3">1</option>
-<option value="12" selected="selected">2</option>

@@ -57,7 +57,7 @@ from redis import Redis
 from snatcher.conf import settings
 from snatcher.db.mysql import fd_querier
 from snatcher.db.redis import optimal_port_generator
-from snatcher.mail import send_email
+from snatcher.postman.mail import send_email
 
 
 class SessionManager:
@@ -176,30 +176,30 @@ async def async_set_session(username: str, password: str):
         manager.save_cookie(cookie, port)
 
 
-def set_session(username: str, password: str):
-    from asgiref.sync import async_to_sync
+# def set_session(username: str, password: str):
+#     from asgiref.sync import async_to_sync
+#
+#     async_to_sync(async_set_session)(username, password)
 
-    async_to_sync(async_set_session)(username, password)
 
-
-def check_and_set_session(username: str, password: str):
-    """
-    :param username:
-    :param password:
-    :return: success or not (-1 not success) (1 success)
-    """
-    manager = get_session_manager(username)
-    retry = 0
-    while retry < 3:
-        if manager.has_sessions():
-            break
-        set_session(username, password)
-        retry += 1
-    if not manager.has_sessions():
-        fd_querier.insert(username, '', '', '模拟登录失败', 0)
-        send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
-        return -1
-    return 1
+# def check_and_set_session(username: str, password: str):
+#     """
+#     :param username:
+#     :param password:
+#     :return: success or not (-1 not success) (1 success)
+#     """
+#     manager = get_session_manager(username)
+#     retry = 0
+#     while retry < 3:
+#         if manager.has_sessions():
+#             break
+#         set_session(username, password)
+#         retry += 1
+#     if not manager.has_sessions():
+#         fd_querier.insert(username, '', '', '模拟登录失败', 0)
+#         send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
+#         return -1
+#     return 1
 
 
 async def async_check_and_set_session(username: str, password: str):

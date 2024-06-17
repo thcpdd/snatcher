@@ -52,8 +52,8 @@ Usage:
             ))
 """
 from .api import (
-    physical_education as physical_education,
-    public_choice as public_choice,
+    # physical_education as physical_education,
+    # public_choice as public_choice,
     async_public_choice as async_public_choice,
     async_physical_education as async_physical_education
 )
