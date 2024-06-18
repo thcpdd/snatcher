@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from "vue-router";
 import PhysicalEducation from "@/views/PhysicalEducation.vue";
 import PublicChoice from "@/views/PublicChoice.vue";
 import Index from "@/views/Index.vue";
+import NProgress from 'nprogress'
 
 
 const router = createRouter({
@@ -23,6 +24,15 @@ const router = createRouter({
             component: PhysicalEducation
         }
     ]
+})
+
+router.beforeEach((to, from, next) => {
+    NProgress.start()
+    next()
+})
+
+router.afterEach(() => {
+    NProgress.done()
 })
 
 export default router

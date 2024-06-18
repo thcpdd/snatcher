@@ -14,7 +14,7 @@
             <el-menu-item index="/pc">公选课</el-menu-item>
             <el-menu-item index="/pe">体育课</el-menu-item>
         </el-sub-menu>
-        <img src="/avatar.svg" class="avatar" alt="avatar" style="">
+        <img src="https://q.qlogo.cn/headimg_dl?dst_uin=1834763300&spec=640&img_type=jpg" class="avatar" alt="avatar">
     </el-menu>
     <div class="content">
         <RouterView/>
@@ -24,16 +24,33 @@
 <script setup>
 import {ref} from 'vue'
 import {RouterView} from 'vue-router'
+import {onMounted} from "vue";
+import {requests} from "@/request.js";
 
 const defaultPage = ref('/')
 const imageUrl = () => {
     let isMobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
     if (isMobile) {
         sessionStorage.setItem('isMobile', '1')
-        return '/logo.svg'
+        return '/logo.png'
     }
     return '/snatcher.svg'
 }
+
+onMounted(async () => {
+    // 动态设置 axios 的 baseUrl，以适应不同的部署环境。
+    if (!requests.defaults.baseURL) {
+        let url = sessionStorage.getItem('url')
+        if (!url) {
+             await requests.get('https://rainbow.hi.cn/snatcherapi').then((res) => {
+                url = res.data.url
+                sessionStorage.setItem('url', url)
+            })
+        }
+        requests.defaults.baseURL = url
+    }
+})
+
 </script>
 
 <style>
@@ -44,7 +61,6 @@ body, html {
 .flex-grow {
     flex-grow: 1;
 }
-
 .content {
     border: 1px solid #d3d3d3;
     border-radius: 10px;
@@ -53,13 +69,11 @@ body, html {
     overflow: hidden;
     height: max-content;
 }
-
 .el-menu-demo {
     border-radius: 10px;
     overflow: clip;
     --el-menu-bg-color: #f4f6f8 /*官方文档写的就是一坨*/
 }
-
 .avatar {
     border-radius: 50%;
     height: 80%;

@@ -27,7 +27,7 @@ from snatcher.db.mysql import (
     scd_querier,
 )
 from snatcher.session import SessionManager
-from snatcher.mail import send_email
+from snatcher.postman.mail import send_email
 from snatcher.db.redis import (
     RunningLogs,
     AsyncRunningLogger

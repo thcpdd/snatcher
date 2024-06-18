@@ -1,3 +1,6 @@
+"""
+Running in development environment: `fastapi dev ./backend`
+"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 

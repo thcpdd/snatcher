@@ -1,8 +1,25 @@
 import axios from "axios";
+import NProgress from 'nprogress'
 
 
 export const requests = axios.create({
-    baseURL: "http://127.0.0.1:8000/vpn",
+    baseURL: "",  // 本地环境需要写上详细的URL，生产环境不用写。
+})
+
+requests.interceptors.request.use(config => {
+    NProgress.start()
+    return config
+}, error => {
+    NProgress.done()
+    return Promise.reject(error)
+})
+
+requests.interceptors.response.use(response => {
+    NProgress.done()
+    return response
+}, error => {
+    NProgress.done()
+    return Promise.reject(error)
 })
 
 export async function getPECoursesCount() {
