@@ -3,6 +3,7 @@ Course selector performers here:
     All course selector will be proxy call by performer.
 """
 from snatcher.db.mysql import vc_querier
+from snatcher.db.cache import remove_code_is_using
 from snatcher.postman.mail import send_email
 # from .sync_selector import SynchronousCourseSelector
 from .async_selector import AsynchronousCourseSelector
@@ -43,3 +44,4 @@ async def async_selector_performer(
             if not success:
                 selector.log.set_others('send_email_failed', exception)
             break
+    remove_code_is_using(verify_code)

@@ -25,6 +25,7 @@ from snatcher.selector.async_selector import (
 )
 from snatcher.selector.performers import async_selector_performer
 from snatcher.db.mysql import fd_querier
+from snatcher.db.cache import mark_code_is_using
 from snatcher.session import async_check_and_set_session
 
 
@@ -69,11 +70,12 @@ async def async_select_course(
     if task is None:
         fd_querier.insert(username, '', '', '选择了不支持的课程类型', 0)
         return
+    verify_code = users.get('verify_code')
+    mark_code_is_using(verify_code)
     password = users.get('password')
     result = await async_check_and_set_session(username, password)
     if result == -1:
         return
     countdown = settings.countdown()
     email = users.get('email')
-    verify_code = users.get('verify_code')
     await task.apply_async(args=(username, email, verify_code, goals), countdown=countdown)

@@ -24,16 +24,16 @@ class Settings(metaclass=SingletonMetaClass):
                 'db': 4,
                 'host': '127.0.0.1'
             },
-            'weights': {
+            'public': {
                 'db': 5,
                 'host': '127.0.0.1'
             }
         },
         'mysql': {
             'database': 'snatcher',
-            'host': '127.0.0.1',
+            'host': '114.132.47.115',
             'user': 'root',
-            'password': '000000',
+            'password': 'f5c4fad26817a282',
             'port': 3306,
         }
     }

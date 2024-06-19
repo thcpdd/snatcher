@@ -28,8 +28,8 @@ from snatcher.db.mysql import (
 )
 from snatcher.session import SessionManager
 from snatcher.postman.mail import send_email
-from snatcher.db.redis import (
-    RunningLogs,
+from snatcher.db.cache import (
+    # RunningLogs,
     AsyncRunningLogger
 )
 
@@ -65,7 +65,7 @@ class BaseCourseSelector:
         self.select_course_api: Optional[str] = None  # 选课api
         self.index_url: Optional[str] = None  # 选课首页
         self.jxb_ids_api: Optional[str] = None  # 获取教学班ids的api
-        self.log: Optional[RunningLogs, AsyncRunningLogger] = None
+        self.log: Optional[AsyncRunningLogger] = None
         self.real_name: Optional[str] = None
         self.log_key: Optional[str] = None
         self.session: Optional[Session, ClientSession] = None

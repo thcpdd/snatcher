@@ -10,7 +10,7 @@ from aiohttp.client_exceptions import (
     ClientConnectorError,
 )
 
-from snatcher.db.redis import add_using_number, reduce_using_number
+from snatcher.db.cache import add_using_number, reduce_using_number
 from snatcher.session import get_session_manager
 from .base import CourseSelector, AsyncRunningLogger
 
