@@ -33,7 +33,12 @@ application = Celery('snatcher')
 application.conf.result_backend = 'redis://127.0.0.1:6379/1'
 
 
-@application.task(name='snatcher.aiotasks.async_physical_education_task')
+@application.task(
+    name='snatcher.aiotasks.async_physical_education_task',
+    autoretry_for=(Exception,),
+    max_retries=2,
+    default_retry_delay=5
+)
 async def async_physical_education_task(
     username: str,
     email: str,
@@ -43,7 +48,12 @@ async def async_physical_education_task(
     await async_selector_performer(AsyncPESelector, username, email, verify_code, goals)
 
 
-@application.task(name='snatcher.aiotasks.async_public_choice_task')
+@application.task(
+    name='snatcher.aiotasks.async_public_choice_task',
+    autoretry_for=(Exception,),
+    max_retries=2,
+    default_retry_delay=5
+)
 async def async_public_choice_task(
     username: str,
     email: str,
