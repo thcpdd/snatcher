@@ -38,7 +38,8 @@ class SQLQuerier:
     condition = ""
 
     def __init__(self):
-        self._connection = None
+        self._connection: Connection | None = None
+        self.latest_insert_id = -1
 
     def execute(
         self,
@@ -51,6 +52,7 @@ class SQLQuerier:
         cursor = self._connection.cursor(cursor=cursor)
         try:
             cursor.execute(sql, args)
+            self.latest_insert_id = self._connection.insert_id()
             self._connection.commit()
         except MySQLError:
             self._connection.rollback()
@@ -165,6 +167,11 @@ class SelectedCourseDataQuerier(SQLQuerier):
             VALUES (%s, %s, %s, %s);
         """
         self.execute(_sql, values)
+        return self.latest_insert_id
+
+    def mark_success(self, row_id: int):
+        _sql = "UPDATE selected_course_data SET `success`=1 WHERE id=%s;"
+        self.execute(_sql, (row_id,))
 
 
 class VerifyCodesQuerier(SQLQuerier):

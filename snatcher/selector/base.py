@@ -76,6 +76,7 @@ class BaseCourseSelector:
         self.kch_id: Optional[str] = None  # 课程ID
         self.jxb_ids: Optional[str] = None  # 教学班ids
         self.xkkz_id: Optional[str] = None
+        self.latest_selected_data_id: Optional[int] = None
 
     def set_xkkz_id(self):
         """Setting xkkz id."""
@@ -114,7 +115,8 @@ class BaseCourseSelector:
         self.real_name = course_name
         self.kch_id = course_id
         self.log_key = f'{self.username}-{course_name}'
-        scd_querier.insert(self.username, email, course_name, self.log_key)
+        row_id = scd_querier.insert(self.username, email, course_name, self.log_key)
+        self.latest_selected_data_id = row_id
 
     def mark_failed(self, failed_reason: str):
         """Creating a failed data into mysql."""

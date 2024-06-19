@@ -42,7 +42,7 @@ create table selected_course_data
     course_name varchar(255)                           null comment '课程名称',
     created_at  timestamp    default CURRENT_TIMESTAMP null comment '创建时间',
     updated_at  timestamp    default CURRENT_TIMESTAMP null comment '更新时间',
-    is_deleted  tinyint(1)   default 0                 null comment '是否有效',
+    success     tinyint(1)   default 0                 null comment '是否成功',
     log_key     varchar(255)                           null comment '日志key'
 );
 
