@@ -15,6 +15,8 @@ Asyncio Celery Tasks:
     4. The `async_select_course` task:
         Providing an interface for outer caller.
 """
+import time
+
 from aio_celery import Celery
 from aio_celery.annotated_task import AnnotatedTask
 
@@ -88,4 +90,8 @@ async def async_select_course(
         return
     countdown = settings.countdown()
     email = users.get('email')
-    await task.apply_async(args=(username, email, verify_code, goals), countdown=countdown)
+    await task.apply_async(
+        args=(username, email, verify_code, goals),
+        countdown=countdown,
+        task_id=f'{username}-{int(time.time())}'
+    )

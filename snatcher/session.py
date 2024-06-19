@@ -166,8 +166,14 @@ class AsyncSessionSetter:
 
 
 async def async_set_session(username: str, password: str):
-    sessions = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)
-                for port in settings.PORTS]
+    if settings.countdown() > 0:
+        # 没有开始选课时，获取所有主机的 Cookie
+        sessions = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)
+                    for port in settings.PORTS]
+    else:
+        # 开始选课时，只获取一个主机的 Cookie
+        port = next(optimal_port_generator())
+        sessions = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)]
     tasks = [asyncio.create_task(session.set_session()) for session in sessions]
     cookies_info = await asyncio.gather(*tasks, return_exceptions=True)
     manager = get_session_manager(username)
