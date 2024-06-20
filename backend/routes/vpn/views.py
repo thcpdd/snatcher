@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from .pydantic import (
-    PCPydantic,
-    PEPydantic,
-    BookPEPydantic,
-    BookPCPydantic
+from .validators import (
+    PCValidator,
+    PEValidator,
+    BookPEValidator,
+    BookPCValidator
 )
 from snatcher import (
     async_public_choice,
@@ -42,28 +42,28 @@ def get_pe_course_count():
     return pe_querier.count()
 
 
-@router.get('/pc/{page}', response_model=list[PCPydantic], tags=['查询公选课列表'])
+@router.get('/pc/{page}', response_model=list[PCValidator], tags=['查询公选课列表'])
 def get_pc_course(page: int = 1):
     return pc_querier.pagination_query(page)
 
 
-@router.get('/pe/{page}', response_model=list[PEPydantic], tags=['查询体育课列表'])
+@router.get('/pe/{page}', response_model=list[PEValidator], tags=['查询体育课列表'])
 def get_pe_course(page: int = 1):
     return pe_querier.pagination_query(page)
 
 
-@router.get('/pe', tags=['搜索体育课'], response_model=list[PEPydantic])
+@router.get('/pe', tags=['搜索体育课'], response_model=list[PEValidator])
 def search_pe_course(keyword: str):
     return pe_querier.like_query(keyword)
 
 
-@router.get('/pc', tags=['搜索公选课'], response_model=list[PCPydantic])
+@router.get('/pc', tags=['搜索公选课'], response_model=list[PCValidator])
 def search_pc_course(keyword: str):
     return pc_querier.like_query(keyword)
 
 
 @router.post('/pc', tags=['预约公选课'])
-async def book_pc_course(data: BookPCPydantic):
+async def book_pc_course(data: BookPCValidator):
     problem = check_verify_code(data.username, data.verify_code)
     if problem:
         return problem
@@ -73,7 +73,7 @@ async def book_pc_course(data: BookPCPydantic):
 
 
 @router.post('/pe', tags=['预约体育课'])
-async def book_pe_course(data: BookPEPydantic):
+async def book_pe_course(data: BookPEValidator):
     problem = check_verify_code(data.username, data.verify_code)
     if problem:
         return problem

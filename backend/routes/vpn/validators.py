@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class BookCoursePydantic(BaseModel):
+class BookCourseValidator(BaseModel):
     email: str
     username: str
     password: str
@@ -16,29 +16,29 @@ class BookCoursePydantic(BaseModel):
         }
 
 
-class CoursePydantic(BaseModel):
+class CourseValidator(BaseModel):
     id: int
     course_id: str
     course_name: str
 
 
-class PEPydantic(CoursePydantic):
+class PEValidator(CourseValidator):
     grade: int
 
 
-class PCPydantic(CoursePydantic):
+class PCValidator(CourseValidator):
     course_no: str
 
 
-class BookPEPydantic(BookCoursePydantic):
-    courses: list[PEPydantic]
+class BookPEValidator(BookCourseValidator):
+    courses: list[PEValidator]
 
     def packing_data(self) -> list[tuple[str, str]]:
         return [(course.course_name, course.course_id) for course in self.courses]
 
 
-class BookPCPydantic(BookCoursePydantic):
-    courses: list[PCPydantic]
+class BookPCValidator(BookCourseValidator):
+    courses: list[PCValidator]
 
     def packing_data(self) -> list[tuple[str, str]]:
         return [(course.course_name, course.course_id) for course in self.courses]

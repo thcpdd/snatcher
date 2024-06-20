@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class AllSelectedDataPydantic(BaseModel):
+class AllSelectedDataValidator(BaseModel):
     id: int
     username: str
     email: str
@@ -12,7 +12,7 @@ class AllSelectedDataPydantic(BaseModel):
     log_key: str
 
 
-class FailedDataPydantic(BaseModel):
+class FailedDataValidator(BaseModel):
     id: int
     username: str
     port: int
@@ -22,7 +22,7 @@ class FailedDataPydantic(BaseModel):
     failed_reason: str
 
 
-class VerifyCodePydantic(BaseModel):
+class VerifyCodeValidator(BaseModel):
     id: int
     username: str
     is_used: int
@@ -30,12 +30,12 @@ class VerifyCodePydantic(BaseModel):
     create_at: datetime
 
 
-class LoginPydantic(BaseModel):
+class LoginValidator(BaseModel):
     username: str
     password: str
 
 
-class CoursePydantic(BaseModel):
+class CourseValidator(BaseModel):
     id: int
     course_id: str
     course_name: str
@@ -43,10 +43,10 @@ class CoursePydantic(BaseModel):
     term: str
 
 
-class PEPydantic(CoursePydantic):
+class PEValidator(CourseValidator):
     grade: int
 
 
-class PCPydantic(CoursePydantic):
+class PCValidator(CourseValidator):
     course_no: str
     period: int
