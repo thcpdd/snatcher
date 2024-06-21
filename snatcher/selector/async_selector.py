@@ -10,7 +10,7 @@ from aiohttp.client_exceptions import (
     ClientConnectorError,
 )
 
-from snatcher.db.cache import add_using_number, reduce_using_number
+from snatcher.storage.cache import add_using_number, reduce_using_number
 from snatcher.session import get_session_manager
 from .base import CourseSelector, AsyncRunningLogger
 
@@ -25,18 +25,17 @@ class AsynchronousCourseSelector(CourseSelector):
             json_data = await response.json()
             self.jxb_ids = json_data[0]['do_jxb_id']
         except IndexError:
-            await self.log.set_others('step-3_error_in_set_jxb_ids', '表单数据异常')
+            await self.log.set('step-3', message='表单数据异常')
             self.mark_failed('表单数据异常')
         except ContentTypeError:
-            await self.log.set_others('step-3_error_in_set_jxb_ids', 'json解码失败')
+            await self.log.set('step-3', message='json解码失败')
             self.mark_failed('json解码失败')
         except TypeError:
-            await self.log.set_others('step-3_error_in_set_jxb_ids', '非法请求')
+            await self.log.set('step-3', message='非法请求')
             self.mark_failed('非法请求')
 
     async def prepare_for_selecting(self):
-        await self.log.set_others('step-0_found_course', self.real_name)
-        await self.log.set('step-1_kch_id', 1)
+        await self.log.set('step-1', 1)
 
         cache_xkkz_id = self.session_manager.get_xkkz_id()
         if cache_xkkz_id:
@@ -45,16 +44,16 @@ class AsynchronousCourseSelector(CourseSelector):
             await self.set_xkkz_id()
 
         if self.xkkz_id is None:
-            await self.log.set('step-2_xkkz_id', 0)
+            await self.log.set('step-2', 0)
             return 0
-        await self.log.set('step-2_xkkz_id', 1)
+        await self.log.set('step-2', 1)
         self.session_manager.save_xkkz_id(self.xkkz_id)
 
         await self.set_jxb_ids()
         if self.jxb_ids is None:
-            await self.log.set('step-3_jxb_ids', 0)
+            await self.log.set('step-3', 0)
             return 0
-        await self.log.set('step-3_jxb_ids', 1)
+        await self.log.set('step-3', 1)
         return 1
 
     async def simulate_request(self):
@@ -69,14 +68,14 @@ class AsynchronousCourseSelector(CourseSelector):
         try:
             json_data = await response.json()
         except ContentTypeError:
-            await self.log.set_others('step-4_json_decode_error_in_select', '选课异常')
+            await self.log.set('step-4', message='选课异常')
             self.mark_failed('选课异常')
             return 0
         else:
             if json_data['flag'] == '1':
-                await self.log.set_others('step-4', '选课成功')
+                await self.log.set('step-4', message='选课成功')
                 return 1
-            await self.log.set_others('step-4_server_response', json_data['msg'])
+            await self.log.set('step-4', message=json_data['msg'])
             self.mark_failed(json_data['msg'])
             return -2
         finally:
@@ -90,6 +89,7 @@ class AsynchronousCourseSelector(CourseSelector):
             self.timeout = aiohttp.ClientTimeout(total=self.timeout)
         async with AsyncRunningLogger(self.log_key) as self.log:
             retry = 0
+            await self.log.set('step-0', message=self.real_name)
             while retry < 3:
                 cookie_string, port = self.session_manager.get_session_by_weight()
                 self.update_or_set_cookie(cookie_string, port)
@@ -102,13 +102,12 @@ class AsynchronousCourseSelector(CourseSelector):
                     retry += 1
                 except Exception as exception:
                     add_using_number(port, 9999)
-                    await self.log.set_others('step-4_error_in_select', str(exception))
+                    await self.log.set('step-4', message=str(exception))
                     self.mark_failed(str(exception))
                     return 0
                 else:
                     if result == 1:
                         reduce_using_number(port)
-                        await self.log.set_others('task_status', f'{self.real_name} 成功')
                         return 1
                     reduce_using_number(port)
                     return 0

@@ -20,7 +20,7 @@ import requests
 from requests.exceptions import JSONDecodeError
 
 from snatcher.conf import settings
-from snatcher.db.mysql import get_db_connection
+from snatcher.storage.mysql import get_db_connection
 
 
 class ParseStudentID:

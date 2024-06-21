@@ -12,8 +12,9 @@
             <el-table-column prop="username" label="学号" align="center"/>
             <el-table-column prop="email" label="邮箱" align="center"/>
             <el-table-column prop="course_name" label="课程名" align="center"/>
-            <el-table-column prop="created_at" label="创建时间" align="center"/>
+            <el-table-column prop="updated_at" label="更新时间" align="center"/>
             <el-table-column prop="log_key" label="日志key" align="center"/>
+            <el-table-column prop="success" label="是否成功" align="center"/>
         </el-table>
         <paginator :total-data="total" @update:current-page="pageChangeHandle"></paginator>
     </div>

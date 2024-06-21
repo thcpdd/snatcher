@@ -1,9 +1,19 @@
+import asyncio
 from datetime import datetime, timedelta
 
 import jwt
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    WebSocketException,
+    WebSocket,
+    Query
+)
 from fastapi.responses import JSONResponse
 from fastapi.requests import Request
+from starlette.websockets import WebSocketDisconnect
+from redis.asyncio.client import PubSub
 
 from .validators import (
     AllSelectedDataValidator,
@@ -13,12 +23,18 @@ from .validators import (
     PCValidator,
     PEValidator
 )
-from snatcher.db.mysql import (
+from snatcher.storage.mysql import (
     scd_querier,
     fd_querier,
     vc_querier,
     pe_querier,
     pc_querier
+)
+from snatcher.storage.cache import (
+    running_logs_generator,
+    AIORedis,
+    CHANNEL_NAME,
+    parse_message
 )
 
 
@@ -171,3 +187,60 @@ def superuser_login(form: LoginValidator):
         response.headers.setdefault('Authorization', token)
         return response
     return {'msg': '身份验证失败', 'success': 0}
+
+
+@router.websocket('/monitor')
+async def monitor_logs_change(websocket: WebSocket, token: str = Query(default='')):
+    """Monitor the change of all logs by Redis pub-sub mode."""
+    if not token:
+        raise WebSocketException(1008)
+    try:
+        jwt.decode(token, SECRET, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise WebSocketException(1008)
+    except jwt.InvalidTokenError:
+        raise WebSocketException(1008)
+
+    await websocket.accept()
+
+    # Sending the initializing data to client by every batch.
+    batch_logs = []
+    for log in running_logs_generator():
+        batch_logs.append(log)
+        if len(batch_logs) == 10:
+            await websocket.send_json({'msg': batch_logs, 'status': 1})
+            batch_logs.clear()
+    if batch_logs:
+        await websocket.send_json({'msg': batch_logs, 'status': 1})
+
+    conn = AIORedis(decode_responses=True)
+    p: PubSub | None = None
+
+    async def subscribe():
+        """Starting to monitor the change of all logs."""
+        nonlocal p
+
+        p = conn.pubsub()
+        await p.subscribe(CHANNEL_NAME)
+        await p.parse_response()  # Throwing the first message.
+
+        while True:
+            messages = await p.parse_response()
+            if messages[0] == 'unsubscribe':
+                break
+            msg = parse_message(messages[-1])
+            await websocket.send_json({'msg': msg, 'status': 2})
+
+    async def receive(ws: WebSocket):
+        """Expecting raise the `WebSocketDisconnect`, so that to close subscribing."""
+        while True:
+            await ws.receive_text()
+
+    try:
+        await asyncio.gather(
+            asyncio.create_task(subscribe()),
+            asyncio.create_task(receive(websocket))
+        )
+    except WebSocketDisconnect:
+        await p.unsubscribe()
+        await conn.aclose()

@@ -24,6 +24,13 @@
                         <el-menu-item index="/pe"><span>体育课课程信息</span></el-menu-item>
                         <el-menu-item index="/pc"><span>公选课课程信息</span></el-menu-item>
                     </el-sub-menu>
+                    <el-sub-menu index="3">
+                        <template #title>
+                            <span>实时选课监控</span>
+                        </template>
+                        <el-menu-item index="/selecting"><span>所有日志信息</span></el-menu-item>
+<!--                        <el-menu-item index="/pc"><span>抢课码实时信息</span></el-menu-item>-->
+                    </el-sub-menu>
                 </el-menu>
             </el-col>
         </el-row>
@@ -44,6 +51,7 @@ import router from "@/router/index.js";
 
 const username = ref('')
 const isLogin = ref(false)
+
 onBeforeMount(() => {
     let token = localStorage.getItem('token')
     if(!token) {

@@ -10,12 +10,12 @@ from snatcher import (
     async_public_choice,
     async_physical_education
 )
-from snatcher.db.mysql import (
+from snatcher.storage.mysql import (
     pe_querier,
     pc_querier,
     vc_querier
 )
-from snatcher.db.cache import judge_code_is_using
+from snatcher.storage.cache import judge_code_is_using
 
 
 router = APIRouter(prefix='/vpn')

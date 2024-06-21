@@ -55,8 +55,8 @@ from Crypto.PublicKey import RSA
 from redis import Redis
 
 from snatcher.conf import settings
-from snatcher.db.mysql import fd_querier
-from snatcher.db.cache import optimal_port_generator
+from snatcher.storage.mysql import fd_querier
+from snatcher.storage.cache import optimal_port_generator
 from snatcher.postman.mail import send_email
 
 

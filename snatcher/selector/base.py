@@ -22,16 +22,13 @@ from aiohttp import ClientSession
 from requests import Session
 
 from snatcher.conf import settings
-from snatcher.db.mysql import (
+from snatcher.storage.mysql import (
     fd_querier,
     scd_querier,
 )
 from snatcher.session import SessionManager
 from snatcher.postman.mail import send_email
-from snatcher.db.cache import (
-    # RunningLogs,
-    AsyncRunningLogger
-)
+from snatcher.storage.cache import AsyncRunningLogger
 
 
 class BaseCourseSelector:

@@ -8,8 +8,9 @@ class AllSelectedDataValidator(BaseModel):
     username: str
     email: str
     course_name: str
-    created_at: datetime
+    updated_at: datetime
     log_key: str
+    success: int
 
 
 class FailedDataValidator(BaseModel):

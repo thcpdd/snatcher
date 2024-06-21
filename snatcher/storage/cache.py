@@ -27,6 +27,7 @@ from snatcher.conf import settings
 
 WEIGHTS_NAME = 'weights'
 USING_CODES_NAME = 'using_codes'
+CHANNEL_NAME = 'logs-change'
 
 
 class PublicCacheContextManager:
@@ -105,47 +106,33 @@ def judge_code_is_using(verify_code: str) -> int:
         return manager.public_cache.sismember(USING_CODES_NAME, verify_code)
 
 
-# class RunningLogs:
-#     def __init__(self, key: str):
-#         _db_info = settings.DATABASES['redis']['log']
-#         self._connection = Redis(**_db_info)
-#         self.key = key
-#         self.messages = {
-#             'step-1_kch_id': {
-#                 1: '课程ID设置成功',
-#                 0: '课程ID设置失败'
-#             },
-#             'step-3_jxb_ids': {
-#                 1: '教学班ID设置成功',
-#                 0: '教学班ID设置失败'
-#             },
-#             'step-2_xkkz_id': {
-#                 1: 'xkkz_id设置成功',
-#                 0: 'xkkz_id设置失败'
-#             },
-#         }
-#
-#     def set(self, name: str, success: int):
-#         self._connection.hset(self.key, name, self.messages[name][success])
-#
-#     def set_others(self, name: str, message: str):
-#         self._connection.hset(self.key, name, message)
-#
-#     def timeout(self):
-#         _timeout = self._connection.hget(self.key, 'timeout')
-#         if _timeout:
-#             _timeout = int(_timeout) + 1
-#         else:
-#             _timeout = 1
-#         self._connection.hset(self.key, 'timeout', str(_timeout))
-#
-#     def retry(self):
-#         _retry = self._connection.hget(self.key, 'retry')
-#         if _retry:
-#             _retry = int(_retry) + 1
-#         else:
-#             _retry = 1
-#         self._connection.hset(self.key, 'retry', str(_retry))
+def publish_message(func):
+    """
+    Publishing a message into `logs-shift` channel.
+    :param func: It will be a coroutine after calling it.
+    :return:
+    """
+    async def publish(*args, **kwargs):
+        message = await func(*args, **kwargs)  # Getting the last message.
+        self: 'AsyncRunningLogger' = args[0]
+        if message is not None:
+            name: str = args[1]
+            message = f'{self.key}|{name}|{message}'
+        else:
+            message = f'{self.key}|{"retry"}|{self.count - 1}'
+        await self._connection.publish(CHANNEL_NAME, message)
+    return publish
+
+
+def parse_message(message: str) -> dict:
+    key, name, msg = message.split('|')
+    username, course_name = key.split('-')
+    return {
+        'username': username,
+        'course_name': course_name,
+        'name': name,
+        'msg': msg
+    }
 
 
 class AsyncRunningLogger:
@@ -168,15 +155,15 @@ class AsyncRunningLogger:
         self.key = key
         self.count = 1
         self.messages = {
-            'step-1_kch_id': {
+            'step-1': {
                 1: '课程ID设置成功',
                 0: '课程ID设置失败'
             },
-            'step-3_jxb_ids': {
+            'step-3': {
                 1: '教学班ID设置成功',
                 0: '教学班ID设置失败'
             },
-            'step-2_xkkz_id': {
+            'step-2': {
                 1: 'xkkz_id设置成功',
                 0: 'xkkz_id设置失败'
             },
@@ -191,20 +178,14 @@ class AsyncRunningLogger:
     def wrapper(self, name: str):
         return name + '-' + str(self.count)
 
-    async def set(self, name: str, success: int):
-        await self._connection.hset(self.key, self.wrapper(name), self.messages[name][success])
-
-    async def set_others(self, name: str, message: str):
+    @publish_message
+    async def set(self, name: str, success: int = None, message: str = '') -> str:
+        if success is not None:
+            message = self.messages[name][success]
         await self._connection.hset(self.key, self.wrapper(name), message)
+        return message
 
-    # async def timeout(self):
-    #     _timeout = await self._connection.hget(self.key, 'timeout')
-    #     if _timeout:
-    #         _timeout = int(_timeout) + 1
-    #     else:
-    #         _timeout = 1
-    #     await self._connection.hset(self.key, 'timeout', str(_timeout))
-
+    @publish_message
     async def retry(self):
         _retry = await self._connection.hget(self.key, 'retry')
         if _retry:
@@ -217,3 +198,24 @@ class AsyncRunningLogger:
     async def close(self):
         """You must call this before function was garbage collected."""
         await self._connection.aclose()
+
+
+def running_logs_generator():
+    _db_info = settings.DATABASES['redis']['log']
+    conn = Redis(**_db_info, decode_responses=True)
+    for _key in conn.keys():
+        cache_log = conn.hgetall(_key)
+        log = {}
+        username, course_name = _key.split('-')
+        log.setdefault('course_name', course_name)
+        log.setdefault('username', username)
+        if retry := cache_log.get('retry'):
+            log.setdefault('retry', retry)
+            cache_log.pop('retry')
+        keys = sorted(cache_log.keys(), reverse=True)
+        for key in keys:
+            k = key.rsplit('-', maxsplit=1)[0]
+            if k not in log:
+                log.setdefault(k, cache_log[key])
+        yield log
+    conn.close()
