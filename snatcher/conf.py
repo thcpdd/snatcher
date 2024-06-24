@@ -1,6 +1,7 @@
 """
 The project settings.
 """
+import json
 from datetime import datetime, timezone
 
 
@@ -9,7 +10,14 @@ class SingletonMetaClass(type):
         if not hasattr(cls, '_instance'):
             _instance = super().__call__(*args, **kwargs)
             setattr(cls, '_instance', _instance)
-        return getattr(cls, '_instance')
+        else:
+            _instance = getattr(cls, '_instance')
+
+        # Loading the MySQL configuration.
+        with open('./mysqlconf.json', encoding='utf8') as fp:
+            _instance.DATABASES['mysql'].update(json.load(fp))
+
+        return _instance
 
 
 class Settings(metaclass=SingletonMetaClass):
@@ -29,13 +37,7 @@ class Settings(metaclass=SingletonMetaClass):
                 'host': '127.0.0.1'
             }
         },
-        'mysql': {
-            'database': 'snatcher',
-            'host': '114.132.47.115',
-            'user': 'root',
-            'password': 'f5c4fad26817a282',
-            'port': 3306,
-        }
+        'mysql': {}
     }
 
     # Global request timeout(except at setting session), unit is second.

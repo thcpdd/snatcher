@@ -10,6 +10,16 @@
         >
             <div style="float: left">课程ID：{{ course.course_id }}</div><br/>
             <div style="float: left">课程号：{{ course.course_no }}</div><br/>
+<!--            <div style="float: left;display: inline-block">-->
+<!--                <span>已选择人数：<b>12</b></span>-->
+<!--                <el-tooltip :content="tooltipContent" effect="light" :placement="tooltipPlacement" raw-content>-->
+<!--                    <el-button-->
+<!--                        size="small"-->
+<!--                        circle style="margin-left: 6px;width: 16px;height: 16px;margin-top: -3px"-->
+<!--                        type="warning"-->
+<!--                    >?</el-button>-->
+<!--                </el-tooltip>-->
+<!--            </div><br/>-->
             <el-button
                 type="primary"
                 style="float: right; margin-bottom: 4px;margin-right: 8px"
@@ -51,11 +61,20 @@ const courseData = ref([])
 const currentSelecting = ref([])
 const openDrawer = ref(false)
 const totalData = ref(1)
+// const tooltipContent = "数据来源于教务系统且<b>仅供参考</b>，最后一次更新于：<b>2024-2-19 18:19:01</b>"
 
 onMounted(async () => {
     totalData.value = await getPCCoursesCount()
     courseData.value = await getPCCourses(1)
 })
+
+// const tooltipPlacement = computed(() => {
+//     let isMobile = sessionStorage.getItem('isMobile')
+//     if (isMobile && isMobile === '1') {
+//         return 'bottom'
+//     }
+//     return 'right'
+// })
 
 async function pageChangeHandle(page) {
     // 由于搜索而导致的页码更新不需要再次请求
