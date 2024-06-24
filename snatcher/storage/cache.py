@@ -26,89 +26,81 @@ from snatcher.conf import settings
 
 
 WEIGHTS_NAME = 'weights'
-USING_CODES_NAME = 'using_codes'
+USING_CODES_NAME = 'using-codes'
 CHANNEL_NAME = 'logs-change'
 
 
-class PublicCacheContextManager:
-    def __init__(self):
-        self.public_cache: Redis | None = None
-
-    def __enter__(self):
-        self.public_cache = Redis(**settings.DATABASES['redis']['public'], decode_responses=True)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
-    def close(self):
-        self.public_cache.close()
+# Creating a global variable for controlling the public cache.
+public_cache = Redis(**settings.DATABASES['redis']['public'], decode_responses=True)
 
 
+# --------------------------------------------- #
+# Some functions for controlling port's weight. #
+# --------------------------------------------- #
 def optimal_port_generator():
-    def get_optimal_port(self: PublicCacheContextManager):
+    def get_optimal_port():
         rank = 0
 
         def inner() -> list:
             nonlocal rank
 
-            _port_list = self.public_cache.zrange(WEIGHTS_NAME, rank, rank)
+            _port_list = public_cache.zrange(WEIGHTS_NAME, rank, rank)
             rank += 1
             return _port_list
         return inner
 
-    with PublicCacheContextManager() as manager:
-        optimal_port = get_optimal_port(manager)
-        while port_list := optimal_port():
-            yield port_list[0]
+    optimal_port = get_optimal_port()
+    while port_list := optimal_port():
+        yield port_list[0]
 
 
 def decreasing_weight(port: str, decrease_size: int | float = 20):
-    with PublicCacheContextManager() as manager:
-        weight = manager.public_cache.zscore(WEIGHTS_NAME, port)
-        manager.public_cache.zadd(WEIGHTS_NAME, {port: weight - decrease_size})
+    weight = public_cache.zscore(WEIGHTS_NAME, port)
+    public_cache.zadd(WEIGHTS_NAME, {port: weight - decrease_size})
 
 
 def increasing_weight(port: str, increase_size: int | float = 10):
-    with PublicCacheContextManager() as manager:
-        weight = manager.public_cache.zscore(WEIGHTS_NAME, port)
-        manager.public_cache.zadd(WEIGHTS_NAME, {port: weight + increase_size})
+    weight = public_cache.zscore(WEIGHTS_NAME, port)
+    public_cache.zadd(WEIGHTS_NAME, {port: weight + increase_size})
 
 
 def add_using_number(port: str, num: int | float = None):
-    with PublicCacheContextManager() as manager:
-        if num is None:
-            weight = manager.public_cache.zscore(WEIGHTS_NAME, port) + 1
-        else:
-            weight = num
-        manager.public_cache.zadd(WEIGHTS_NAME, {port: weight})
+    if num is None:
+        weight = public_cache.zscore(WEIGHTS_NAME, port) + 1
+    else:
+        weight = num
+    public_cache.zadd(WEIGHTS_NAME, {port: weight})
 
 
 def reduce_using_number(port: str):
-    with PublicCacheContextManager() as manager:
-        weight = manager.public_cache.zscore(WEIGHTS_NAME, port)
-        manager.public_cache.zadd(WEIGHTS_NAME, {port: weight - 1})
+    weight = public_cache.zscore(WEIGHTS_NAME, port)
+    public_cache.zadd(WEIGHTS_NAME, {port: weight - 1})
 
 
+# ------------------------------------------------ #
+# Some functions for controlling all verify codes. #
+# ------------------------------------------------ #
 def mark_code_is_using(verify_code: str):
-    with PublicCacheContextManager() as manager:
-        manager.public_cache.sadd(USING_CODES_NAME, verify_code)
+    public_cache.sadd(USING_CODES_NAME, verify_code)
 
 
 def remove_code_is_using(verify_code: str):
-    with PublicCacheContextManager() as manager:
-        manager.public_cache.srem(USING_CODES_NAME, verify_code)
+    public_cache.srem(USING_CODES_NAME, verify_code)
 
 
 def judge_code_is_using(verify_code: str) -> int:
     """if 1 is using, else not using"""
-    with PublicCacheContextManager() as manager:
-        return manager.public_cache.sismember(USING_CODES_NAME, verify_code)
+    return public_cache.sismember(USING_CODES_NAME, verify_code)
 
 
+# -------------------------------------------------------------- #
+# Some functions for achieving to publish messages into channel. #
+# -------------------------------------------------------------- #
 def publish_message(func):
     """
     Publishing a message into `logs-shift` channel.
+
+    The format of every massage: 'username-course_name|message_name|message'
     :param func: It will be a coroutine after calling it.
     :return:
     """
@@ -135,14 +127,19 @@ def parse_message(message: str) -> dict:
     }
 
 
+# --------------------------------------------------------- #
+# Some functions or classes for controlling running logger. #
+# --------------------------------------------------------- #
 class AsyncRunningLogger:
     """
     You must call `close` method before function was garbage collected.
+
     Example:
          (Recommendation) Using it as a context manager in the coroutine function:
             async def test():
                 async with AsyncRunningLogs('your_key') as logs:
                     ...  # your operations
+
         You can also use it by creating object, but don't forget to call `close` method:
             async def test():
                 logs = AsyncRunningLogs('your_key')

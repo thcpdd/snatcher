@@ -24,9 +24,9 @@
     <el-badge :value="currentSelecting.length" type="primary">
         <el-button
             type="primary"
-            @click="() => openDrawer = true"
+            @click="openDrawer = true"
             :disabled="currentSelecting.length === 0"
-            title="在表格中勾选你的意向课程"
+            title="在表格中选择你的意向课程"
             style="margin-bottom: 13px;"
         >确认</el-button>
     </el-badge>

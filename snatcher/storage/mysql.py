@@ -2,7 +2,7 @@
 This module provide any querier for controlling mysql.
 Every querier just like a simple ORM.
 
-back up db struct: mysqldump --opt -d select_course -u root -p > db.sql;
+back up db struct: mysqldump --opt -d snatcher -u root -p > db.sql;
 """
 from functools import lru_cache
 
@@ -41,14 +41,20 @@ class SQLQuerier:
         self._connection: Connection | None = None
         self.latest_insert_id = -1
 
+    def _ensure_connecting(self):
+        """Ensuring the connection is effective."""
+        if self._connection is None:
+            self._connection = get_db_connection()
+        else:
+            self._connection.ping(reconnect=True)
+
     def execute(
         self,
         sql: str,
         args: tuple = None,
         cursor: type[Cursor] = None
     ) -> Cursor | None:
-        if self._connection is None:
-            self._connection = get_db_connection()
+        self._ensure_connecting()
         cursor = self._connection.cursor(cursor=cursor)
         try:
             cursor.execute(sql, args)
@@ -59,6 +65,8 @@ class SQLQuerier:
             return None
         else:
             return cursor
+        finally:
+            cursor.close()
 
     @lru_cache()
     def parse_query_result(

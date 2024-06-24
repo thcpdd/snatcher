@@ -60,7 +60,7 @@ def update_data(grade: str = None):
         'xkxqm': term,
         'kklxdm': '',
         'kspage': 1,  # kspage: 1, after: jspage + 1
-        'jspage': 10,  # jspage: 10, after: jspage + 10
+        'jspage': 500,  # jspage(Every page size, as far as possible is max): 10, after: jspage + 10
         'zyfx_id': 'wfx',
         'bh_id': '0425221',
         'xbm': 1,
