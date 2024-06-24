@@ -4,8 +4,6 @@ Every querier just like a simple ORM.
 
 back up db struct: mysqldump --opt -d snatcher -u root -p > db.sql;
 """
-from functools import lru_cache
-
 from pymysql.err import MySQLError
 from pymysql import Connection
 from pymysql.cursors import Cursor, DictCursor
@@ -46,7 +44,7 @@ class SQLQuerier:
         if self._connection is None:
             self._connection = get_db_connection()
         else:
-            self._connection.ping(reconnect=True)
+            self._connection.ping()
 
     def execute(
         self,
@@ -68,7 +66,6 @@ class SQLQuerier:
         finally:
             cursor.close()
 
-    @lru_cache()
     def parse_query_result(
         self,
         sql: str,
@@ -86,7 +83,6 @@ class SQLQuerier:
                 return None
             return cursor.fetchone()
 
-    @lru_cache()
     def parse_count_result(
         self,
         sql: str,
@@ -185,7 +181,7 @@ class SelectedCourseDataQuerier(SQLQuerier):
 class VerifyCodesQuerier(SQLQuerier):
     table = "verify_codes"
 
-    def insert(self, username: str):
+    def insert(self, username: str) -> str:
         from time import time
         from random import randint
         from hashlib import md5
@@ -197,6 +193,7 @@ class VerifyCodesQuerier(SQLQuerier):
             VALUES (%s, %s);
         """
         self.execute(_sql, (verify_code, username))
+        return verify_code
 
     def query(self, username: str, verify_code: str):
         _sql = "SELECT `is_used` FROM verify_codes WHERE `verify_code`=%s AND `username`=%s;"
