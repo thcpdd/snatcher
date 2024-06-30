@@ -1,30 +1,14 @@
 """
 The module of user's session:
     1. The `SessionManager` class:
-        It provides some method for controlling user session.
-        -- `get` method:
-            Return the session string from redis.
-            You must provide a port to this method.
-        -- `set` method:
-            Saving a session to redis.
-        -- `all_sessions` method:
-            Return all sessions of the user. It's a dictionary.
-        -- `has_sessions` method:
-            Judging current username is including session or not.
-        -- `has_session` method:
-            Judging current username is including appoint session or not.
-        -- `get_session_by_weight`:
-            Generating a session by port weight.
-        -- `get_random_session` method:
-            Random generating a session.
-        -- `close` method:
-            Closing current connection of redis.
+        It provides some methods for controlling user session.
 
     2. The `get_session_manager` function:
         Return a session manager of appointing username.
 
     3. The `AsyncSessionSetter` class:
         You can set a session by this class.
+
         Usage:
             import asyncio
 
@@ -34,13 +18,7 @@ The module of user's session:
     4. The `async_set_session` function:
         A shortcuts for setting the session, but it's a coroutine, could not call directly.
 
-    5. The `set_session` function:
-        Providing a sync way for call the `async_set_session`.
-
-    6. The `check_and_set_session` function:
-        If the username haven't session. It will set session for this username.
-
-    7. The `async_check_and_set_session` function:
+    5. The `async_check_and_set_session` function:
         An async way to check and set session.
 """
 import base64
@@ -93,12 +71,6 @@ class SessionManager:
 
     def has_session(self, port: str) -> bool:
         return self._session_cache.hexists(self.username, port)
-
-    # def get_session_by_weight(self) -> tuple[str, str]:
-    #     for port in optimal_port_generator():
-    #         if self.has_session(port):
-    #             return self.get(port), port
-    #     return self.get_random_session()
 
     def get_random_session(self) -> tuple[str, str]:
         port = choice(self._session_cache.hkeys(self.username))

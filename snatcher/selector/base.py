@@ -18,7 +18,7 @@ The course selector base module.
 """
 from typing import Optional
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientTimeout
 from requests import Session
 
 from snatcher.conf import settings
@@ -39,7 +39,7 @@ class BaseCourseSelector:
 
     def __init__(self, username: str):
         self.username: str = username  # 学号
-        # 获取教学班ids所需的表单数据
+        # 获取教学班 ids 所需的表单数据
         self.get_jxb_ids_data: dict = {
             'bklx_id': 0,  # 补考类型id
             'njdm_id': '20' + username[:2],  # 年级ID，必须  2022
@@ -49,13 +49,13 @@ class BaseCourseSelector:
             'kch_id': '',  # 课程id
             'xkkz_id': ''  # 选课的时间，课程的类型（主修、体育、特殊、通识）
         }
-        # 选课api所需的表单数据
+        # 选课 api 所需的表单数据
         self.select_course_data: dict = {
             'jxb_ids': '',
             'kch_id': '',
             'qz': 0  # 权重
         }
-        self.timeout: int = settings.TIMEOUT
+        self.timeout: Optional[int, ClientTimeout] = settings.TIMEOUT
         self.sub_select_course_api: str = '/xsxk/zzxkyzbjk_xkBcZyZzxkYzb.html?gnmkdm=N253512'
         self.sub_index_url: str = '/xsxk/zzxkyzb_cxZzxkYzbIndex.html?gnmkdm=N253512&layout=default'
         self.sub_jxb_ids_api: str = '/xsxk/zzxkyzbjk_cxJxbWithKchZzxkYzb.html?gnmkdm=N253512'
@@ -75,6 +75,19 @@ class BaseCourseSelector:
         self.xkkz_id: Optional[str] = None
         self.latest_selected_data_id: Optional[int] = None
 
+
+class CourseSelector(BaseCourseSelector):
+    """
+    The father class of all course selector.
+    Including synchronous course selector and asynchronous course selector.
+
+    For the following methods, you should achieve their in your subclass:
+         1. `set_xkkz_id`
+         2. `set_jxb_ids`
+         3. `prepare_for_selecting`
+         4. `simulate_request`
+         5. `select`
+    """
     def set_xkkz_id(self):
         """Setting xkkz id."""
         raise NotImplementedError
@@ -131,10 +144,3 @@ class BaseCourseSelector:
             failed_reason,
             int(self.port)
         )
-
-
-class CourseSelector(BaseCourseSelector):
-    """
-    The father class of all course selector.
-    Including synchronous course selector and asynchronous course selector.
-    """

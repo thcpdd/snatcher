@@ -1,5 +1,5 @@
 """
-This module provide any querier for controlling mysql.
+This module provide some querier for controlling mysql.
 Every querier just like a simple ORM.
 
 back up db struct: mysqldump --opt -d snatcher -u root -p > db.sql;

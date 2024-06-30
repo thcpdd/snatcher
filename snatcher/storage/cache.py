@@ -1,80 +1,20 @@
 """
-Some operations of redis here:
-    1. The `PortWeightManager` class:
-        Managing every port weight.
-
-    2. The `RunningLogs` class:
-        Recoding the log during running.
-        -- `set` method:
-            Setting a value from instance messages.
-            The name must be in ['step-1_kch_id', 'step-3_jxb_ids', 'step-2_xkkz_id'].
-        -- `set_others` method:
-            It just like `hset`.
-        -- `retry` method:
-            Add retry count when the task was failing.
-        -- `timeout` method:
-            Add timeout count when the task was timeout.
-
-    3. The `AsyncRunningLogs` class:
-        An async running logs class. All operations by `redis.asyncio.Redis`.
-        You need mind the help document of this class.
+Some operations of Redis here.
 """
+from typing import Generator
+
 from redis import Redis
 from redis.asyncio import Redis as AIORedis
 
 from snatcher.conf import settings
 
 
-# WEIGHTS_NAME = 'weights'
 USING_CODES_NAME = 'using-codes'
 CHANNEL_NAME = 'logs-change'
 
 
 # Creating a global variable for controlling the public cache.
 public_cache = Redis(**settings.DATABASES['redis']['public'], decode_responses=True)
-
-
-# --------------------------------------------- #
-# Some functions for controlling port's weight. #
-# --------------------------------------------- #
-# def optimal_port_generator():
-#     def get_optimal_port():
-#         rank = 0
-#
-#         def inner() -> list:
-#             nonlocal rank
-#
-#             _port_list = public_cache.zrange(WEIGHTS_NAME, rank, rank)
-#             rank += 1
-#             return _port_list
-#         return inner
-#
-#     optimal_port = get_optimal_port()
-#     while port_list := optimal_port():
-#         yield port_list[0]
-#
-#
-# def decreasing_weight(port: str, decrease_size: int | float = 20):
-#     weight = public_cache.zscore(WEIGHTS_NAME, port)
-#     public_cache.zadd(WEIGHTS_NAME, {port: weight - decrease_size})
-#
-#
-# def increasing_weight(port: str, increase_size: int | float = 10):
-#     weight = public_cache.zscore(WEIGHTS_NAME, port)
-#     public_cache.zadd(WEIGHTS_NAME, {port: weight + increase_size})
-#
-#
-# def add_using_number(port: str, num: int | float = None):
-#     if num is None:
-#         weight = public_cache.zscore(WEIGHTS_NAME, port) + 1
-#     else:
-#         weight = num
-#     public_cache.zadd(WEIGHTS_NAME, {port: weight})
-#
-#
-# def reduce_using_number(port: str):
-#     weight = public_cache.zscore(WEIGHTS_NAME, port)
-#     public_cache.zadd(WEIGHTS_NAME, {port: weight - 1})
 
 
 # ------------------------------------------------ #
@@ -98,7 +38,7 @@ def judge_code_is_using(verify_code: str) -> int:
 # -------------------------------------------------------------- #
 def publish_message(func):
     """
-    Publishing a message into `logs-shift` channel.
+    Publishing a message into `logs-change` channel.
 
     The format of every massage: 'username-course_name|message_name|message'
     :param func: It will be a coroutine after calling it.
@@ -117,6 +57,11 @@ def publish_message(func):
 
 
 def parse_message(message: str) -> dict:
+    """
+    Parsing the message to dict type.
+    :param message: 'username-course_name|message_name|message'
+    :return:
+    """
     key, name, msg = message.split('|')
     username, course_name = key.split('-')
     return {
@@ -128,23 +73,25 @@ def parse_message(message: str) -> dict:
 
 
 # --------------------------------------------------------- #
-# Some functions or classes for controlling running logger. #
+# Some functions or classes for controlling runtime logger. #
 # --------------------------------------------------------- #
 class AsyncRuntimeLogger:
     """
-    You must call `close` method before function was garbage collected.
+    Writing runtime logs into Redis and publishing message into channel.
+
+    You must call `close` method before function was collected as garbage.
 
     Example:
          (Recommendation) Using it as a context manager in the coroutine function:
             async def test():
-                async with AsyncRunningLogs('your_key') as logs:
+                async with AsyncRuntimeLogger('your_key') as logger:
                     ...  # your operations
 
         You can also use it by creating object, but don't forget to call `close` method:
             async def test():
-                logs = AsyncRunningLogs('your_key')
+                logger = AsyncRuntimeLogger('your_key')
                 ...  # your operations
-                await logs.close()  # It is must !!!
+                await logger.close()  # It is must !!!
     """
     def __init__(self, key: str):
         _db_info = settings.DATABASES['redis']['log']
@@ -197,7 +144,23 @@ class AsyncRuntimeLogger:
         await self._connection.aclose()
 
 
-def runtime_logs_generator():
+def runtime_logs_generator() -> Generator[dict]:
+    """
+    Yielding all runtime logs.
+
+    In a log, which may have many similar fields. But it will generate the latest field.
+    Such as, a log have two fields: `step-1-1` and `step-1-2`, which will use `step-1-2` field.
+
+    :return: A generator of {
+        'course_name': '',
+        'username': '',
+        'step-1': '',
+        'step-2': '',
+        'step-3': '',
+        'step-4': '',
+        'retry': retry_times
+    }
+    """
     _db_info = settings.DATABASES['redis']['log']
     conn = Redis(**_db_info, decode_responses=True)
     for _key in conn.keys():

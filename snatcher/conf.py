@@ -1,5 +1,8 @@
 """
 The project settings.
+
+Usage:
+    from snatcher.conf import settings
 """
 import json
 from datetime import datetime, timezone

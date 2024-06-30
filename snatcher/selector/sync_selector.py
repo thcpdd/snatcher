@@ -1,10 +1,10 @@
-# """
-# The synchronous course selector in the module.
-# All synchronous course selectors will use `requests` package to send request.
-#
-# The last updating at git version number `f9547081c9c9d3001daa0395019f7836ee3a0958`.
-# This module will no longer update after this git version number.
-# """
+"""
+The synchronous course selector in the module.
+All synchronous course selectors will use `requests` package to send request.
+
+The last updating at git version number `8527278b98c230862cca7918415e59b23bdaa4e9`(2024-4-24).
+This module will no longer update after this git version number.
+"""
 # import re
 #
 # from requests import session

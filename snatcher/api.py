@@ -1,15 +1,9 @@
 """
 Some interfaces of this project to start.
-    1. The `physical_education` function:
-        A interface to send a 'PE' select course task to celery task queue.
-
-    2. The `public_choice` function:
-        A interface to send a 'PC' select course task to celery task queue.
-
-    3. The `async_physical_education` coroutine function:
+    1. The `async_physical_education` coroutine function:
         A asynchronous interface to send a 'PE' select course task to aio-celery task queue.
 
-    4. The `async_public_choice` coroutine function:
+    2. The `async_public_choice` coroutine function:
         A asynchronous interface to send a 'PC' select course task to aio-celery task queue.
 
 For all functions parameters:
