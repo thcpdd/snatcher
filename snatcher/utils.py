@@ -53,7 +53,7 @@ def update_data(grade: str = None):
     study_year = settings.SELECT_COURSE_YEAR
     term = settings.TERM
 
-    url = 'http://10.3.132.10/jwglxt/xsxk/zzxkyzb_cxZzxkYzbPartDisplay.html?gnmkdm=N253512'
+    url = 'http://10.3.132.7/jwglxt/xsxk/zzxkyzb_cxZzxkYzbPartDisplay.html?gnmkdm=N253512'
     data = {
         'bklx_id': 0,
         'xkxnm': study_year,
@@ -61,6 +61,7 @@ def update_data(grade: str = None):
         'kklxdm': '',
         'kspage': 1,  # kspage: 1, after: jspage + 1
         'jspage': 500,  # jspage(Every page size, as far as possible is max): 10, after: jspage + 10
+        # 对于体育课来说下面是必须的，但是有就行了。
         'zyfx_id': 'wfx',
         'bh_id': '0425221',
         'xbm': 1,
@@ -73,7 +74,7 @@ def update_data(grade: str = None):
         'jg_id': '206',
     }
     headers = {
-        'Cookie': 'JSESSIONID=7A7572FCAEBCA0E7D6CFDC05CC96758F; route=f24d04cc10e92fdab9790b41504f5b47'
+        'Cookie': 'JSESSIONID=E80A9694E3E2E07B645134E81F81016A'
     }
     if grade is not None:
         data['njdm_id'] = grade  # add a must field
@@ -91,33 +92,31 @@ def update_data(grade: str = None):
     db = get_db_connection()
     cursor = db.cursor()
 
-    while True:
-        response = requests.post(url, data=data, headers=headers)
+    response = requests.post(url, data=data, headers=headers)
 
-        try:
-            json_data_list = response.json()
-        except JSONDecodeError:
-            print(response.text)
-            return
+    try:
+        json_data_list = response.json()
+    except JSONDecodeError:
+        print(response.text)
+        return
 
-        if not (temp_list := json_data_list['tmpList']):
-            break
+    if not (temp_list := json_data_list['tmpList']):
+        return
 
-        if grade is not None:
-            for json_data in temp_list:
-                print(json_data)
-                cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], grade, study_year, term))
-        else:
-            for json_data in temp_list:
-                print(json_data)
-                cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], json_data['kch'], study_year, term,
-                                     settings.PERIOD))
+    if grade is not None:
+        for json_data in temp_list:
+            print(json_data)
+            cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], grade, study_year, term))
+    else:
+        for json_data in temp_list:
+            print(json_data)
+            cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], json_data['kch'], study_year, term,
+                                 settings.PERIOD))
 
-        db.commit()
+    db.commit()
 
-        # next page
-        data['kspage'] = data['jspage'] + 1
-        data['jspage'] += 10
+    cursor.close()
+    db.close()
 
 
 def update_pc_data():

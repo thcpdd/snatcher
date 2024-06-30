@@ -41,29 +41,29 @@ class Settings(metaclass=SingletonMetaClass):
     }
 
     # Global request timeout(except at setting session), unit is second.
-    TIMEOUT: int = 60 * 60
+    TIMEOUT: int = 60 * 60 * 2
 
     # It was used in setting session timeout, unit is second.
-    SETTING_SESSION_TIMEOUT: int = 60 * 30
+    SETTING_SESSION_TIMEOUT: int = 60 * 60
 
     # Study term.
     # Last term is 3, next term is 12.
-    TERM: int = 12
+    TERM: int = 3
 
     # study year
-    SELECT_COURSE_YEAR: int = 2023
+    SELECT_COURSE_YEAR: int = 2024
 
     # Study term period.
     # The first half of the term is 1, the second half of the term is 2.
-    PERIOD: int = 2
+    PERIOD: int = 1
 
     # Selecting course start time.
     START_TIME: dict = {
         'year': 2024,
-        'month': 5,
-        'day': 14,
-        'hour': 12,
-        'minute': 30,
+        'month': 6,
+        'day': 29,
+        'hour': 9,
+        'minute': 0,
         'second': 1
     }
 

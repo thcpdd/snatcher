@@ -27,7 +27,7 @@ from snatcher.selector.async_selector import (
 )
 from snatcher.selector.performers import async_selector_performer
 from snatcher.storage.mysql import fd_querier
-from snatcher.storage.cache import mark_code_is_using
+from snatcher.storage.cache import mark_code_is_using, remove_code_is_using
 from snatcher.session import async_check_and_set_session
 
 
@@ -87,6 +87,7 @@ async def async_select_course(
     password = users.get('password')
     result = await async_check_and_set_session(username, password)
     if result == -1:
+        remove_code_is_using(verify_code)
         return
     countdown = settings.countdown()
     email = users.get('email')

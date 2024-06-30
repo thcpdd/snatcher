@@ -16,22 +16,7 @@ For all functions parameters:
     1. goals: [(course_name, course_id),...]
     2. users: It must contain: username, password, email, verify_code
 """
-# from snatcher.tasks import select_course
 from snatcher.aiotasks import async_select_course, application
-
-
-# def physical_education(
-#     goals: list[tuple[str, str]],
-#     **users
-# ):
-#     select_course.delay(goals, 'PE', **users)
-#
-#
-# def public_choice(
-#     goals: list[tuple[str, str]],
-#     **users
-# ):
-#     select_course.delay(goals, 'PC', **users)
 
 
 async def async_physical_education(

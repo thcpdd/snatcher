@@ -5,25 +5,7 @@ Course selector performers here:
 from snatcher.storage.mysql import vc_querier, scd_querier
 from snatcher.storage.cache import remove_code_is_using
 from snatcher.postman.mail import send_email
-# from .sync_selector import SynchronousCourseSelector
 from .async_selector import AsynchronousCourseSelector
-
-
-# def selector_performer(
-#     email: str,
-#     verify_code: str,
-#     goals: list[tuple[str, str]],
-#     selector: SynchronousCourseSelector,
-# ):
-#     for course_name, course_id in goals:
-#         selector.update_selector_info(course_name, course_id, email)
-#         result = selector.select()
-#         if result == 1:
-#             vc_querier.update(selector.username, verify_code)
-#             success, exception = send_email(email, selector.username, course_name)
-#             if not success:
-#                 selector.log.set_others('send_email_failed', exception)
-#             break
 
 
 async def async_selector_performer(

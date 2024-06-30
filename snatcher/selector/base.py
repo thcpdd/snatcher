@@ -28,7 +28,7 @@ from snatcher.storage.mysql import (
 )
 from snatcher.session import SessionManager
 from snatcher.postman.mail import send_email
-from snatcher.storage.cache import AsyncRunningLogger
+from snatcher.storage.cache import AsyncRuntimeLogger
 
 
 class BaseCourseSelector:
@@ -62,9 +62,9 @@ class BaseCourseSelector:
         self.select_course_api: Optional[str] = None  # 选课api
         self.index_url: Optional[str] = None  # 选课首页
         self.jxb_ids_api: Optional[str] = None  # 获取教学班ids的api
-        self.log: Optional[AsyncRunningLogger] = None
+        self.logger: Optional[AsyncRuntimeLogger] = None
         self.real_name: Optional[str] = None
-        self.log_key: Optional[str] = None
+        self.logger_key: Optional[str] = None
         self.session: Optional[Session, ClientSession] = None
         self.session_manager: Optional[SessionManager] = None
         self.cookies: Optional[dict] = None
@@ -111,8 +111,8 @@ class BaseCourseSelector:
         """Updating relative information."""
         self.real_name = course_name
         self.kch_id = course_id
-        self.log_key = f'{self.username}-{course_name}'
-        row_id = scd_querier.insert(self.username, email, course_name, self.log_key)
+        self.logger_key = f'{self.username}-{course_name}'
+        row_id = scd_querier.insert(self.username, email, course_name, self.logger_key)
         self.latest_selected_data_id = row_id
 
     def mark_failed(self, failed_reason: str):
@@ -127,7 +127,7 @@ class BaseCourseSelector:
         fd_querier.insert(
             self.username,
             self.real_name,
-            self.log.key,
+            self.logger.key,
             failed_reason,
             int(self.port)
         )

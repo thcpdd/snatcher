@@ -31,7 +31,7 @@ from snatcher.storage.mysql import (
     pc_querier
 )
 from snatcher.storage.cache import (
-    running_logs_generator,
+    runtime_logs_generator,
     AIORedis,
     CHANNEL_NAME,
     parse_message
@@ -180,7 +180,7 @@ def get_pe_course(page: int = 1):
 @router.post('/login', tags=['超级管理员登录'])
 def superuser_login(form: LoginValidator):
     if form.username == 'rainbow' and form.password == '-+52th20040218*':
-        exp = delay_time(seconds=60 * 60)
+        exp = delay_time(hours=3)
         token = jwt.encode({'username': form.username, 'exp': exp}, SECRET, algorithm='HS256')
         response = JSONResponse({'success': 1})
         response.headers.setdefault('Access-Control-Expose-Headers', 'Authorization')
@@ -205,7 +205,7 @@ async def monitor_logs_change(websocket: WebSocket, token: str = Query(default='
 
     # Sending the initializing data to client by every batch.
     batch_logs = []
-    for log in running_logs_generator():
+    for log in runtime_logs_generator():
         batch_logs.append(log)
         if len(batch_logs) == 10:
             await websocket.send_json({'msg': batch_logs, 'status': 1})

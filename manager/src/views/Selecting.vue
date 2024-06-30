@@ -74,6 +74,8 @@ function monitorChange(value) {
     }
 }
 onBeforeUnmount(() => {
-    ws.close()
+    if (ws) {
+        ws.close()
+    }
 })
 </script>

@@ -25,7 +25,7 @@ from redis.asyncio import Redis as AIORedis
 from snatcher.conf import settings
 
 
-WEIGHTS_NAME = 'weights'
+# WEIGHTS_NAME = 'weights'
 USING_CODES_NAME = 'using-codes'
 CHANNEL_NAME = 'logs-change'
 
@@ -37,44 +37,44 @@ public_cache = Redis(**settings.DATABASES['redis']['public'], decode_responses=T
 # --------------------------------------------- #
 # Some functions for controlling port's weight. #
 # --------------------------------------------- #
-def optimal_port_generator():
-    def get_optimal_port():
-        rank = 0
-
-        def inner() -> list:
-            nonlocal rank
-
-            _port_list = public_cache.zrange(WEIGHTS_NAME, rank, rank)
-            rank += 1
-            return _port_list
-        return inner
-
-    optimal_port = get_optimal_port()
-    while port_list := optimal_port():
-        yield port_list[0]
-
-
-def decreasing_weight(port: str, decrease_size: int | float = 20):
-    weight = public_cache.zscore(WEIGHTS_NAME, port)
-    public_cache.zadd(WEIGHTS_NAME, {port: weight - decrease_size})
-
-
-def increasing_weight(port: str, increase_size: int | float = 10):
-    weight = public_cache.zscore(WEIGHTS_NAME, port)
-    public_cache.zadd(WEIGHTS_NAME, {port: weight + increase_size})
-
-
-def add_using_number(port: str, num: int | float = None):
-    if num is None:
-        weight = public_cache.zscore(WEIGHTS_NAME, port) + 1
-    else:
-        weight = num
-    public_cache.zadd(WEIGHTS_NAME, {port: weight})
-
-
-def reduce_using_number(port: str):
-    weight = public_cache.zscore(WEIGHTS_NAME, port)
-    public_cache.zadd(WEIGHTS_NAME, {port: weight - 1})
+# def optimal_port_generator():
+#     def get_optimal_port():
+#         rank = 0
+#
+#         def inner() -> list:
+#             nonlocal rank
+#
+#             _port_list = public_cache.zrange(WEIGHTS_NAME, rank, rank)
+#             rank += 1
+#             return _port_list
+#         return inner
+#
+#     optimal_port = get_optimal_port()
+#     while port_list := optimal_port():
+#         yield port_list[0]
+#
+#
+# def decreasing_weight(port: str, decrease_size: int | float = 20):
+#     weight = public_cache.zscore(WEIGHTS_NAME, port)
+#     public_cache.zadd(WEIGHTS_NAME, {port: weight - decrease_size})
+#
+#
+# def increasing_weight(port: str, increase_size: int | float = 10):
+#     weight = public_cache.zscore(WEIGHTS_NAME, port)
+#     public_cache.zadd(WEIGHTS_NAME, {port: weight + increase_size})
+#
+#
+# def add_using_number(port: str, num: int | float = None):
+#     if num is None:
+#         weight = public_cache.zscore(WEIGHTS_NAME, port) + 1
+#     else:
+#         weight = num
+#     public_cache.zadd(WEIGHTS_NAME, {port: weight})
+#
+#
+# def reduce_using_number(port: str):
+#     weight = public_cache.zscore(WEIGHTS_NAME, port)
+#     public_cache.zadd(WEIGHTS_NAME, {port: weight - 1})
 
 
 # ------------------------------------------------ #
@@ -106,7 +106,7 @@ def publish_message(func):
     """
     async def publish(*args, **kwargs):
         message = await func(*args, **kwargs)  # Getting the last message.
-        self: 'AsyncRunningLogger' = args[0]
+        self: 'AsyncRuntimeLogger' = args[0]
         if message is not None:
             name: str = args[1]
             message = f'{self.key}|{name}|{message}'
@@ -130,7 +130,7 @@ def parse_message(message: str) -> dict:
 # --------------------------------------------------------- #
 # Some functions or classes for controlling running logger. #
 # --------------------------------------------------------- #
-class AsyncRunningLogger:
+class AsyncRuntimeLogger:
     """
     You must call `close` method before function was garbage collected.
 
@@ -197,7 +197,7 @@ class AsyncRunningLogger:
         await self._connection.aclose()
 
 
-def running_logs_generator():
+def runtime_logs_generator():
     _db_info = settings.DATABASES['redis']['log']
     conn = Redis(**_db_info, decode_responses=True)
     for _key in conn.keys():

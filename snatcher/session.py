@@ -56,7 +56,6 @@ from redis import Redis
 
 from snatcher.conf import settings
 from snatcher.storage.mysql import fd_querier
-from snatcher.storage.cache import optimal_port_generator
 from snatcher.postman.mail import send_email
 
 
@@ -75,19 +74,15 @@ class SessionManager:
         if cookie and port:
             self._session_cache.hset(self.username, port, cookie)
 
-    def save_xkkz_id(self, xkkz_id: str):
+    def save_xkkz_id(self, xkkz_id: str, course_type: str):
         _grade = self.username[:2]
-        if not self._session_cache.hexists(self.username, 'xkkz_id'):
-            self._session_cache.hset(self.username, 'xkkz_id', xkkz_id)
-        if not self._session_cache.hexists('xkkz_id', _grade):
-            self._session_cache.hset('xkkz_id', _grade, xkkz_id)
+        if not self._session_cache.hexists(course_type + '_xkkz_id', _grade):
+            self._session_cache.hset(course_type + '_xkkz_id', _grade, xkkz_id)
 
-    def get_xkkz_id(self) -> str:
+    def get_xkkz_id(self, course_type: str) -> str:
         _grade = self.username[:2]
-        if cache_xkkz_id := self._session_cache.hget('xkkz_id', _grade):
+        if cache_xkkz_id := self._session_cache.hget(course_type + '_xkkz_id', _grade):
             return cache_xkkz_id
-        if user_xkkz_id := self._session_cache.hget(self.username, 'xkkz_id'):
-            return user_xkkz_id
         return ''
 
     def all_sessions(self) -> dict:
@@ -99,11 +94,11 @@ class SessionManager:
     def has_session(self, port: str) -> bool:
         return self._session_cache.hexists(self.username, port)
 
-    def get_session_by_weight(self) -> tuple[str, str]:
-        for port in optimal_port_generator():
-            if self.has_session(port):
-                return self.get(port), port
-        return self.get_random_session()
+    # def get_session_by_weight(self) -> tuple[str, str]:
+    #     for port in optimal_port_generator():
+    #         if self.has_session(port):
+    #             return self.get(port), port
+    #     return self.get_random_session()
 
     def get_random_session(self) -> tuple[str, str]:
         port = choice(self._session_cache.hkeys(self.username))
@@ -161,51 +156,26 @@ class AsyncSessionSetter:
                         cookies = self.session.cookie_jar.filter_cookies(URL(url))
                         return cookies.get('JSESSIONID').value, self.port
                     return '', self.port
-        except TimeoutError:
+        except Exception as exception:
+            print(exception)
             return '', self.port
 
 
 async def async_set_session(username: str, password: str):
     if settings.countdown() > 0:
         # 没有开始选课时，获取所有主机的 Cookie
-        sessions = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)
-                    for port in settings.PORTS]
+        setters = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)
+                   for port in settings.PORTS]
     else:
         # 开始选课时，只获取一个主机的 Cookie
-        port = next(optimal_port_generator())
-        sessions = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)]
-    tasks = [asyncio.create_task(session.set_session()) for session in sessions]
+        port = choice(settings.PORTS)
+        setters = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)]
+    tasks = [asyncio.create_task(setter.set_session()) for setter in setters]
     cookies_info = await asyncio.gather(*tasks, return_exceptions=True)
     manager = get_session_manager(username)
     for cookie_info in cookies_info:
         cookie, port = cookie_info
         manager.save_cookie(cookie, port)
-
-
-# def set_session(username: str, password: str):
-#     from asgiref.sync import async_to_sync
-#
-#     async_to_sync(async_set_session)(username, password)
-
-
-# def check_and_set_session(username: str, password: str):
-#     """
-#     :param username:
-#     :param password:
-#     :return: success or not (-1 not success) (1 success)
-#     """
-#     manager = get_session_manager(username)
-#     retry = 0
-#     while retry < 3:
-#         if manager.has_sessions():
-#             break
-#         set_session(username, password)
-#         retry += 1
-#     if not manager.has_sessions():
-#         fd_querier.insert(username, '', '', '模拟登录失败', 0)
-#         send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
-#         return -1
-#     return 1
 
 
 async def async_check_and_set_session(username: str, password: str):
@@ -215,14 +185,14 @@ async def async_check_and_set_session(username: str, password: str):
     :return: success or not (-1 not success) (1 success)
     """
     manager = get_session_manager(username)
+    if manager.has_sessions():
+        return 1
     retry = 0
     while retry < 3:
-        if manager.has_sessions():
-            break
         await async_set_session(username, password)
+        if manager.has_sessions():
+            return 1
         retry += 1
-    if not manager.has_sessions():
-        fd_querier.insert(username, '', '', '模拟登录失败', 0)
-        send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
-        return -1
-    return 1
+    fd_querier.insert(username, '', '', '模拟登录失败', 0)
+    send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
+    return -1

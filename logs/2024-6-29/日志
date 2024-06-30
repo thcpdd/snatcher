@@ -1,0 +1,419 @@
+(venv) PS E:\Snatcher> aio_celery worker snatcher.aiotasks:application --concurrency=30
+╔═══════════════════════╗
+║ AsyncIO Celery Worker ║
+╚═══════════════════════╝
+
+[config]
+.> app:         <Celery snatcher at 0x1d823e61950>
+.> transport:   amqp://guest:******@localhost:5672//
+.> results:     redis://127.0.0.1:6379/1
+.> concurrency: 30 (asyncio)
+
+[queues]
+.> celery
+
+[tasks]
+  . snatcher.aiotasks.async_physical_education_task
+  . snatcher.aiotasks.async_public_choice_task
+  . snatcher.aiotasks.async_select_course
+
+[2024-06-28 12:57:22,081][aio_celery.worker][INFO] Waiting for messages. To exit press CTRL+C
+[2024-06-28 12:57:22,081][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719550376] received
+[2024-06-28 12:57:22,232][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[bd7b4557-b426-4996-a429-f3cfb6a32cac] received
+[2024-06-28 12:57:22,238][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[e3ac7459-af7c-4d70-a75d-fdc96e826fbd] received
+[2024-06-28 12:57:22,242][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719550642] received
+[2024-06-28 12:57:22,315][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719550642] received
+[2024-06-28 12:57:22,391][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[bd7b4557-b426-4996-a429-f3cfb6a32cac] succeeded in 0.156000s: None
+[2024-06-28 12:57:22,391][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[e3ac7459-af7c-4d70-a75d-fdc96e826fbd] succeeded in 0.156000s: None
+[2024-06-28 12:57:43,445][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82501CA10>
+[2024-06-28 12:57:43,445][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D824F18A10>
+[2024-06-28 12:58:29,585][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719550642] succeeded in 67.343000s: None
+[2024-06-28 13:00:23,720][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[e54cff71-93ea-4fa1-8aa1-15e52b470338] received
+[2024-06-28 13:00:23,724][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719550823] received
+[2024-06-28 13:00:23,811][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[e54cff71-93ea-4fa1-8aa1-15e52b470338] succeeded in 0.094000s: None
+[2024-06-28 13:00:34,261][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719550376] succeeded in 192.172000s: None
+[2024-06-28 13:01:35,790][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719550823] succeeded in 72.062000s: None
+[2024-06-28 13:05:09,826][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[39055b56-d635-4011-962a-772968b3ca0c] received
+[2024-06-28 13:05:09,829][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719551109] received
+[2024-06-28 13:05:09,920][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825000AD0>
+[2024-06-28 13:05:09,920][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82500FE90>
+[2024-06-28 13:05:09,920][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D823408F50>
+[2024-06-28 13:05:09,920][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825033910>
+[2024-06-28 13:05:09,920][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825000850>
+[2024-06-28 13:05:09,920][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825031810>
+[2024-06-28 13:05:09,920][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825008550>
+[2024-06-28 13:05:09,920][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[39055b56-d635-4011-962a-772968b3ca0c] succeeded in 0.094000s: None
+[2024-06-28 13:06:01,984][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[d2e7d49e-f630-4a0b-b34b-fa1587521884] received
+[2024-06-28 13:06:01,988][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719551161] received
+[2024-06-28 13:06:02,283][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[d2e7d49e-f630-4a0b-b34b-fa1587521884] succeeded in 0.296000s: None
+[2024-06-28 13:18:18,056][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[be9097b8-1f4c-4cf5-8115-f4a919596adf] received
+[2024-06-28 13:18:18,059][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719551898] received
+[2024-06-28 13:18:37,548][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[be9097b8-1f4c-4cf5-8115-f4a919596adf] succeeded in 19.500000s: None
+[2024-06-28 13:19:01,390][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[6414f1cc-a758-4a46-8d2c-e3d07a74a406] received
+[2024-06-28 13:19:01,397][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719551941] received
+[2024-06-28 13:19:01,484][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[6414f1cc-a758-4a46-8d2c-e3d07a74a406] succeeded in 0.094000s: None
+[2024-06-28 13:19:18,508][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[80733ce4-8d45-4f4e-9af2-e32eaa1cd14d] received
+[2024-06-28 13:19:18,511][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719551958] received
+[2024-06-28 13:19:18,609][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[80733ce4-8d45-4f4e-9af2-e32eaa1cd14d] succeeded in 0.110000s: None
+[2024-06-28 13:20:42,985][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719551958] succeeded in 84.485000s: None
+[2024-06-28 13:20:57,470][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[affa1503-8203-45eb-b1fe-4bfabfd8954d] received
+[2024-06-28 13:20:57,485][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719552057] received
+[2024-06-28 13:20:57,601][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[affa1503-8203-45eb-b1fe-4bfabfd8954d] succeeded in 0.125000s: None
+[2024-06-28 13:21:38,922][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719552057] succeeded in 41.437000s: None
+[2024-06-28 13:25:15,701][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[d28026b4-d306-464e-a616-8e68820d1102] received
+[2024-06-28 13:25:15,705][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719552315] received
+[2024-06-28 13:25:15,830][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[d28026b4-d306-464e-a616-8e68820d1102] succeeded in 0.125000s: None
+[2024-06-28 13:25:36,877][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82505E290>
+[2024-06-28 13:25:36,877][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825034750>
+[2024-06-28 13:25:36,877][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82505F150>
+[2024-06-28 13:25:36,877][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D8250372D0>
+[2024-06-28 13:26:20,213][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719552315] succeeded in 64.500000s: None
+[2024-06-28 13:27:22,289][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D824F604D0>
+[2024-06-28 13:27:22,289][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825001450>
+[2024-06-28 13:27:22,289][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82501C590>
+[2024-06-28 13:27:22,289][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D8250357D0>
+[2024-06-28 13:27:22,289][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D824F28090>
+[2024-06-28 13:27:22,289][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719550642] received
+[2024-06-28 13:27:22,479][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719551109] received
+[2024-06-28 13:27:22,653][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719551161] received
+[2024-06-28 13:27:22,848][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719551898] received
+[2024-06-28 13:27:22,971][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719551941] received
+[2024-06-28 13:27:23,082][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82505F990>
+[2024-06-28 13:27:23,082][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D8250372D0>
+[2024-06-28 13:27:43,287][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719551109] succeeded in 20.812000s: None
+[2024-06-28 13:29:57,433][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719551161] succeeded in 154.781000s: None
+[2024-06-28 13:31:25,070][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[5755f39f-ae4b-4053-8ad9-36be7ca2ead5] received
+[2024-06-28 13:31:25,074][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719552685] received
+[2024-06-28 13:31:25,156][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[5755f39f-ae4b-4053-8ad9-36be7ca2ead5] succeeded in 0.093000s: None
+[2024-06-28 13:31:52,775][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[f45828bb-30af-4a94-a5eb-f288be99495e] received
+[2024-06-28 13:31:52,777][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719552712] received
+[2024-06-28 13:31:52,869][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825012190>
+[2024-06-28 13:31:52,869][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82506B310>
+[2024-06-28 13:31:52,869][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82500A250>
+[2024-06-28 13:31:52,869][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825010750>
+[2024-06-28 13:31:52,870][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825010150>
+[2024-06-28 13:31:52,870][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82505C410>
+[2024-06-28 13:31:52,872][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[f45828bb-30af-4a94-a5eb-f288be99495e] succeeded in 0.094000s: None
+[2024-06-28 13:32:15,306][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[66e40a90-97d9-40d6-a0b9-5326c122656c] received
+[2024-06-28 13:32:15,310][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719552735] received
+[2024-06-28 13:32:15,395][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[66e40a90-97d9-40d6-a0b9-5326c122656c] succeeded in 0.094000s: None
+[2024-06-28 13:33:09,547][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719552712] succeeded in 76.781000s: None
+[2024-06-28 13:39:17,314][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[db789573-cea7-4dcb-bf5c-fa0190cadfe2] received
+[2024-06-28 13:39:17,314][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719553157] received
+[2024-06-28 13:39:17,398][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[db789573-cea7-4dcb-bf5c-fa0190cadfe2] succeeded in 0.078000s: None
+[2024-06-28 13:57:23,263][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82175EF50>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82505DBD0>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D824FE2F10>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825040D50>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D823B6CDD0>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D823E71550>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825000710>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825041390>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825042250>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D8250665D0>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D82506A2D0>
+[2024-06-28 13:57:23,265][asyncio][ERROR] Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D825013750>
+[2024-06-28 13:57:23,273][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719550642] received
+[2024-06-28 13:57:42,685][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719551898] received
+[2024-06-28 13:57:42,757][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719551941] received
+[2024-06-28 13:57:42,854][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719552685] received
+[2024-06-28 13:57:42,955][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719552735] received
+[2024-06-28 13:57:43,035][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719553157] received
+[2024-06-28 14:06:06,087][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719552685] succeeded in 503.234000s: None
+[2024-06-28 14:08:15,442][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719553157] succeeded in 632.407000s: None
+[2024-06-28 14:08:43,979][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405140-1719551941] succeeded in 661.219000s: None
+[2024-06-28 14:10:46,275][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405135-1719550642] succeeded in 803.000000s: None
+[2024-06-28 14:10:50,115][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719552735] succeeded in 787.157000s: None
+[2024-06-28 14:15:52,264][aio_celery.worker][INFO] Task snatcher.aiotasks.async_physical_education_task[2304405147-1719551898] succeeded in 1089.578000s: None
+[2024-06-28 15:18:00,564][aio_celery.app][WARNING] Shutting down application.
+[2024-06-28 15:18:00,576][aio_celery.__main__][WARNING] Worker process interrupted.
+(venv) PS E:\Snatcher> aio_celery worker snatcher.aiotasks:application --concurrency=60
+╔═══════════════════════╗
+║ AsyncIO Celery Worker ║
+╚═══════════════════════╝
+
+[config]
+.> app:         <Celery snatcher at 0x28a814a1590>
+.> transport:   amqp://guest:******@localhost:5672//
+.> results:     redis://127.0.0.1:6379/1
+.> concurrency: 60 (asyncio)
+
+[queues]
+.> celery
+
+[tasks]
+  . snatcher.aiotasks.async_physical_education_task
+  . snatcher.aiotasks.async_public_choice_task
+  . snatcher.aiotasks.async_select_course
+
+[2024-06-29 08:08:54,537][aio_celery.worker][INFO] Waiting for messages. To exit press CTRL+C
+[2024-06-29 08:37:45,212][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[1c3216db-8ea2-4976-bdd2-c581c2b58d74] received
+[2024-06-29 08:37:45,216][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309416239-1719621465] received
+[2024-06-29 08:37:45,216][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309416239-1719621465] Sleeping for 0:22:14.998007 until task ETA 2024-06-29 09:00:00.214534+08:00 ...
+[2024-06-29 08:37:45,219][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[1c3216db-8ea2-4976-bdd2-c581c2b58d74] succeeded in 0.016000s: None
+[2024-06-29 08:38:30,002][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[8427a215-a3f8-4319-906d-5002210ca131] received
+[2024-06-29 08:38:30,005][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] received
+[2024-06-29 08:38:30,006][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] Sleeping for 0:21:29.999001 until task ETA 2024-06-29 09:00:00.004595+08:00 ...
+[2024-06-29 08:38:30,008][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[8427a215-a3f8-4319-906d-5002210ca131] succeeded in 0.000000s: None
+[2024-06-29 09:00:00,003][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] Sleeping FINISHED
+[2024-06-29 09:00:00,209][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309416239-1719621465] Sleeping FINISHED
+[2024-06-29 09:07:45,516][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309416239-1719621465] received
+[2024-06-29 09:07:45,619][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] received
+[2024-06-29 09:09:21,459][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[2b64ce76-7e5b-4eb0-9794-9fe58e6ce083] received
+[2024-06-29 09:09:21,462][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] received
+[2024-06-29 09:09:21,555][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[53ae8ec9-9757-44c5-963d-aed53f3ddff8] received
+[2024-06-29 09:09:21,556][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[57859efc-587b-41f1-af70-de4fdec4310d] received
+[2024-06-29 09:09:21,558][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[ace6227d-23c8-4224-84cf-3cef50db4762] received
+[2024-06-29 09:09:21,560][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[2b64ce76-7e5b-4eb0-9794-9fe58e6ce083] succeeded in 0.110000s: None
+[2024-06-29 09:09:21,562][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] received
+[2024-06-29 09:09:21,650][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403143-1719623361] received
+[2024-06-29 09:09:21,820][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409217-1719623361] received
+[2024-06-29 09:09:21,926][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[53ae8ec9-9757-44c5-963d-aed53f3ddff8] succeeded in 0.375000s: None
+[2024-06-29 09:09:21,930][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[ace6227d-23c8-4224-84cf-3cef50db4762] succeeded in 0.375000s: None
+[2024-06-29 09:09:21,933][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[57859efc-587b-41f1-af70-de4fdec4310d] succeeded in 0.375000s: None
+[2024-06-29 09:10:05,508][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[40315fe9-1adc-4804-87ea-f8fab145c8cc] received
+[2024-06-29 09:10:05,512][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411124-1719623405] received
+[2024-06-29 09:10:05,607][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[39756845-08ce-4960-98b2-313cf39a03ba] received
+[2024-06-29 09:10:05,609][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[dd824506-9b05-44dc-911f-f829abc0a37f] received
+[2024-06-29 09:10:05,610][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[466f55f1-47e3-433a-9a78-75b81daec804] received
+[2024-06-29 09:10:05,612][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[3d713e1e-caaf-421f-a21a-8f37d04f9aad] received
+[2024-06-29 09:10:05,613][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[aef173d1-8e58-4870-b810-fd5c98cbb2a1] received
+[2024-06-29 09:10:05,614][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[3cc7d334-e980-4adc-a104-1bd99b4f6c48] received
+[2024-06-29 09:10:05,615][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[eebaf7a9-7430-4da2-aa2f-b0de33067602] received
+[2024-06-29 09:10:05,617][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[92b79e3f-3072-40c5-96a9-25430ccc26e1] received
+[2024-06-29 09:10:05,617][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[b6c56847-169f-4134-8c68-e7aadf319c19] received
+[2024-06-29 09:10:05,618][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[40315fe9-1adc-4804-87ea-f8fab145c8cc] succeeded in 0.110000s: None
+[2024-06-29 09:10:05,619][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[a51d5649-17e8-42b3-895d-6f322fe504d9] received
+[2024-06-29 09:10:05,620][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[567a4496-f186-4669-a318-32cdb881b60a] received
+[2024-06-29 09:10:05,622][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411125-1719623405] received
+[2024-06-29 09:10:05,706][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[9a470ea7-25fc-4e84-bdaf-4fd55fd536cd] received
+[2024-06-29 09:10:05,707][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[3e73abdb-45cc-479a-8249-fbf7e9177f90] received
+[2024-06-29 09:10:05,708][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[f93a0213-08b9-46bc-a411-d6e648bce756] received
+[2024-06-29 09:10:05,711][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[9f3e721a-e4e8-4481-9d04-f21a07cfc434] received
+[2024-06-29 09:10:05,713][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[00228b55-7704-49b2-b633-216bc04f9c99] received
+[2024-06-29 09:10:05,714][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[cb4f97a3-6cba-4d4b-a5d2-df3e57c977e7] received
+[2024-06-29 09:10:05,718][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[39756845-08ce-4960-98b2-313cf39a03ba] succeeded in 0.109000s: None
+[2024-06-29 09:10:05,719][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[ed9728d9-d8e7-4ba6-93ab-4ec8bf13d36b] received
+[2024-06-29 09:10:05,721][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[c1de95e7-6230-4857-ae4d-bd0437bc57fb] received
+[2024-06-29 09:10:05,723][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[aceef404-7309-4bb7-91bf-b0d4d353dac6] received
+[2024-06-29 09:10:05,724][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402115-1719623405] received
+[2024-06-29 09:10:05,807][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[ff9770e7-be0e-4901-9a0e-ec4f2e6a2d04] received
+[2024-06-29 09:10:05,809][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411205-1719623405] received
+[2024-06-29 09:10:05,894][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[0573299a-7440-4c2a-82a2-ff294980cc63] received
+[2024-06-29 09:10:05,897][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[dd824506-9b05-44dc-911f-f829abc0a37f] succeeded in 0.281000s: None
+[2024-06-29 09:10:05,897][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[a4065d2b-f55d-49e5-97c0-3b1daa726a74] received
+[2024-06-29 09:10:05,898][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[f0afd316-c40a-4007-8123-38c209f8d5ed] received
+[2024-06-29 09:10:05,900][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[d537bdc6-174d-4127-a135-446ff1d71861] received
+[2024-06-29 09:10:05,913][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[6ca496ed-46ba-468e-9456-ea0280cb5a62] received
+[2024-06-29 09:10:05,924][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[c0a3155a-1db4-4074-8bd6-99f621a608bf] received
+[2024-06-29 09:10:05,927][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[b299d1cc-9bf1-403c-a415-2bcc043e0d62] received
+[2024-06-29 09:10:05,931][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[466f55f1-47e3-433a-9a78-75b81daec804] succeeded in 0.312000s: None
+[2024-06-29 09:10:05,932][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2307411311-1719623405] received
+[2024-06-29 09:10:06,016][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[3d713e1e-caaf-421f-a21a-8f37d04f9aad] succeeded in 0.406000s: None
+[2024-06-29 09:10:06,017][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411206-1719623405] received
+[2024-06-29 09:10:06,107][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405135-1719623405] received
+[2024-06-29 09:10:06,203][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[aef173d1-8e58-4870-b810-fd5c98cbb2a1] succeeded in 0.593000s: None
+[2024-06-29 09:10:06,211][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405140-1719623405] received
+[2024-06-29 09:10:06,330][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[3cc7d334-e980-4adc-a104-1bd99b4f6c48] succeeded in 0.718000s: None
+[2024-06-29 09:10:06,333][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[eebaf7a9-7430-4da2-aa2f-b0de33067602] succeeded in 0.718000s: None
+[2024-06-29 09:10:06,333][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405140-1719623405] received
+[2024-06-29 09:10:06,430][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405133-1719623405] received
+[2024-06-29 09:10:06,533][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[92b79e3f-3072-40c5-96a9-25430ccc26e1] succeeded in 0.921000s: None
+[2024-06-29 09:10:06,534][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[b6c56847-169f-4134-8c68-e7aadf319c19] succeeded in 0.921000s: None
+[2024-06-29 09:10:06,536][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405106-1719623405] received
+[2024-06-29 09:10:06,625][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411207-1719623405] received
+[2024-06-29 09:10:06,728][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[a51d5649-17e8-42b3-895d-6f322fe504d9] succeeded in 1.109000s: None
+[2024-06-29 09:10:06,729][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411201-1719623405] received
+[2024-06-29 09:10:06,814][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[567a4496-f186-4669-a318-32cdb881b60a] succeeded in 1.203000s: None
+[2024-06-29 09:10:06,816][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406143-1719623405] received
+[2024-06-29 09:10:06,903][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[9a470ea7-25fc-4e84-bdaf-4fd55fd536cd] succeeded in 1.188000s: None
+[2024-06-29 09:10:06,907][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417121-1719623405] received
+[2024-06-29 09:10:06,987][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[3e73abdb-45cc-479a-8249-fbf7e9177f90] succeeded in 1.282000s: None
+[2024-06-29 09:10:06,992][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417105-1719623405] received
+[2024-06-29 09:10:07,079][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[f93a0213-08b9-46bc-a411-d6e648bce756] succeeded in 1.375000s: None
+[2024-06-29 09:10:07,082][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302418346-1719623405] received
+[2024-06-29 09:10:07,168][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[9f3e721a-e4e8-4481-9d04-f21a07cfc434] succeeded in 1.453000s: None
+[2024-06-29 09:10:07,170][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302418311-1719623405] received
+[2024-06-29 09:10:07,255][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417111-1719623405] received
+[2024-06-29 09:10:07,341][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417131-1719623405] received
+[2024-06-29 09:10:07,427][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417131-1719623405] received
+[2024-06-29 09:10:07,509][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[00228b55-7704-49b2-b633-216bc04f9c99] succeeded in 1.797000s: None
+[2024-06-29 09:10:07,512][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[cb4f97a3-6cba-4d4b-a5d2-df3e57c977e7] succeeded in 1.797000s: None
+[2024-06-29 09:10:07,513][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309407150-1719623405] received
+[2024-06-29 09:10:07,598][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[aceef404-7309-4bb7-91bf-b0d4d353dac6] succeeded in 1.875000s: None
+[2024-06-29 09:10:07,603][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406140-1719623405] received
+[2024-06-29 09:10:07,689][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[ff9770e7-be0e-4901-9a0e-ec4f2e6a2d04] succeeded in 1.891000s: None
+[2024-06-29 09:10:07,690][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[ed9728d9-d8e7-4ba6-93ab-4ec8bf13d36b] succeeded in 1.969000s: None
+[2024-06-29 09:10:07,691][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[c1de95e7-6230-4857-ae4d-bd0437bc57fb] succeeded in 1.969000s: None
+[2024-06-29 09:10:07,697][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[0573299a-7440-4c2a-82a2-ff294980cc63] succeeded in 1.797000s: None
+[2024-06-29 09:10:07,697][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406140-1719623405] received
+[2024-06-29 09:10:07,799][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406131-1719623405] received
+[2024-06-29 09:10:07,888][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[a4065d2b-f55d-49e5-97c0-3b1daa726a74] succeeded in 2.000000s: None
+[2024-06-29 09:10:07,891][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[f0afd316-c40a-4007-8123-38c209f8d5ed] succeeded in 2.000000s: None
+[2024-06-29 09:10:07,892][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406131-1719623405] received
+[2024-06-29 09:10:07,985][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202418201-1719623405] received
+[2024-06-29 09:10:08,065][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[d537bdc6-174d-4127-a135-446ff1d71861] succeeded in 2.172000s: None
+[2024-06-29 09:10:08,068][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302401111-1719623405] received
+[2024-06-29 09:10:08,157][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[6ca496ed-46ba-468e-9456-ea0280cb5a62] succeeded in 2.250000s: None
+[2024-06-29 09:10:08,160][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403132-1719623405] received
+[2024-06-29 09:10:08,241][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[c0a3155a-1db4-4074-8bd6-99f621a608bf] succeeded in 2.313000s: None
+[2024-06-29 09:10:08,246][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[b299d1cc-9bf1-403c-a415-2bcc043e0d62] succeeded in 2.313000s: None
+[2024-06-29 09:37:45,740][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309416239-1719621465] received
+[2024-06-29 09:38:05,204][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] received
+[2024-06-29 09:38:05,308][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] received
+[2024-06-29 09:38:05,404][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] received
+[2024-06-29 09:38:05,497][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403143-1719623361] received
+[2024-06-29 09:38:05,596][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409217-1719623361] received
+[2024-06-29 09:38:05,700][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411124-1719623405] received
+[2024-06-29 09:38:05,812][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411125-1719623405] received
+[2024-06-29 09:38:05,916][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402115-1719623405] received
+[2024-06-29 09:38:06,034][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411205-1719623405] received
+[2024-06-29 09:38:06,134][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2307411311-1719623405] received
+[2024-06-29 09:38:06,226][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411206-1719623405] received
+[2024-06-29 09:38:06,319][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405135-1719623405] received
+[2024-06-29 09:38:06,417][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405140-1719623405] received
+[2024-06-29 09:38:06,518][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405140-1719623405] received
+[2024-06-29 09:38:06,619][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405133-1719623405] received
+[2024-06-29 09:38:06,726][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405106-1719623405] received
+[2024-06-29 09:38:06,824][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411207-1719623405] received
+[2024-06-29 09:38:06,926][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411201-1719623405] received
+[2024-06-29 09:38:07,034][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406143-1719623405] received
+[2024-06-29 09:38:07,131][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417121-1719623405] received
+[2024-06-29 09:38:07,234][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417105-1719623405] received
+[2024-06-29 09:38:07,340][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302418346-1719623405] received
+[2024-06-29 09:38:07,445][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302418311-1719623405] received
+[2024-06-29 09:38:07,540][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417111-1719623405] received
+[2024-06-29 09:38:07,641][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417131-1719623405] received
+[2024-06-29 09:38:07,738][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417131-1719623405] received
+[2024-06-29 09:38:07,840][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309407150-1719623405] received
+[2024-06-29 09:38:07,943][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406140-1719623405] received
+[2024-06-29 09:38:08,083][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406140-1719623405] received
+[2024-06-29 09:38:08,196][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406131-1719623405] received
+[2024-06-29 09:38:08,293][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406131-1719623405] received
+[2024-06-29 09:38:08,396][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202418201-1719623405] received
+[2024-06-29 09:38:08,506][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302401111-1719623405] received
+[2024-06-29 09:38:08,606][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403132-1719623405] received
+[2024-06-29 09:39:39,959][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] retry: Retry in 5.0s
+[2024-06-29 09:39:39,962][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] received
+[2024-06-29 09:39:39,962][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] Sleeping for 0:00:04.996988 until task ETA 2024-06-29 09:39:44.959869+08:00 ...
+[2024-06-29 09:39:44,949][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] Sleeping FINISHED
+[2024-06-29 09:40:01,109][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] retry: Retry in 5.0s
+[2024-06-29 09:40:01,121][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] received
+[2024-06-29 09:40:01,121][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] Sleeping for 0:00:04.987793 until task ETA 2024-06-29 09:40:06.109530+08:00 ...
+[2024-06-29 09:40:06,110][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] Sleeping FINISHED
+[2024-06-29 09:51:58,527][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2307411311-1719623405] succeeded in 832.391000s: None
+[2024-06-29 09:52:03,484][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405140-1719623405] succeeded in 836.969000s: None
+[2024-06-29 09:52:03,484][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417121-1719623405] succeeded in 836.360000s: None
+[2024-06-29 09:52:03,484][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309407150-1719623405] succeeded in 835.657000s: None
+[2024-06-29 09:52:03,484][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411125-1719623405] succeeded in 837.672000s: None
+[2024-06-29 09:52:32,312][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302401111-1719623405] succeeded in 863.813000s: None
+[2024-06-29 09:53:02,898][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] succeeded in 776.781000s: None
+[2024-06-29 09:53:46,712][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405133-1719623405] succeeded in 940.093000s: None
+[2024-06-29 09:53:50,235][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411206-1719623405] succeeded in 944.016000s: None
+[2024-06-29 09:53:51,541][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405106-1719623405] succeeded in 944.812000s: None
+[2024-06-29 09:53:54,250][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411124-1719623405] succeeded in 948.547000s: None
+[2024-06-29 09:53:54,250][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302418311-1719623405] succeeded in 946.812000s: None
+[2024-06-29 09:53:56,958][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202418201-1719623405] succeeded in 948.562000s: None
+[2024-06-29 09:53:56,958][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405135-1719623405] succeeded in 950.640000s: None
+[2024-06-29 09:53:59,306][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417131-1719623405] succeeded in 951.562000s: None
+[2024-06-29 09:54:02,459][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406131-1719623405] succeeded in 954.265000s: None
+邮件发送失败：2309416239-音乐素养 (550, b'The recipient may contain a non-existent account, please check the recipient address.')
+[2024-06-29 09:54:05,046][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2309416239-1719621465] succeeded in 979.312000s: None
+[2024-06-29 09:54:05,046][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406140-1719623405] succeeded in 957.109000s: None
+[2024-06-29 09:55:03,828][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411201-1719623405] succeeded in 1016.906000s: None
+[2024-06-29 09:57:22,112][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409336-1719623361] succeeded in 1156.704000s: None
+[2024-06-29 09:59:03,651][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417105-1719623405] succeeded in 1256.406000s: None
+[2024-06-29 09:59:04,921][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417131-1719623405] succeeded in 1257.281000s: None
+[2024-06-29 09:59:07,107][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403143-1719623361] succeeded in 1261.610000s: None
+[2024-06-29 09:59:08,365][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411205-1719623405] succeeded in 1262.329000s: None
+[2024-06-29 09:59:15,525][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302409217-1719623361] succeeded in 1269.922000s: None
+[2024-06-29 09:59:19,919][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2206411207-1719623405] succeeded in 1273.109000s: None
+[2024-06-29 09:59:34,691][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402212-1719621510] succeeded in 1189.750000s: None
+[2024-06-29 09:59:37,867][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406131-1719623405] succeeded in 1289.579000s: None
+邮件发送失败：2301406143-茶艺与评茶技能 (550, b'The recipient may contain a non-existent account, please check the recipient address.')
+[2024-06-29 09:59:38,959][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406143-1719623405] succeeded in 1291.922000s: None
+邮件发送失败：2202417111-手机创意摄影 Connection unexpectedly closed
+邮件发送失败：2304405140-键盘俱乐部 Connection unexpectedly closed
+邮件发送失败：2301406140-茶艺与评茶技能 Connection unexpectedly closed
+[2024-06-29 09:59:41,901][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403132-1719623405] succeeded in 1293.297000s: None
+[2024-06-29 09:59:41,912][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2202417111-1719623405] succeeded in 1294.375000s: None
+[2024-06-29 09:59:41,912][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405140-1719623405] succeeded in 1295.500000s: None
+[2024-06-29 09:59:41,912][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2301406140-1719623405] succeeded in 1293.828000s: None
+邮件发送失败：2201402115-海洋地质科考 Connection unexpectedly closed
+[2024-06-29 09:59:44,221][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2201402115-1719623405] succeeded in 1298.313000s: None
+邮件发送失败：2302418346-大学生婚恋道德教育 Connection unexpectedly closed
+[2024-06-29 10:01:07,765][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2302418346-1719623405] succeeded in 1380.438000s: None
+[2024-06-29 10:06:12,429][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[cf15b3e2-4cc6-4bd7-b6b5-ddb692a5ef70] received
+Cannot connect to host 10.3.132.5:80 ssl:default [信号灯超时时间已到]
+Cannot connect to host 10.3.132.5:80 ssl:default [信号灯超时时间已到]
+[2024-06-29 10:18:18,315][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[f7af64c7-7a45-4330-a836-f28e311a9f3b] received
+[2024-06-29 10:18:18,318][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2209415416-1719627498] received
+[2024-06-29 10:18:37,790][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[ba1e85d9-8389-478e-ab98-a590600cf47a] received
+[2024-06-29 10:18:37,790][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[f7af64c7-7a45-4330-a836-f28e311a9f3b] succeeded in 19.468000s: None
+[2024-06-29 10:30:05,553][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2209415416-1719627498] succeeded in 707.234000s: None
+[2024-06-29 10:34:44,554][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403104-1719628484] received
+[2024-06-29 10:34:44,646][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[cf15b3e2-4cc6-4bd7-b6b5-ddb692a5ef70] succeeded in 1712.219000s: None
+[2024-06-29 10:39:23,596][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403104-1719628763] received
+[2024-06-29 10:39:23,689][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[ba1e85d9-8389-478e-ab98-a590600cf47a] succeeded in 1245.907000s: None
+[2024-06-29 10:43:12,506][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[a78e8fab-6989-4778-a962-d34daba983e8] received
+[2024-06-29 10:52:18,991][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403104-1719628763] succeeded in 775.391000s: None
+[2024-06-29 10:54:36,008][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405145-1719629676] received
+[2024-06-29 10:54:36,083][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[a78e8fab-6989-4778-a962-d34daba983e8] succeeded in 683.578000s: None
+[2024-06-29 10:54:59,263][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2313403104-1719628484] succeeded in 1214.703000s: None
+[2024-06-29 11:02:18,325][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405145-1719629676] succeeded in 462.328000s: None
+[2024-06-29 11:04:34,671][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[abb32658-a31f-486c-b2b0-5da33d0860c9] received
+[2024-06-29 11:04:34,675][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405133-1719630274] received
+[2024-06-29 11:04:34,766][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[abb32658-a31f-486c-b2b0-5da33d0860c9] succeeded in 0.094000s: None
+[2024-06-29 11:05:25,038][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405133-1719630274] succeeded in 50.359000s: None
+[2024-06-29 11:09:45,069][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[06154f95-dbbf-4297-b56c-3d4a5402836f] received
+[2024-06-29 11:09:45,073][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405145-1719630585] received
+[2024-06-29 11:09:45,204][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[06154f95-dbbf-4297-b56c-3d4a5402836f] succeeded in 0.140000s: None
+[2024-06-29 11:09:50,745][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405145-1719630585] succeeded in 5.672000s: None
+[2024-06-29 11:12:54,329][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[47aa7c37-ac7a-474a-9107-2a9cf65bb204] received
+[2024-06-29 11:12:54,333][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405145-1719630774] received
+[2024-06-29 11:12:54,433][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[47aa7c37-ac7a-474a-9107-2a9cf65bb204] succeeded in 0.094000s: None
+[2024-06-29 11:13:32,381][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405145-1719630774] succeeded in 38.047000s: None
+[2024-06-29 11:14:52,136][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[49c54719-154a-48d1-b095-3991b12a4dab] received
+[2024-06-29 11:14:52,140][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405145-1719630892] received
+[2024-06-29 11:14:52,232][aio_celery.worker][INFO] Task snatcher.aiotasks.async_select_course[49c54719-154a-48d1-b095-3991b12a4dab] succeeded in 0.110000s: None
+[2024-06-29 11:15:02,520][aio_celery.worker][INFO] Task snatcher.aiotasks.async_public_choice_task[2304405145-1719630892] succeeded in 10.375000s: None
+[2024-06-29 12:42:48,360][aio_celery.app][WARNING] Shutting down application.
+[2024-06-29 12:42:48,379][aio_celery.__main__][WARNING] Worker process interrupted.

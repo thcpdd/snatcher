@@ -42,7 +42,7 @@ class EmailSender:
         message['To'] = Header(self.receiver_email, 'utf-8')
         message['Subject'] = Header(self.subject)
 
-        with open('./files/snatcher-low-quality.png', 'rb') as f:
+        with open('./snatcher/postman/files/snatcher-low-quality.png', 'rb') as f:
             image = MIMEImage(f.read())
             image.add_header('Content-ID', '<snatcher>')
 
@@ -66,7 +66,7 @@ class EmailSender:
 
 def get_success_content(username: str, course_name: str) -> str:
     """Reading and rendering the HTML mail content."""
-    with open('./files/mail.html', encoding='utf8') as f:
+    with open('./snatcher/postman/files/mail.html', encoding='utf8') as f:
         html_file = f.read()
         template = Template(html_file)
         return template.render(username=username, course_name=course_name)
