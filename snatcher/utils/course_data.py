@@ -1,5 +1,5 @@
 """
-Some tools in this module:
+Some tools to get course data in this module:
     1. The `ParseStudentID` class:
         It can parse the username. Collecting some special values.
 

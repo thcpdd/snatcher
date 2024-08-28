@@ -144,7 +144,7 @@ class AsyncRuntimeLogger:
         await self._connection.aclose()
 
 
-def runtime_logs_generator() -> Generator[dict]:
+def runtime_logs_generator():
     """
     Yielding all runtime logs.
 

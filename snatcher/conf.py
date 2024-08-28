@@ -4,7 +4,6 @@ The project settings.
 Usage:
     from snatcher.conf import settings
 """
-import json
 from datetime import datetime, timezone
 
 
@@ -15,15 +14,13 @@ class SingletonMetaClass(type):
             setattr(cls, '_instance', _instance)
         else:
             _instance = getattr(cls, '_instance')
-
-        # Loading the MySQL configuration.
-        with open('./mysqlconf.json', encoding='utf8') as fp:
-            _instance.DATABASES['mysql'].update(json.load(fp))
-
         return _instance
 
 
 class Settings(metaclass=SingletonMetaClass):
+    # Is it a development environment.
+    DEVELOPMENT_ENVIRONMENT = True
+
     # Database configurations.
     DATABASES: dict = {
         'redis': {
@@ -40,7 +37,9 @@ class Settings(metaclass=SingletonMetaClass):
                 'host': '127.0.0.1'
             }
         },
-        'mysql': {}
+        'mongodb': {
+            'uri': ''
+        }
     }
 
     # Global request timeout(except at setting session), unit is second.
@@ -91,6 +90,17 @@ class Settings(metaclass=SingletonMetaClass):
         if self.start_time() <= datetime.now(timezone.utc):
             return 0
         return (self.start_time() - datetime.now(timezone.utc)).seconds
+
+    def get_mongodb_uri(self):
+        if not (mongodb_uri := self.DATABASES['mongodb']['uri']):
+            if self.DEVELOPMENT_ENVIRONMENT:
+                mongodb_config_file = 'mongodb_dev'
+            else:
+                mongodb_config_file = 'mongodb'
+            with open(mongodb_config_file) as f:
+                mongodb_uri = f.read()
+            self.DATABASES['mongodb']['uri'] = mongodb_uri
+        return mongodb_uri
 
 
 settings = Settings()
