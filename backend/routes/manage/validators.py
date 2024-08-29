@@ -1,10 +1,12 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from backend.utils.validators import ObjectId, DatetimeValidator
 
 
-class AllSelectedDataValidator(BaseModel):
-    id: int
+class SubmittedValidator(DatetimeValidator):
+    row_id: ObjectId = Field(default_factory=ObjectId, alias='_id')
     username: str
     email: str
     course_name: str
@@ -13,22 +15,22 @@ class AllSelectedDataValidator(BaseModel):
     success: int
 
 
-class FailedDataValidator(BaseModel):
-    id: int
+class FailureValidator(DatetimeValidator):
+    row_id: ObjectId = Field(default_factory=ObjectId, alias='_id')
     username: str
     port: int
     course_name: str
     created_at: datetime
     log_key: str
-    failed_reason: str
+    reason: str
 
 
-class VerifyCodeValidator(BaseModel):
-    id: int
+class EnergyValidator(DatetimeValidator):
+    row_id: ObjectId = Field(default_factory=ObjectId, alias='_id')
     username: str
-    is_used: int
-    verify_code: str
-    create_at: datetime
+    status: str
+    fuel: str
+    created_at: datetime
 
 
 class LoginValidator(BaseModel):
@@ -37,11 +39,11 @@ class LoginValidator(BaseModel):
 
 
 class CourseValidator(BaseModel):
-    id: int
+    row_id: ObjectId = Field(default_factory=ObjectId, alias='_id')
     course_id: str
     course_name: str
     study_year: int
-    term: str
+    term: int
 
 
 class PEValidator(CourseValidator):

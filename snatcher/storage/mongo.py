@@ -3,46 +3,14 @@ from datetime import datetime
 
 import pymongo
 from bson import ObjectId as BSONObjectId
-from pydantic_core import core_schema
 
 from snatcher.conf import settings
-from snatcher.utils.hashlib import encrypt_fuel
+from snatcher.utils.hashlib import encrypt_fuel, decrypt_fuel
 
 
 study_year = settings.SELECT_COURSE_YEAR
 term = settings.TERM
 period = settings.PERIOD
-
-
-class ObjectId(BSONObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v, _):
-        if isinstance(v, BSONObjectId):
-            return ObjectId(v)
-        if isinstance(v, str) and BSONObjectId.is_valid(v):
-            return ObjectId(v)
-        raise ValueError("Id must be of type ObjectId")
-
-    @classmethod
-    def __get_pydantic_json_schema__(cls, schema, handler):
-        json_schema = handler(schema)
-        json_schema.update(
-            type="string",
-            example="66629e539ea1c08c80765e0a",
-        )
-        return json_schema
-
-    @classmethod
-    def __get_pydantic_core_schema__(cls, _, __):
-        return core_schema.json_or_python_schema(
-            python_schema=core_schema.with_info_plain_validator_function(cls.validate),
-            json_schema=core_schema.str_schema(),
-            serialization=core_schema.plain_serializer_function_ser_schema(lambda instance: str(instance)),
-        )
 
 
 class MongoDBCollection:
@@ -65,7 +33,7 @@ class MongoDBCollection:
         self.database = MongoDBCollection._database
         self.collection = self.database.get_collection(self.collection_name)
 
-    def query(self, page: int, size: int, sort=None, **options):
+    def query(self, page: int, size: int = 10, sort=None, **options):
         if hasattr(self, 'params'):
             options.update(self.params)
         total = self.collection.count_documents(options)
@@ -100,7 +68,7 @@ class UserMongoDBCollection(MongoDBCollection):
     def query_one(self, username: str):
         return self.collection.find_one({'username': username})
 
-    def update(self, row_id: BSONObjectId | ObjectId, **options):
+    def update(self, row_id: BSONObjectId, **options):
         action = {'$set': options}
         self.collection.find_one_and_update({'_id': row_id}, action)
 
@@ -158,9 +126,12 @@ class EnergyMongoDBCollection(MongoDBCollection):
         self.collection.find_one_and_update({'_id': row_id}, {'$set': {'fuel': fuel}})
         return fuel
 
-    def update(self, row_id: BSONObjectId | ObjectId, status: str):
+    def update(self, row_id: BSONObjectId, status: str):
         action = {'$set': {'status': status}}
         self.collection.find_one_and_update({'_id': row_id}, action)
+
+    def query_one(self, row_id: BSONObjectId):
+        return self.collection.find_one({"_id": row_id})
 
 
 class FailureMongoDBCollection(MongoDBCollection):
@@ -195,7 +166,7 @@ class SubmittedMongoDBCollection(MongoDBCollection):
         result = self.collection.insert_one(document)
         return result.inserted_id
 
-    def update(self, row_id: BSONObjectId | ObjectId, **options):
+    def update(self, row_id: BSONObjectId, **options):
         options.update({'updated_at': datetime.now()})
         action = {'$set': options}
         self.collection.find_one_and_update({'_id': row_id}, action)
@@ -270,6 +241,18 @@ class MongoDBCollections:
 def get_security_key(purpose: str):
     security_collection = SecurityMongoDBCollection()
     return security_collection.query_one(purpose)
+
+
+def get_fuel_status(username: str, fuel: str):
+    key = get_security_key('fuel')
+    row_id = decrypt_fuel(fuel, key)
+    energy_collection = EnergyMongoDBCollection()
+    energy = energy_collection.query_one(BSONObjectId(row_id))
+    if not energy:
+        return False
+    if energy['username'] != username:
+        return False
+    return energy['status']
 
 
 collections = MongoDBCollections()
