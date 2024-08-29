@@ -29,36 +29,40 @@
             </div>
             <div class="user-info">
                 <span>&nbsp;&nbsp;&nbsp;邮箱：</span>
-                <el-input v-model="email" style="width: 65%" placeholder="请输入你的邮箱"/>
+                <el-input v-model="email" style="width: 65%" type="email" placeholder="请输入你的邮箱"/>
             </div>
             <div class="user-info">
                 <span>抢课码：</span>
-                <el-input v-model="verifyCode" style="width: 65%" placeholder="请输入提供给你的抢课码"/>
+                <el-input v-model="fuel" style="width: 65%" placeholder="请输入提供给你的抢课码"/>
             </div>
         </div>
         <p>**请确保所填信息完全正确，选课结果将会发送到该邮箱。</p>
-        <el-button type="primary" @click="submitSelected" :disabled="!canBeSubmitted">提交</el-button>
+        <el-button type="primary" @click="submitSelected" :disabled="!canBeSubmitted || submitting">提交</el-button>
     </el-drawer>
 </template>
 
 <script setup>
-import {ref, defineProps, defineEmits, computed, watch} from 'vue'
-import {myMessage} from "@/message.js";
-import {bookCourse} from "@/request.js";
+import { ref, computed, watch } from 'vue'
+import { myMessage } from "@/message.js";
+import { bookCourse } from "@/request.js";
 
 const username = ref('')
 const password = ref('')
 const email = ref('')
-const verifyCode = ref('')
-// 记录要撤销的课程
-const expectDelete = ref(null)
+const fuel = ref('')
+const submitting = ref(false)
+const expectDelete = ref(null)  // 记录要撤销的课程
+
+let emailRegex = /.+@.+\.com/
+
 // 判断当前输入是否能提交
 const canBeSubmitted = computed(() => {
     return username.value !== '' &&
         password.value !== '' &&
         email.value !== '' &&
         props.currentSelecting.length > 0 &&
-        verifyCode.value !== ''
+        fuel.value !== '' &&
+        emailRegex.test(email.value)
 })
 
 // 接收父组件传来的参数
@@ -95,16 +99,18 @@ async function submitSelected() {
         password: password.value,
         email: email.value,
         courses: props.currentSelecting,
-        verify_code: verifyCode.value
+        fuel: fuel.value
     }
-    const responseData = await bookCourse(pathName, data)
-    if (responseData.success === 1) {
+    submitting.value = true
+    const response = await bookCourse(pathName, data)
+    if (response.data.code === 1) {
         myMessage('预约信息提交成功！', 'success')
         emits('update:openDrawer', false)
         emits('update:currentSelecting', [])
     } else {
-        myMessage(responseData.msg, 'error')
+        myMessage(response.data.message, 'error')
     }
+    submitting.value = false
 }
 </script>
 

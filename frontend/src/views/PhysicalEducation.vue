@@ -39,12 +39,12 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import Paginator from "@/components/Paginator.vue";
 import Drawer from "@/components/Drawer.vue";
-import {getPECoursesCount, getPECourses} from "@/request.js";
+import { getPECourses } from "@/request.js";
 import SearchBar from "@/components/SearchBar.vue";
-import {myMessage} from "@/message.js";
+import { myMessage } from "@/message.js";
 
 
 const courseData = ref([])
@@ -53,9 +53,24 @@ const openDrawer = ref(false)
 const totalData = ref(1)
 
 
+const updateCourseData = async (page) => {
+    let localPECourses = sessionStorage.getItem(`peCourses_${page}`)
+    if (localPECourses) {
+        let localPECount = sessionStorage.getItem('peCount')
+        totalData.value = Number(localPECount)
+        courseData.value = JSON.parse(localPECourses)
+    } else {
+        const response = await getPECourses(page)
+        totalData.value = response.data.data['total']
+        courseData.value = response.data.data['results']
+        sessionStorage.setItem(`peCourses_${page}`, JSON.stringify(courseData.value))
+        sessionStorage.setItem(`peCount`, JSON.stringify(totalData.value))
+    }
+}
+
+
 onMounted(async () => {
-    totalData.value = await getPECoursesCount()
-    courseData.value = await getPECourses(1)
+    await updateCourseData(1)
 })
 
 async function pageChangeHandle(page) {
@@ -65,6 +80,6 @@ async function pageChangeHandle(page) {
         sessionStorage.removeItem('search')
         return
     }
-    courseData.value = await getPECourses(page)
+    await updateCourseData(page)
 }
 </script>

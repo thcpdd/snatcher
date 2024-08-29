@@ -1,5 +1,3 @@
-import binascii
-
 from fastapi import APIRouter, Path
 
 from .validators import PCValidator, PEValidator, BookPEValidator, BookPCValidator
@@ -14,7 +12,8 @@ router = APIRouter(prefix='/vpn', tags=['VPN'])
 def check_fuel(username: str, fuel: str) -> tuple[int, str]:
     try:
         status = get_fuel_status(username, fuel)
-    except binascii.Error:
+    except Exception as e:
+        print('fuel解码失败', e)
         return ResponseCodes.INVALID_FUEL
     if not status:
         return ResponseCodes.INVALID_FUEL

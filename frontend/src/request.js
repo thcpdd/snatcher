@@ -22,70 +22,29 @@ requests.interceptors.response.use(response => {
     return Promise.reject(error)
 })
 
-export async function getPECoursesCount() {
-    let localPECount = sessionStorage.getItem('peCount')
-    if (!localPECount) {
-        await requests.get('/pe/count').then((response) => {
-            sessionStorage.setItem('peCount', response.data)
-            localPECount = response.data
-        })
-    }
-    return Number(localPECount);
+
+export function getPECourses(page) {
+    return requests.get(`/pe/${page}`)
 }
 
-export async function getPCCoursesCount() {
-    let localPCCount = sessionStorage.getItem('pcCount')
-    if (!localPCCount) {
-        await requests.get('/pc/count').then((response) => {
-            sessionStorage.setItem('pcCount', response.data)
-            localPCCount = response.data
-        })
-    }
-    return Number(localPCCount);
-}
-
-export async function getPECourses(page) {
-    let localPECourses = sessionStorage.getItem(`peCourses_${page}`)
-    if (!localPECourses) {
-        await requests.get(`/pe/${page}`).then((response) => {
-            sessionStorage.setItem(`peCourses_${page}`, JSON.stringify(response.data))
-            localPECourses = response.data
-        })
-    } else {
-        localPECourses = JSON.parse(localPECourses)
-    }
-    return localPECourses;
-}
-
-export async function getPCCourses(page) {
-    let localPCCourses = sessionStorage.getItem(`pcCourses_${page}`)
-    if (!localPCCourses) {
-        await requests.get(`/pc/${page}`).then((response) => {
-            sessionStorage.setItem(`pcCourses_${page}`, JSON.stringify(response.data))
-            localPCCourses = response.data
-        })
-    } else {
-        localPCCourses = JSON.parse(localPCCourses)
-    }
-    return localPCCourses;
+export function getPCCourses(page) {
+    return requests.get(`/pc/${page}`)
 }
 
 export async function searchCourse(courseType, searchContent) {
     let searchResult = []
     if (courseType === 'pe') {
         await requests.get(`/pe/?keyword=${searchContent}`).then(response => {
-            searchResult = response.data
+            searchResult = response.data.data['results']
         })
     } else {
         await requests.get(`/pc/?keyword=${searchContent}`).then(response => {
-            searchResult = response.data
+            searchResult = response.data.data['results']
         })
     }
     return searchResult
 }
 
-export async function bookCourse(pathName, data) {
-    return await requests.post(pathName, data).then(response => {
-        return response.data
-    })
+export function bookCourse(pathName, data) {
+    return requests.post(pathName, data)
 }

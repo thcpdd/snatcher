@@ -50,12 +50,12 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import Paginator from "@/components/Paginator.vue";
 import Drawer from "@/components/Drawer.vue";
 import SearchBar from "@/components/SearchBar.vue";
-import {myMessage} from "@/message.js";
-import {getPCCourses, getPCCoursesCount} from "@/request.js";
+import { myMessage } from "@/message.js";
+import { getPCCourses } from "@/request.js";
 
 const courseData = ref([])
 const currentSelecting = ref([])
@@ -63,9 +63,23 @@ const openDrawer = ref(false)
 const totalData = ref(1)
 // const tooltipContent = "数据来源于教务系统且<b>仅供参考</b>，最后一次更新于：<b>2024-2-19 18:19:01</b>"
 
+const updateCourseData = async (page) => {
+    let localPCCourses = sessionStorage.getItem(`pcCourses_${page}`)
+    if (localPCCourses) {
+        let localPECount = sessionStorage.getItem('pcCount')
+        totalData.value = Number(localPECount)
+        courseData.value = JSON.parse(localPCCourses)
+    } else {
+        const response = await getPCCourses(page)
+        totalData.value = response.data.data['total']
+        courseData.value = response.data.data['results']
+        sessionStorage.setItem(`pcCourses_${page}`, JSON.stringify(courseData.value))
+        sessionStorage.setItem(`pcCount`, JSON.stringify(totalData.value))
+    }
+}
+
 onMounted(async () => {
-    totalData.value = await getPCCoursesCount()
-    courseData.value = await getPCCourses(1)
+    await updateCourseData(1)
 })
 
 // const tooltipPlacement = computed(() => {
@@ -82,7 +96,7 @@ async function pageChangeHandle(page) {
         sessionStorage.removeItem('search')
         return
     }
-    courseData.value = await getPCCourses(page)
+    await updateCourseData(page)
 }
 </script>
 

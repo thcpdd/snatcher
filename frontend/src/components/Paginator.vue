@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import {ref, defineEmits, defineProps} from 'vue'
+import { ref } from 'vue'
 
 const currentPage = ref(1)
 const changePage = defineEmits(['update:currentPage'])

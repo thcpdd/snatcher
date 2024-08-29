@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import {ref, defineEmits, defineProps} from "vue";
-import {searchCourse} from "@/request.js";
+import { ref } from "vue";
+import { searchCourse } from "@/request.js";
 
 const searchContent = ref('')
 const searchWasCalled = defineEmits(['search'])
