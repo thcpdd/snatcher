@@ -80,4 +80,19 @@ body, html {
     margin-top: 8px;
     margin-right: 10px;
 }
+/* 隐藏垂直滚动条 */
+body::-webkit-scrollbar {
+    width: 0;  /* 设置为0，完全隐藏滚动条 */
+    /*height: 0; !* 同样适用于水平滚动条 *!*/
+}
+
+/* 隐藏滚动条的轨道 */
+body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 隐藏滚动条的滑块 */
+body::-webkit-scrollbar-thumb {
+    background: transparent;
+}
 </style>
