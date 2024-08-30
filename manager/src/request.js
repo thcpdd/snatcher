@@ -13,7 +13,7 @@ requests.interceptors.request.use((config) => {
     return config
 })
 requests.interceptors.response.use((response) => {
-    if (location.pathname === '/login' && response.data.success) {
+    if (location.pathname === '/login' && response.data.code === 1) {
         localStorage.setItem('token', response.headers['authorization'])
     }
     return response
@@ -26,82 +26,30 @@ requests.interceptors.response.use((response) => {
 })
 
 
-export async function getAllSelectedData(page) {
-    return await requests.get(`/selected/${page}`).then((response) => {
-        return response.data
-    })
+export function getAllSelectedData(page) {
+    return requests.get(`/submitted/${page}`)
 }
 
-export async function getAllSelectedCount() {
-    return await requests.get(`/selected/count`).then((response) => {
-        return response.data
-    })
+export function getFailedData(page) {
+    return requests.get(`/failure/${page}`)
 }
 
-export async function getFailedData(page) {
-    return await requests.get(`/failed/${page}`).then((response) => {
-        return response.data
-    })
+export function getFuel(page) {
+    return requests.get(`/energy/${page}`)
 }
 
-export async function getFailedCount() {
-    return await requests.get('/failed/count').then((response) => {
-        return response.data
-    })
+export function generateFuel(username) {
+    return requests.post('/fuel', {username: username})
 }
 
-export async function getVerifyCodes(page) {
-    return await requests.get(`/codes/${page}`).then((response) => {
-        return response.data
-    })
+export function login(username, password) {
+    return requests.post('/login', {username: username, password: password})
 }
 
-export async function getVerifyCount() {
-    return await requests.get('/codes/count').then((response) => {
-        return response.data
-    })
+export function getPECourses(page) {
+    return requests.get(`/pe/${page}`)
 }
 
-export async function generateVerifyCode(username) {
-    return await requests.post(`/codes?username=${username}`).then((response) => {
-        return response.data
-    })
-}
-
-export async function login(username, password) {
-    return await requests.post('/login', {username: username, password: password}).then((response) => {
-        return response.data
-    })
-}
-
-export async function getPECoursesCount() {
-    let localPECount = 0
-    await requests.get('/pe/count').then((response) => {
-        localPECount = response.data
-    })
-    return Number(localPECount);
-}
-
-export async function getPCCoursesCount() {
-    let localPCCount = 0
-    await requests.get('/pc/count').then((response) => {
-        localPCCount = response.data
-    })
-    return Number(localPCCount);
-}
-
-export async function getPECourses(page) {
-    let localPECourses = []
-    await requests.get(`/pe/${page}`).then((response) => {
-        localPECourses = response.data
-    })
-    return localPECourses;
-}
-
-export async function getPCCourses(page) {
-    let localPCCourses = []
-    await requests.get(`/pc/${page}`).then((response) => {
-        localPCCourses = response.data
-    })
-    return localPCCourses;
+export function getPCCourses(page) {
+    return requests.get(`/pc/${page}`)
 }

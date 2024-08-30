@@ -4,7 +4,7 @@
             small
             background
             layout="prev, pager, next"
-            :page-size="10"
+            :page-size="20"
             :total="totalData"
             class="mt-4"
             :current-page="currentPage"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import {ref, defineEmits, defineProps} from 'vue'
+import { ref } from 'vue'
 
 const currentPage = ref(1)
 const changePage = defineEmits(['update:currentPage'])

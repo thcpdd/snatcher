@@ -36,11 +36,11 @@ const canBeLogin = computed(() => {
 });
 
 const _login = async () => {
-    let res = await login(username.value, password.value)
-    if (res.success) {
+    let response = await login(username.value, password.value)
+    if (response.data.code === 1) {
         window.location = '/'
     } else {
-        myMessage(res.msg, 'error')
+        myMessage(response.data.message, 'error')
     }
 }
 </script>

@@ -10,7 +10,6 @@ from fastapi import (
     Path,
     Body
 )
-from fastapi.responses import JSONResponse
 from starlette.websockets import WebSocketDisconnect
 from redis.asyncio.client import PubSub
 
@@ -23,7 +22,7 @@ from .validators import (
     PCValidator
 )
 from backend.utils.user import identity_validator, login, get_security_key
-from backend.response import SnatcherResponse, ResponseCodes, tuple2dict
+from backend.response import SnatcherResponse, ResponseCodes
 from snatcher.storage.cache import (
     runtime_logs_generator,
     AIORedis,
@@ -39,7 +38,7 @@ router = APIRouter(prefix='/manage', tags=['后台管理'])
 @router.get('/submitted/{page}', summary='查询所有已提交选课程数据', dependencies=[Depends(identity_validator)])
 def get_all_selected_data(page: int = Path(ge=1)):
     submitted_collection = collections['submitted']
-    cursor, total = submitted_collection.query(page)
+    cursor, total = submitted_collection.query(page, 20, sort=[('updated_at', -1)])
     results = []
     for data in cursor:
         validator = SubmittedValidator(**data)
@@ -50,7 +49,7 @@ def get_all_selected_data(page: int = Path(ge=1)):
 @router.get('/failure/{page}', summary='查询所有选课失败数据', dependencies=[Depends(identity_validator)])
 def get_failed_data(page: int = Path(ge=1)):
     failure_collection = collections['failure']
-    cursor, total = failure_collection.query(page)
+    cursor, total = failure_collection.query(page, 20, sort=[('created_at', -1)])
     results = []
     for data in cursor:
         validator = FailureValidator(**data)
@@ -61,7 +60,7 @@ def get_failed_data(page: int = Path(ge=1)):
 @router.get('/energy/{page}', summary='查询所有能量', dependencies=[Depends(identity_validator)])
 def get_verify_code(page: int):
     energy_collection = collections['energy']
-    cursor, total = energy_collection.query(page)
+    cursor, total = energy_collection.query(page, 20, sort=[('created_at', -1)])
     results = []
     for data in cursor:
         validator = EnergyValidator(**data)
@@ -80,7 +79,7 @@ def create_verify_code(username: str = Body(embed=True)):
 @router.get('/pc/{page}', summary='查询公选课列表', dependencies=[Depends(identity_validator)])
 def get_pc_course(page: int = Path(ge=1)):
     pc_collection = collections['pc']
-    cursor, total = pc_collection.query(page)
+    cursor, total = pc_collection.query(page, 20)
     results = []
     for data in cursor:
         validator = PCValidator(**data)
@@ -91,7 +90,7 @@ def get_pc_course(page: int = Path(ge=1)):
 @router.get('/pe/{page}', summary='查询体育课列表', dependencies=[Depends(identity_validator)])
 def get_pe_course(page: int = 1):
     pe_collection = collections['pe']
-    cursor, total = pe_collection.query(page)
+    cursor, total = pe_collection.query(page, 20)
     results = []
     for data in cursor:
         validator = PEValidator(**data)

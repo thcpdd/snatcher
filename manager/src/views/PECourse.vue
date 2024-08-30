@@ -8,7 +8,7 @@
             table-layout="auto"
             style="width: 95%"
         >
-            <el-table-column prop="id" label="序号" align="center"/>
+            <el-table-column prop="row_id" label="序号" align="center"/>
             <el-table-column prop="course_name" label="课程名" align="center"/>
             <el-table-column prop="course_id" label="课程ID" align="center"/>
             <el-table-column prop="grade" label="年级" align="center"/>
@@ -19,21 +19,23 @@
     </div>
 </template>
 <script setup>
-import {ref, onMounted} from "vue";
+import { ref, onMounted } from "vue";
 import Paginator from "@/components/Paginator.vue";
-import {getPECourses, getPECoursesCount} from "@/request.js";
+import { getPECourses } from "@/request.js";
 
 const total = ref(0)
 const currentPage = ref(1)
 const currentData = ref([])
 
 onMounted(async () => {
-    total.value = await getPECoursesCount()
-    currentData.value = await getPECourses(1)
+    const response = await getPECourses(1)
+    currentData.value = response.data.data['results']
+    total.value = Number(response.data.data['total'])
 })
 
 const pageChangeHandle = async (page) => {
     currentPage.value = page
-    currentData.value = await getPECourses(page)
+    const response = await getPECourses(page)
+    currentData.value = response.data.data['results']
 }
 </script>
