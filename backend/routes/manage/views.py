@@ -104,7 +104,7 @@ def superuser_login(form: LoginValidator):
     token = login(form.username, form.password)
     if not token:
         return SnatcherResponse(ResponseCodes.LOGIN_FAILED)
-    response = JSONResponse(tuple2dict(ResponseCodes.OK))
+    response = SnatcherResponse(ResponseCodes.OK)
     response.headers.setdefault('Access-Control-Expose-Headers', 'Authorization')
     response.headers.setdefault('Authorization', token)
     return response

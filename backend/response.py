@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Any
+
+from fastapi.responses import JSONResponse
 
 
 class ResponseCodes:
@@ -10,7 +12,7 @@ class ResponseCodes:
     INVALID_IDENTITY = (205, '身份无效')
     INVALID_TOKEN = (210, '凭证无效')
     LOGIN_FAILED = (215, '登录失败')
-    LOGIN_SUCCESS = (220, '登录失败')
+    LOGIN_SUCCESS = (220, '登录成功')
 
 
 def tuple2dict(message_tuple: tuple[int, str]):
@@ -18,11 +20,11 @@ def tuple2dict(message_tuple: tuple[int, str]):
     return {'code': code, 'message': message}
 
 
-class SnatcherResponse(BaseModel):
-    code: int
-    message: str
-    data: dict | list | None
-
-    def __init__(self, message_tuple: tuple[int, str], data: dict | list | None = None):
-        code, message = message_tuple
-        super().__init__(code=code, message=message, data=data)
+class SnatcherResponse(JSONResponse):
+    def __init__(self, message_tuple: tuple[int, str], data: Any = None, *args, **kwargs):
+        content = {
+            'code': message_tuple[0],
+            'message': message_tuple[1],
+            'data': data
+        }
+        super().__init__(content=content, *args, **kwargs)
