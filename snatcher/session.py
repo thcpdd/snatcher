@@ -33,8 +33,6 @@ from Crypto.PublicKey import RSA
 from redis import Redis
 
 from snatcher.conf import settings
-from snatcher.storage.mysql import fd_querier
-from snatcher.postman.mail import send_email
 
 
 class SessionManager:
@@ -165,6 +163,4 @@ async def async_check_and_set_session(username: str, password: str):
         if manager.has_sessions():
             return 1
         retry += 1
-    fd_querier.insert(username, '', '', '模拟登录失败', 0)
-    send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
     return -1

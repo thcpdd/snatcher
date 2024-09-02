@@ -1,8 +1,6 @@
 """
 Some operations of Redis here.
 """
-from typing import Generator
-
 from redis import Redis
 from redis.asyncio import Redis as AIORedis
 
@@ -11,26 +9,6 @@ from snatcher.conf import settings
 
 USING_CODES_NAME = 'using-codes'
 CHANNEL_NAME = 'logs-change'
-
-
-# Creating a global variable for controlling the public cache.
-public_cache = Redis(**settings.DATABASES['redis']['public'], decode_responses=True)
-
-
-# ------------------------------------------------ #
-# Some functions for controlling all verify codes. #
-# ------------------------------------------------ #
-def mark_code_is_using(verify_code: str):
-    public_cache.sadd(USING_CODES_NAME, verify_code)
-
-
-def remove_code_is_using(verify_code: str):
-    public_cache.srem(USING_CODES_NAME, verify_code)
-
-
-def judge_code_is_using(verify_code: str) -> int:
-    """if 1 is using, else not using"""
-    return public_cache.sismember(USING_CODES_NAME, verify_code)
 
 
 # -------------------------------------------------------------- #

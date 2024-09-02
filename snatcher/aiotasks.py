@@ -25,9 +25,9 @@ from snatcher.selector.async_selector import (
     AsynchronousPublicChoiceCourseSelector as AsyncPCSelector,
     AsynchronousPhysicalEducationCourseSelector as AsyncPESelector
 )
+from snatcher.storage.mongo import collections, get_security_key, decrypt_fuel, BSONObjectId, update_fuel_status
 from snatcher.selector.performers import async_selector_performer
-from snatcher.storage.mysql import fd_querier
-from snatcher.storage.cache import mark_code_is_using, remove_code_is_using
+from snatcher.postman.mail import send_email
 from snatcher.session import async_check_and_set_session
 
 
@@ -36,7 +36,7 @@ application.conf.result_backend = 'redis://127.0.0.1:6379/1'
 
 
 @application.task(
-    name='snatcher.aiotasks.async_physical_education_task',
+    name='pe_task',
     autoretry_for=(Exception,),
     max_retries=2,
     default_retry_delay=5
@@ -44,14 +44,14 @@ application.conf.result_backend = 'redis://127.0.0.1:6379/1'
 async def async_physical_education_task(
     username: str,
     email: str,
-    verify_code: str,
+    fuel_id: str,
     goals: list[tuple[str, str]]
 ):
-    await async_selector_performer(AsyncPESelector, username, email, verify_code, goals)
+    await async_selector_performer(AsyncPESelector, username, email, fuel_id, goals)
 
 
 @application.task(
-    name='snatcher.aiotasks.async_public_choice_task',
+    name='pc_task',
     autoretry_for=(Exception,),
     max_retries=2,
     default_retry_delay=5
@@ -59,40 +59,55 @@ async def async_physical_education_task(
 async def async_public_choice_task(
     username: str,
     email: str,
-    verify_code: str,
+    fuel_id: str,
     goals: list[tuple[str, str]]
 ):
-    await async_selector_performer(AsyncPCSelector, username, email, verify_code, goals)
+    await async_selector_performer(AsyncPCSelector, username, email, fuel_id, goals)
 
 
-aiotasks = {
-    'PC': async_public_choice_task,
-    'PE': async_physical_education_task
-}
-
-
-@application.task(name='snatcher.aiotasks.async_select_course')
+@application.task(name='select_course')
 async def async_select_course(
     goals: list[tuple[str, str]],
     course_type: str,
     **users
 ):
-    task: AnnotatedTask | None = aiotasks.get(course_type)
+    task: AnnotatedTask | None
+
+    match course_type:  # The version of Python >= 3.10
+        case 'PC':
+            task = async_public_choice_task
+        case 'PE':
+            task = async_physical_education_task
+        case _:
+            task = None
+
     username = users.get('username')
+
+    failure_collection = collections['failure']
+
     if task is None:
-        fd_querier.insert(username, '', '', '选择了不支持的课程类型', 0)
+        failure_collection.create(username, '', '', 0, '选择了不支持的课程类型')
         return
-    verify_code = users.get('verify_code')
-    mark_code_is_using(verify_code)
+
+    fuel = users.get('fuel')
+    key = get_security_key('fuel')
+    fuel_id = decrypt_fuel(fuel, key)
+    update_fuel_status(BSONObjectId(fuel_id), 'using')
+
     password = users.get('password')
+
     result = await async_check_and_set_session(username, password)
     if result == -1:
-        remove_code_is_using(verify_code)
+        failure_collection.create(username, '', '', 0, '模拟登录失败')
+        send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
+        update_fuel_status(BSONObjectId(fuel_id), status='unused')
         return
+
     countdown = settings.countdown()
     email = users.get('email')
+
     await task.apply_async(
-        args=(username, email, verify_code, goals),
+        args=(username, email, fuel_id, goals),
         countdown=countdown,
         task_id=f'{username}-{int(time.time())}'
     )

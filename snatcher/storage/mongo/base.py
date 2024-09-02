@@ -5,7 +5,7 @@ import pymongo
 from bson import ObjectId as BSONObjectId
 
 from snatcher.conf import settings
-from snatcher.utils.hashlib import encrypt_fuel, decrypt_fuel
+from snatcher.utils.hashlib import encrypt_fuel
 
 
 study_year = settings.SELECT_COURSE_YEAR
@@ -236,23 +236,3 @@ class MongoDBCollections:
 
     def get(self, collection_name: str, default=None) -> MongoDBCollectionTyping | None:
         return self[collection_name] or default
-
-
-def get_security_key(purpose: str):
-    security_collection = SecurityMongoDBCollection()
-    return security_collection.query_one(purpose)
-
-
-def get_fuel_status(username: str, fuel: str):
-    key = get_security_key('fuel')
-    row_id = decrypt_fuel(fuel, key)
-    energy_collection = EnergyMongoDBCollection()
-    energy = energy_collection.query_one(BSONObjectId(row_id))
-    if not energy:
-        return False
-    if energy['username'] != username:
-        return False
-    return energy['status']
-
-
-collections = MongoDBCollections()

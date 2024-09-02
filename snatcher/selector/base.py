@@ -22,10 +22,7 @@ from aiohttp import ClientSession, ClientTimeout
 from requests import Session
 
 from snatcher.conf import settings
-from snatcher.storage.mysql import (
-    fd_querier,
-    scd_querier,
-)
+from snatcher.storage.mongo import collections, BSONObjectId
 from snatcher.session import SessionManager
 from snatcher.postman.mail import send_email
 from snatcher.storage.cache import AsyncRuntimeLogger
@@ -73,7 +70,7 @@ class BaseCourseSelector:
         self.kch_id: Optional[str] = None  # 课程ID
         self.jxb_ids: Optional[str] = None  # 教学班ids
         self.xkkz_id: Optional[str] = None
-        self.latest_selected_data_id: Optional[int] = None
+        self.latest_selected_data_id: Optional[BSONObjectId] = None
 
 
 class CourseSelector(BaseCourseSelector):
@@ -125,7 +122,13 @@ class CourseSelector(BaseCourseSelector):
         self.real_name = course_name
         self.kch_id = course_id
         self.logger_key = f'{self.username}-{course_name}'
-        row_id = scd_querier.insert(self.username, email, course_name, self.logger_key)
+        submitted_collection = collections['submitted']
+        row_id = submitted_collection.create(
+            username=self.username,
+            email=email,
+            course_name=course_name,
+            log_key=self.logger_key
+        )
         self.latest_selected_data_id = row_id
 
     def mark_failed(self, failed_reason: str):
@@ -137,10 +140,11 @@ class CourseSelector(BaseCourseSelector):
             False,
             failed_reason
         )
-        fd_querier.insert(
-            self.username,
-            self.real_name,
-            self.logger.key,
-            failed_reason,
-            int(self.port)
+        failure_collection = collections['failure']
+        failure_collection.create(
+            username=self.username,
+            course_name=self.real_name,
+            log_key=self.logger_key,
+            reason=failed_reason,
+            port=int(self.port)
         )
