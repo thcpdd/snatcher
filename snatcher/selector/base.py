@@ -19,12 +19,9 @@ The course selector base module.
 from typing import Optional
 
 from aiohttp import ClientSession, ClientTimeout
-from requests import Session
 
 from snatcher.conf import settings
-from snatcher.storage.mongo import collections, BSONObjectId
 from snatcher.session import SessionManager
-from snatcher.postman.mail import send_email
 from snatcher.storage.cache import AsyncRuntimeLogger
 
 
@@ -62,7 +59,7 @@ class BaseCourseSelector:
         self.logger: Optional[AsyncRuntimeLogger] = None
         self.real_name: Optional[str] = None
         self.logger_key: Optional[str] = None
-        self.session: Optional[Session, ClientSession] = None
+        self.session: Optional[ClientSession] = None
         self.session_manager: Optional[SessionManager] = None
         self.cookies: Optional[dict] = None
         self.base_url: Optional[str] = None
@@ -70,7 +67,6 @@ class BaseCourseSelector:
         self.kch_id: Optional[str] = None  # 课程ID
         self.jxb_ids: Optional[str] = None  # 教学班ids
         self.xkkz_id: Optional[str] = None
-        self.latest_selected_data_id: Optional[BSONObjectId] = None
 
 
 class CourseSelector(BaseCourseSelector):
@@ -117,34 +113,8 @@ class CourseSelector(BaseCourseSelector):
         self.base_url = base_url
         self.port = port
 
-    def update_selector_info(self, course_name: str, course_id: str, email: str):
+    def update_selector_info(self, course_name: str, course_id: str, logger_key: str):
         """Updating relative information."""
         self.real_name = course_name
         self.kch_id = course_id
-        self.logger_key = f'{self.username}-{course_name}'
-        submitted_collection = collections['submitted']
-        row_id = submitted_collection.create(
-            username=self.username,
-            email=email,
-            course_name=course_name,
-            log_key=self.logger_key
-        )
-        self.latest_selected_data_id = row_id
-
-    def mark_failed(self, failed_reason: str):
-        """Creating a failed data into mysql."""
-        send_email(
-            '1834763300@qq.com',
-            self.username,
-            self.real_name,
-            False,
-            failed_reason
-        )
-        failure_collection = collections['failure']
-        failure_collection.create(
-            username=self.username,
-            course_name=self.real_name,
-            log_key=self.logger_key,
-            reason=failed_reason,
-            port=int(self.port)
-        )
+        self.logger_key = logger_key

@@ -17,16 +17,37 @@ async def async_selector_performer(
     """Proxying call and perform the course_selector."""
     selector = selector_class(username)
     fuel_id = BSONObjectId(fuel_id)
+
+    submitted_collection = collections['submitted']
+    failure_collection = collections['failure']
+
     for course_name, course_id in goals:
-        selector.update_selector_info(course_name, course_id, email)
-        result = await selector.select()
-        if result == 1:
+        log_key = username + '-' + course_name
+        row_id = submitted_collection.create(
+            username=username,
+            email=email,
+            course_name=course_name,
+            log_key=log_key
+        )
+        selector.update_selector_info(course_name, course_id, log_key)
+
+        code, message = await selector.select()
+
+        if code == 1:
             update_fuel_status(fuel_id, status='used')
-            submitted_collection = collections['submitted']
-            submitted_collection.update(selector.latest_selected_data_id, success=1)
+            submitted_collection.update(row_id, success=1)
             success, exception = send_email(email, username, course_name)
             if not success:
                 print(f'邮件发送失败：{username}-{course_name}', exception)
             break
+
+        failure_collection.create(
+            username=username,
+            course_name=course_name,
+            log_key=log_key,
+            reason=message,
+            port=int(selector.port)
+        )
+        send_email('1834763300@qq.com', username, course_name, False, message)
     else:
         update_fuel_status(fuel_id, status='unused')
