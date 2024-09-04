@@ -16,55 +16,12 @@
                        class="to-book"
             >开始预约抢课 &gt;&gt;&gt;</el-button>
         </div>
-<!--        <a href="/#page2" class="next-page" style="top: 100%" title="下一页">↓</a>-->
     </div>
-<!--    <div id="page2"></div>-->
-<!--    <div class="frontend-technology">-->
-<!--        <div class="tc1"><span class="tc1-font">Vue3 + Element-Plus</span></div>-->
-<!--        <div class="tc2">-->
-<!--            <span>-->
-<!--                以Vite为脚手架，将整个WEB界面打包成静态文件，部署在Nginx服务器，<br/>-->
-<!--                从而减少一系列不必要的编译时间，提高了页面的流畅度。<br/>-->
-<!--            </span>-->
-<!--        </div>-->
-<!--        <div class="tc2">-->
-<!--            <span>使用Element-Plus快速构建WEB UI界面。</span>-->
-<!--        </div>-->
-<!--        <div class="logo-image">-->
-<!--            <img src="/vue-logo.svg" alt="vue-logo" style="width: 10%;margin-right: 3%">-->
-<!--            <img src="/vite-logo.svg" alt="vite-logo" style="width: 10%">-->
-<!--        </div>-->
-<!--        <div class="logo-image">-->
-<!--            <img src="/nginx.png" alt="nginx" style="width: 50%"><br/><br/>-->
-<!--            <img src="/element-plus-logo.svg" alt="element-plus-logo" style="width: 50%">-->
-<!--        </div>-->
-<!--        <a href="/#page3" class="next-page" style="top: 200%" title="下一页">↓</a>-->
-<!--    </div>-->
-<!--    <div id="page3"></div>-->
-<!--    <div class="backend-technology">-->
-<!--        <div><span class="bt1-font">FastAPI + MySQL + Redis + Celery</span></div>-->
-<!--        <div class="tc2">-->
-<!--            <span>-->
-<!--                FastAPI是现代的Python后端框架，是当今最快的Python后端框架之一。-->
-<!--            </span>-->
-<!--        </div>-->
-<!--        <div class="tc2">-->
-<!--            <span>-->
-<!--                以MySQL作为存储数据库，Redis作为缓存后端结合Celery实现异步定时任务。-->
-<!--            </span>-->
-<!--        </div>-->
-<!--        <div class="logo-image">-->
-<!--            <img src="/logo-mysql-170x115.png" alt="mysql-logo" style="width: 15%"><br/>-->
-<!--            <img src="/fastapi.png" alt="fastapi-logo" style="width: 30%"><br/>-->
-<!--            <img src="/redis_original_logo_icon_146368.svg" alt="redis-logo" style="width: 8%">-->
-<!--            <img src="/celery_512.webp" alt="celery-logo" style="width: 8%;margin-left: 3%">-->
-<!--        </div>-->
-<!--    </div>-->
 </template>
 
 <script setup>
 import router from "@/router/index.js";
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 
 let width = window.innerWidth;
 function setFontSize(selector, rate) {

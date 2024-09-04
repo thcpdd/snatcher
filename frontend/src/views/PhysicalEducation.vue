@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 import Paginator from "@/components/Paginator.vue";
 import Drawer from "@/components/Drawer.vue";
 import { getPECourses } from "@/request.js";
@@ -70,6 +70,8 @@ const updateCourseData = async (page) => {
 
 
 onMounted(async () => {
+    const prepare = inject('prepare')
+    await prepare()
     await updateCourseData(1)
 })
 

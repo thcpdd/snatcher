@@ -1,6 +1,6 @@
 <template>
     <el-menu
-            :default-active="defaultPage"
+            :default-active="$route.path"
             class="el-menu-demo"
             mode="horizontal"
             :ellipsis="false"
@@ -22,12 +22,8 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
-import {RouterView} from 'vue-router'
-import {onMounted} from "vue";
-import {requests} from "@/request.js";
+import { RouterView } from 'vue-router'
 
-const defaultPage = ref('/')
 const imageUrl = () => {
     let isMobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
     if (isMobile) {
@@ -36,21 +32,6 @@ const imageUrl = () => {
     }
     return '/snatcher.svg'
 }
-
-onMounted(async () => {
-    // 动态设置 axios 的 baseUrl，以适应不同的部署环境。
-    if (!requests.defaults.baseURL) {
-        let url = sessionStorage.getItem('url')
-        if (!url) {
-             await requests.get('https://rainbow.hi.cn/snatcherapi').then((res) => {
-                url = res.data.url
-                sessionStorage.setItem('url', url)
-            })
-        }
-        requests.defaults.baseURL = url
-    }
-})
-
 </script>
 
 <style>
