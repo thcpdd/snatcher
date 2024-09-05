@@ -88,7 +88,7 @@ class AsynchronousCourseSelector(CourseSelector):
         if isinstance(self.timeout, int):
             self.timeout = aiohttp.ClientTimeout(total=self.timeout)
 
-        async with AsyncRuntimeLogger(self.logger_key) as self.logger:
+        async with AsyncRuntimeLogger(self.logger_key, self.fuel_id, self.index) as self.logger:
             for _ in range(3):
                 cookie_string, port = self.session_manager.get_random_session()
                 self.update_or_set_cookie(cookie_string, port)

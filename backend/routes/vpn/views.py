@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Path
+from fastapi import APIRouter, Path, Query
 
 from .validators import PCValidator, PEValidator, BookPEValidator, BookPCValidator
 from backend.response import SnatcherResponse, ResponseCodes
 from snatcher import async_public_choice, async_physical_education
-from snatcher.storage.mongo import get_fuel_status, collections
+from snatcher.storage.mongo import get_fuel_status, collections, get_security_key, BSONObjectId
+from snatcher.utils.hashlib import decrypt_fuel
+from snatcher.storage.cache import export_progress
 
 
 router = APIRouter(prefix='/vpn', tags=['VPN'])
@@ -88,3 +90,17 @@ async def book_pe_course(data: BookPEValidator):
     users = data.model_dump(exclude={'courses'})
     await async_physical_education(goals, **users)
     return SnatcherResponse(ResponseCodes.OK)
+
+
+@router.get('/user/progress', summary='查询用户选课进度')
+def select_course_progress(fuel: str = Query(pattern=r'^[A-Za-z0-9/+]{67}=$')):
+    key = get_security_key('fuel')
+    try:
+        fuel_id = decrypt_fuel(fuel, key)
+    except Exception as e:
+        print('fuel解码失败', e)
+        return SnatcherResponse(ResponseCodes.INVALID_TOKEN)
+    energy_collection = collections['energy']
+    energy = energy_collection.query_one(BSONObjectId(fuel_id))
+    data = export_progress(fuel_id, energy['username'])
+    return SnatcherResponse(ResponseCodes.OK, data)

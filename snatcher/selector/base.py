@@ -67,6 +67,8 @@ class BaseCourseSelector:
         self.kch_id: Optional[str] = None  # 课程ID
         self.jxb_ids: Optional[str] = None  # 教学班ids
         self.xkkz_id: Optional[str] = None
+        self.fuel_id: Optional[str] = None
+        self.index: Optional[str] = None
 
 
 class CourseSelector(BaseCourseSelector):
@@ -113,8 +115,9 @@ class CourseSelector(BaseCourseSelector):
         self.base_url = base_url
         self.port = port
 
-    def update_selector_info(self, course_name: str, course_id: str, logger_key: str):
+    def update_selector_info(self, course_name: str, course_id: str, logger_key: str, index: str):
         """Updating relative information."""
         self.real_name = course_name
         self.kch_id = course_id
         self.logger_key = logger_key
+        self.index = index

@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import PhysicalEducation from "@/views/PhysicalEducation.vue";
 import PublicChoice from "@/views/PublicChoice.vue";
+import Progress from "@/views/Progress.vue";
 import Index from "@/views/Index.vue";
 import NProgress from 'nprogress'
 
@@ -22,6 +23,11 @@ const router = createRouter({
             path: '/pe',
             name: 'pe',
             component: PhysicalEducation
+        },
+        {
+            path: '/progress',
+            name: 'progress',
+            component: Progress
         }
     ]
 })
