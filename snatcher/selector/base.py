@@ -17,11 +17,12 @@ The course selector base module.
         The father class of course selector.
 """
 from typing import Optional
+from yarl import URL
 
-from aiohttp import ClientSession, ClientTimeout
+from aiohttp import ClientSession, ClientTimeout, CookieJar
 
 from snatcher.conf import settings
-from snatcher.session import SessionManager
+from snatcher.session import SessionManager, get_session_manager
 from snatcher.storage.cache import AsyncRuntimeLogger
 
 
@@ -31,7 +32,7 @@ class BaseCourseSelector:
     term: int = settings.TERM
     select_course_year: int = settings.SELECT_COURSE_YEAR  # 选课学年码
 
-    def __init__(self, username: str):
+    def __init__(self, username: str, fuel_id: str = None):
         self.username: str = username  # 学号
         # 获取教学班 ids 所需的表单数据
         self.get_jxb_ids_data: dict = {
@@ -58,7 +59,6 @@ class BaseCourseSelector:
         self.jxb_ids_api: Optional[str] = None  # 获取教学班ids的api
         self.logger: Optional[AsyncRuntimeLogger] = None
         self.real_name: Optional[str] = None
-        self.logger_key: Optional[str] = None
         self.session: Optional[ClientSession] = None
         self.session_manager: Optional[SessionManager] = None
         self.cookies: Optional[dict] = None
@@ -67,8 +67,21 @@ class BaseCourseSelector:
         self.kch_id: Optional[str] = None  # 课程ID
         self.jxb_ids: Optional[str] = None  # 教学班ids
         self.xkkz_id: Optional[str] = None
-        self.fuel_id: Optional[str] = None
-        self.index: Optional[str] = None
+        self.fuel_id: Optional[str] = fuel_id or ''
+
+    async def __aenter__(self):
+        cookie_jar = CookieJar(unsafe=True)
+        if isinstance(self.timeout, int):
+            self.timeout = ClientTimeout(total=self.timeout)
+        self.session = ClientSession(cookie_jar=cookie_jar, timeout=self.timeout)
+        self.session_manager = get_session_manager(self.username)
+        self.logger = AsyncRuntimeLogger()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.session.close()
+        await self.logger.close()
+        self.session_manager.close()
 
 
 class CourseSelector(BaseCourseSelector):
@@ -114,10 +127,10 @@ class CourseSelector(BaseCourseSelector):
         self.jxb_ids_api = base_url + self.sub_jxb_ids_api
         self.base_url = base_url
         self.port = port
+        self.session.cookie_jar.update_cookies(self.cookies, URL(base_url))
 
-    def update_selector_info(self, course_name: str, course_id: str, logger_key: str, index: str):
+    async def update_selector_info(self, course_name: str, course_id: str, logger_key: str, index: str):
         """Updating relative information."""
         self.real_name = course_name
         self.kch_id = course_id
-        self.logger_key = logger_key
-        self.index = index
+        await self.logger.update_logger_info(logger_key, self.fuel_id, index)

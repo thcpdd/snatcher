@@ -70,12 +70,12 @@ class AsyncRuntimeLogger:
                 ...  # your operations
                 await logger.close()  # It is must !!!
     """
-    def __init__(self, key: str, fuel_id: str, index: str):
+    def __init__(self):
         _db_info = settings.DATABASES['redis']['log']
         self._connection = AIORedis(**_db_info)
-        self.key = key
-        self.fuel_id = fuel_id
-        self.index = index
+        self.key = 'runtime-log'
+        self.fuel_id = ''
+        self.index = ''
         self.count = 1
         self.messages = {
             'step-1': {
@@ -93,15 +93,21 @@ class AsyncRuntimeLogger:
         }
 
     async def __aenter__(self):
-        exists = await self._connection.exists(self.key)
-        if exists:
-            await self._connection.delete(self.key)
-        await self._connection.hset(self.key, 'fuel_id', self.fuel_id)
-        await self._connection.hset(self.key, 'index', self.index)
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
+
+    async def update_logger_info(self, logger_key: str, fuel_id: str = '', index: str = ''):
+        exists = await self._connection.exists(logger_key)
+        if exists:
+            await self._connection.delete(logger_key)
+        await self._connection.hset(logger_key, 'fuel_id', fuel_id)
+        await self._connection.hset(logger_key, 'index', index)
+        self.key = logger_key
+        self.fuel_id = fuel_id
+        self.index = index
+        self.count = 1
 
     def wrapper(self, name: str):
         return name + '-' + str(self.count)

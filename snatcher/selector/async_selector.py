@@ -5,11 +5,9 @@ All asynchronous course selectors will use `aiohttp` package to send request.
 import re
 import asyncio
 
-import aiohttp
 from aiohttp.client_exceptions import ContentTypeError
 
-from snatcher.session import get_session_manager
-from .base import CourseSelector, AsyncRuntimeLogger
+from .base import CourseSelector
 
 
 class AsynchronousCourseSelector(CourseSelector):
@@ -61,49 +59,42 @@ class AsynchronousCourseSelector(CourseSelector):
         return 1, ''
 
     async def simulate_request(self):
-        async with aiohttp.ClientSession(timeout=self.timeout, cookies=self.cookies) as self.session:
-            code, message = await self.prepare_for_selecting()
-            if code == 0:
-                return 0, message
-            self.select_course_data['kch_id'] = self.kch_id
-            self.select_course_data['jxb_ids'] = self.jxb_ids
-            response = await self.session.post(self.select_course_api, data=self.select_course_data)
-            try:
-                json_data = await response.json()
-            except ContentTypeError:
-                await self.logger.set('step-4', message='选课异常')
-                return 0, '选课异常'
-            else:
-                if json_data['flag'] == '1':
-                    await self.logger.set('step-4', message='选课成功')
-                    return 1, ''
-                message = json_data['msg']
-                await self.logger.set('step-4', message=message)
-                return 0, message
+        code, message = await self.prepare_for_selecting()
+        if code == 0:
+            return 0, message
+        self.select_course_data['kch_id'] = self.kch_id
+        self.select_course_data['jxb_ids'] = self.jxb_ids
+        response = await self.session.post(self.select_course_api, data=self.select_course_data)
+        try:
+            json_data = await response.json()
+        except ContentTypeError:
+            await self.logger.set('step-4', message='选课异常')
+            return 0, '选课异常'
+        else:
+            if json_data['flag'] == '1':
+                await self.logger.set('step-4', message='选课成功')
+                return 1, ''
+            message = json_data['msg']
+            await self.logger.set('step-4', message=message)
+            return 0, message
 
     async def select(self):
-        if self.session_manager is None:
-            self.session_manager = get_session_manager(self.username)
+        for _ in range(3):
+            cookie_string, port = self.session_manager.get_random_session()
+            self.update_or_set_cookie(cookie_string, port)
 
-        if isinstance(self.timeout, int):
-            self.timeout = aiohttp.ClientTimeout(total=self.timeout)
+            try:
+                code, message = await self.simulate_request()
+            except Exception as exception:
+                await self.logger.set('step-4', message=str(exception))
+                await self.logger.retry()
+                await asyncio.sleep(20)
+                continue
 
-        async with AsyncRuntimeLogger(self.logger_key, self.fuel_id, self.index) as self.logger:
-            for _ in range(3):
-                cookie_string, port = self.session_manager.get_random_session()
-                self.update_or_set_cookie(cookie_string, port)
-
-                try:
-                    code, message = await self.simulate_request()
-                except Exception as exception:
-                    await self.logger.set('step-4', message=str(exception))
-                    await self.logger.retry()
-                    await asyncio.sleep(20)
-
-                if code == 1:
-                    return 1, ''
-                return 0, message
-            return 0, '超出最大重试次数'
+            if code == 1:
+                return 1, ''
+            return 0, message
+        return 0, '超出最大重试次数'
 
 
 class AsynchronousPublicChoiceCourseSelector(AsynchronousCourseSelector):
