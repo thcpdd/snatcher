@@ -219,6 +219,8 @@ def export_progress(fuel_id: str, username: str):
             sorted_keys = sorted(cache_log.keys(), reverse=True)
             split_list = sorted_keys[0].split('-')
             last_step, count = int(split_list[1]), int(split_list[2])
+            if last_step == 4 and cache_log[sorted_keys[0]] != '选课成功':
+                last_step = 3
             progress[index] = [last_step, count]
 
         user_log['progress'] = progress
