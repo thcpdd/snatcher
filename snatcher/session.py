@@ -84,67 +84,75 @@ def get_session_manager(username: str):
 
 
 class AsyncSessionSetter:
-    def __init__(self, username: str, password: str, base_url: str, port: str):
+    def __init__(self, username: str, password: str):
         self.username = username
         self.password = password
-        self.base_url = base_url
-        self.port = port
-        self.session = None
+        self.session: aiohttp.ClientSession | None = None
 
-    async def get_public_key(self):
-        url = self.base_url + '/xtgl/login_getPublicKey.html'
+    async def __aenter__(self):
+        cookie_jar = aiohttp.CookieJar(unsafe=True)
+        timeout = aiohttp.ClientTimeout(total=settings.SETTING_SESSION_TIMEOUT)
+        self.session = aiohttp.ClientSession(cookie_jar=cookie_jar, timeout=timeout)
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session is not None:
+            await self.session.close()
+
+    async def get_public_key(self, base_url: str):
+        url = base_url + '/xtgl/login_getPublicKey.html'
         async with await self.session.get(url) as response:
             return await response.json()
 
-    async def encrypt_password(self):
-        public_key = await self.get_public_key()
+    async def encrypt_password(self, base_url: str):
+        public_key = await self.get_public_key(base_url)
         n, e = (int(base64.b64decode(value.encode()).hex(), 16)
                 for value in public_key.values())
         rsa_key = RSA.construct((n, e))
         cipher = PKCS1_v1_5.new(rsa_key)
         return base64.b64encode(cipher.encrypt(self.password.encode())).decode()
 
-    async def set_session(self):
+    async def set_session(self, base_url: str, port: str):
         """
         默认ClientSession使用的是严格模式的 aiohttp.CookieJar. RFC 2109，
         明确的禁止接受url和ip地址产生的cookie，只能接受 DNS 解析IP产生的cookie。
         可以通过设置aiohttp.CookieJar 的 unsafe=True 来配置
         """
-        cookie_jar = aiohttp.CookieJar(unsafe=True)
-        timeout = aiohttp.ClientTimeout(total=settings.SETTING_SESSION_TIMEOUT)
+        url = base_url + '/xtgl/login_slogin.html'
         try:
-            async with aiohttp.ClientSession(cookie_jar=cookie_jar, timeout=timeout) as self.session:
-                encrypt_password = await self.encrypt_password()
-                url = self.base_url + '/xtgl/login_slogin.html'
-                data = {
-                    'language': 'zh_CN',
-                    'yhm': self.username,
-                    'mm': encrypt_password
-                }
-                async with await self.session.post(url, data=data, allow_redirects=False) as response:
-                    if response.status == 302:  # 302表示将要重定向，登录成功
-                        cookies = self.session.cookie_jar.filter_cookies(URL(url))
-                        return cookies.get('JSESSIONID').value, self.port
-                    return '', self.port
+            encrypt_password = await self.encrypt_password(base_url)
+            data = {'language': 'zh_CN', 'yhm': self.username, 'mm': encrypt_password}
+            response = await self.session.post(url, data=data, allow_redirects=False)
         except Exception as exception:
             print(exception)
-            return '', self.port
+            return '', port
+        else:
+            if response.status == 302:  # 302表示将要重定向，登录成功
+                cookies = self.session.cookie_jar.filter_cookies(URL(url))
+                return cookies.get('JSESSIONID').value, port
+            return '', port
 
 
 async def async_set_session(username: str, password: str):
-    if settings.countdown() > 0:
-        # 没有开始选课时，获取所有主机的 Cookie
-        setters = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)
-                   for port in settings.PORTS]
-    else:
-        # 开始选课时，只获取一个主机的 Cookie
-        port = choice(settings.PORTS)
-        setters = [AsyncSessionSetter(username, password, 'http://10.3.132.%s/jwglxt' % port, port)]
-    tasks = [asyncio.create_task(setter.set_session()) for setter in setters]
-    cookies_info = await asyncio.gather(*tasks, return_exceptions=True)
+    if settings.countdown() > 0:  # 没有开始选课时，获取所有主机的 Cookie
+        ports = settings.PORTS
+    else:  # 开始选课时，只获取一个主机的 Cookie
+        ports = [choice(settings.PORTS)]
+
+    base_url = 'http://10.3.132.%s/jwglxt'
+
+    async with AsyncSessionSetter(username, password) as setter:
+        tasks = []
+
+        for port in ports:
+            set_session = setter.set_session(base_url % port, port)
+            task = asyncio.create_task(set_session)
+            tasks.append(task)
+
+        cookies_info = await asyncio.gather(*tasks, return_exceptions=True)
+
     manager = get_session_manager(username)
-    for cookie_info in cookies_info:
-        cookie, port = cookie_info
+    for cookie, port in cookies_info:
         manager.save_cookie(cookie, port)
 
 
@@ -157,10 +165,8 @@ async def async_check_and_set_session(username: str, password: str):
     manager = get_session_manager(username)
     if manager.has_sessions():
         return 1
-    retry = 0
-    while retry < 3:
+    for _ in range(3):
         await async_set_session(username, password)
         if manager.has_sessions():
             return 1
-        retry += 1
     return -1
