@@ -81,11 +81,12 @@ class PCMongoDBCollection(MongoDBCollection):
         'period': period
     }
 
-    def create(self, course_name: str, course_id: str, course_no: str):
+    def create(self, course_name: str, course_id: str, jxb_id: str, jxbmc: str):
         document = {
             'course_name': course_name,
             'course_id': course_id,
-            'course_no': course_no
+            'jxb_id': jxb_id,
+            'jxbmc': jxbmc
         }
         document.update(self.params)
         result = self.collection.insert_one(document)
@@ -99,11 +100,13 @@ class PEMongoDBCollection(MongoDBCollection):
         'term': term,
     }
 
-    def create(self, course_name: str, course_id: str, grade: int):
+    def create(self, course_name: str, course_id: str, grade: int, jxb_id: str, jxbmc: str):
         document = {
             'course_name': course_name,
             'course_id': course_id,
-            'grade': grade
+            'grade': grade,
+            'jxb_id': jxb_id,
+            'jxbmc': jxbmc
         }
         document.update(self.params)
         result = self.collection.insert_one(document)

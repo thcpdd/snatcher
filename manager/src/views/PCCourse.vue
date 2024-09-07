@@ -11,10 +11,11 @@
             <el-table-column prop="row_id" label="序号" align="center"/>
             <el-table-column prop="course_name" label="课程名" align="center"/>
             <el-table-column prop="course_id" label="课程ID" align="center"/>
-            <el-table-column prop="course_no" label="课程号" align="center"/>
             <el-table-column prop="study_year" label="选课学年" align="center"/>
             <el-table-column prop="term" label="学期" align="center"/>
-            <el-table-column prop="period" label="学期阶段" align="center"/>
+            <el-table-column prop="period" label="阶段" align="center"/>
+            <el-table-column prop="jxb_id" label="教学班ID" align="center"/>
+            <el-table-column prop="jxbmc" label="教学班名称" align="center"/>
         </el-table>
         <paginator :total-data="total" @update:current-page="pageChangeHandle"></paginator>
     </div>

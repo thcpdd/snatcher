@@ -44,6 +44,8 @@ class CourseValidator(BaseModel):
     course_name: str
     study_year: int
     term: int
+    jxb_id: str
+    jxbmc: str
 
 
 class PEValidator(CourseValidator):
@@ -51,5 +53,4 @@ class PEValidator(CourseValidator):
 
 
 class PCValidator(CourseValidator):
-    course_no: str
     period: int

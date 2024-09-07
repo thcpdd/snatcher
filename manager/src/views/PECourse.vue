@@ -14,6 +14,8 @@
             <el-table-column prop="grade" label="年级" align="center"/>
             <el-table-column prop="study_year" label="选课学年" align="center"/>
             <el-table-column prop="term" label="学期" align="center"/>
+            <el-table-column prop="jxb_id" label="教学班ID" align="center"/>
+            <el-table-column prop="jxbmc" label="教学班名称" align="center"/>
         </el-table>
         <paginator :total-data="total" @update:current-page="pageChangeHandle"></paginator>
     </div>

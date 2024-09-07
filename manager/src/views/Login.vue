@@ -55,7 +55,6 @@ const _login = async () => {
 body {
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("/wallhaven-72yzje.jpg");
 }
 .content {
     background-color: unset;

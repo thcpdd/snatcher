@@ -20,7 +20,7 @@ import requests
 from requests.exceptions import JSONDecodeError
 
 from snatcher.conf import settings
-from snatcher.storage.mysql import get_db_connection
+from snatcher.storage.mongo import collections
 
 
 class ParseStudentID:
@@ -49,11 +49,11 @@ class ParseStudentID:
         return self.major_id + self.student_class
 
 
-def update_data(grade: str = None):
+def update_data(port: str, cookie: str, grade: int = None):
     study_year = settings.SELECT_COURSE_YEAR
     term = settings.TERM
 
-    url = 'http://10.3.132.7/jwglxt/xsxk/zzxkyzb_cxZzxkYzbPartDisplay.html?gnmkdm=N253512'
+    url = 'http://10.3.132.%s/jwglxt/xsxk/zzxkyzb_cxZzxkYzbPartDisplay.html?gnmkdm=N253512' % port
     data = {
         'bklx_id': 0,
         'xkxnm': study_year,
@@ -74,23 +74,15 @@ def update_data(grade: str = None):
         'jg_id': '206',
     }
     headers = {
-        'Cookie': 'JSESSIONID=E80A9694E3E2E07B645134E81F81016A'
+        'Cookie': 'JSESSIONID=%s' % cookie
     }
     if grade is not None:
+        collection = collections['pe']
         data['njdm_id'] = grade  # add a must field
         data['kklxdm'] = '05'
-        sql = """INSERT INTO pe 
-            (`course_name`, `course_id`, `grade`, `study_year`, `term`)
-            VALUES (%s,%s,%s,%s,%s);
-        """
     else:
+        collection = collections['pc']
         data['kklxdm'] = '10'
-        sql = """INSERT INTO pc 
-            (`course_name`, `course_id`, `course_no`, `study_year`, `term`, `period`)
-            VALUES (%s,%s,%s,%s,%s,%s);
-        """
-    db = get_db_connection()
-    cursor = db.cursor()
 
     response = requests.post(url, data=data, headers=headers)
 
@@ -106,22 +98,27 @@ def update_data(grade: str = None):
     if grade is not None:
         for json_data in temp_list:
             print(json_data)
-            cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], grade, study_year, term))
+            collection.create(
+                course_name=json_data['kcmc'],
+                course_id=json_data['kch_id'],
+                jxb_id=json_data['jxb_id'],
+                jxbmc=json_data['jxbmc'],
+                grade=grade
+            )
     else:
         for json_data in temp_list:
             print(json_data)
-            cursor.execute(sql, (json_data['kcmc'], json_data['kch_id'], json_data['kch'], study_year, term,
-                                 settings.PERIOD))
-
-    db.commit()
-
-    cursor.close()
-    db.close()
-
-
-def update_pc_data():
-    update_data()
+            collection.create(
+                course_name=json_data['kcmc'],
+                course_id=json_data['kch_id'],
+                jxb_id=json_data['jxb_id'],
+                jxbmc=json_data['jxbmc']
+            )
 
 
-def update_pe_data(grade: str):
-    update_data(grade)
+def update_pc_data(port: str, cookie: str):
+    update_data(port, cookie)
+
+
+def update_pe_data(port: str, cookie: str, grade: int):
+    update_data(port, cookie, grade)

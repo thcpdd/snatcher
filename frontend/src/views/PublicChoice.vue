@@ -6,10 +6,10 @@
         <el-collapse-item
             v-for="course in courseData"
             :title="course.course_name"
-            :name="course.course_id"
+            :name="course['jxb_id']"
         >
-            <div style="float: left">课程ID：{{ course.course_id }}</div><br/>
-            <div style="float: left">课程号：{{ course.course_no }}</div><br/>
+            <div style="float: left">课程ID：{{ course['course_id'] }}</div><br/>
+            <div style="float: left">教学班名称：{{ course['jxbmc'] }}</div><br/>
 <!--            <div style="float: left;display: inline-block">-->
 <!--                <span>已选择人数：<b>12</b></span>-->
 <!--                <el-tooltip :content="tooltipContent" effect="light" :placement="tooltipPlacement" raw-content>-->
@@ -25,7 +25,7 @@
                 style="float: right; margin-bottom: 4px;margin-right: 8px"
                 size="small"
                 @click="currentSelecting.push(course);myMessage('添加课程成功，请继续选择其他课程 或 点击下方的确认按钮', 'success')"
-            >选择</el-button>
+            >添加</el-button>
         </el-collapse-item>
     </el-collapse>
     <!-- 翻页 -->

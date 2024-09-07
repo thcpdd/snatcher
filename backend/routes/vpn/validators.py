@@ -15,6 +15,8 @@ class BookCourseValidator(BaseModel):
 class CourseValidator(BaseModel):
     course_id: str
     course_name: str
+    jxb_id: str
+    jxbmc: str
 
 
 class PEValidator(CourseValidator):
@@ -22,7 +24,7 @@ class PEValidator(CourseValidator):
 
 
 class PCValidator(CourseValidator):
-    course_no: str
+    pass
 
 
 class BookPEValidator(BookCourseValidator):
