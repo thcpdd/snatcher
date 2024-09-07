@@ -1,3 +1,5 @@
+from enum import Enum
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -33,3 +35,8 @@ class BookPEValidator(BookCourseValidator):
 
 class BookPCValidator(BookCourseValidator):
     courses: list[PCValidator]
+
+
+class CourseTypeEnum(Enum):
+    pc = '10'
+    pe = '05'

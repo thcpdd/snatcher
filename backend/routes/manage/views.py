@@ -22,6 +22,7 @@ from .validators import (
     PCValidator
 )
 from backend.utils.user import identity_validator, login, get_security_key
+from backend.routes.vpn.validators import CourseTypeEnum
 from backend.response import SnatcherResponse, ResponseCodes
 from snatcher.storage.cache import (
     runtime_logs_generator,
@@ -29,7 +30,9 @@ from snatcher.storage.cache import (
     CHANNEL_NAME,
     parse_message
 )
+from snatcher.conf import settings
 from snatcher.storage.mongo import collections
+from snatcher.aiotasks import application, query_selected_number_task
 
 
 router = APIRouter(prefix='/manage', tags=['后台管理'])
@@ -165,3 +168,23 @@ async def monitor_logs_change(websocket: WebSocket, token: str = Query(default='
     except WebSocketDisconnect:
         await p.unsubscribe()
         await conn.aclose()
+
+
+@router.post('/task/selection', summary='发送已选择课程人数任务', dependencies=[Depends(identity_validator)])
+async def send_query_selected_number_task(
+    course_type: CourseTypeEnum = Body(),
+    username: str = Body(),
+    cookie: str = Body(),
+    port: str = Body(),
+    frequency: int = Body()
+):
+    async with application.setup():
+        await query_selected_number_task.delay(course_type.value, username, cookie, port, frequency)
+    return SnatcherResponse(ResponseCodes.OK)
+
+
+@router.delete('/task/selection', summary='停止执行已选择课程人数任务', dependencies=[Depends(identity_validator)])
+async def stop_query_selected_number_task(course_type: CourseTypeEnum = Body(embed=True)):
+    async with AIORedis(**settings.DATABASES['redis']['public']) as conn:
+        await conn.set(course_type.value + '_stop', '1')
+    return SnatcherResponse(ResponseCodes.OK)

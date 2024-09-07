@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Path, Query
+import asyncio
 
-from .validators import PCValidator, PEValidator, BookPEValidator, BookPCValidator
+from fastapi import APIRouter, Path, Query
+from redis.asyncio import Redis as AIORedis
+
+from .validators import PCValidator, PEValidator, BookPEValidator, BookPCValidator, CourseTypeEnum
 from backend.response import SnatcherResponse, ResponseCodes
 from snatcher import async_public_choice, async_physical_education
 from snatcher.storage.mongo import get_fuel_status, collections, get_security_key, BSONObjectId
 from snatcher.utils.hashlib import decrypt_fuel
 from snatcher.storage.cache import export_progress
+from snatcher.conf import settings
 
 
 router = APIRouter(prefix='/vpn', tags=['VPN'])
@@ -103,4 +107,11 @@ def select_course_progress(fuel: str = Query(pattern=r'^[A-Za-z0-9/+]{67}=$')):
     energy_collection = collections['energy']
     energy = energy_collection.query_one(BSONObjectId(fuel_id))
     data = export_progress(fuel_id, energy['username'])
+    return SnatcherResponse(ResponseCodes.OK, data)
+
+
+@router.get('/selection', summary='查询课程已选择人数')
+async def query_course_selected(course_type: CourseTypeEnum):
+    async with AIORedis(**settings.DATABASES['redis']['public'], decode_responses=True) as conn:
+        data = await conn.hgetall(course_type.value + '_course_stock')
     return SnatcherResponse(ResponseCodes.OK, data)

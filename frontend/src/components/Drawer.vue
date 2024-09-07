@@ -37,7 +37,11 @@
             </div>
         </div>
         <p>**请确保所填信息完全正确，选课结果将会发送到该邮箱。</p>
-        <el-button type="primary" @click="submitSelected" :disabled="!canBeSubmitted || submitting">提交</el-button>
+        <el-button
+            type="primary"
+            @click="submitSelected"
+            :disabled="!canBeSubmitted || submitting"
+        >提交</el-button>
     </el-drawer>
 </template>
 
@@ -45,6 +49,7 @@
 import { ref, computed, watch } from 'vue'
 import { myMessage } from "@/message.js";
 import { bookCourse } from "@/request.js";
+import { ElMessageBox } from "element-plus";
 
 const username = ref('')
 const password = ref('')
@@ -54,6 +59,7 @@ const submitting = ref(false)
 const expectDelete = ref(null)  // 记录要撤销的课程
 
 let emailRegex = /.+@.+\.com/
+const fuelRegex = /^[A-Za-z0-9/+]{67}=$/
 
 // 判断当前输入是否能提交
 const canBeSubmitted = computed(() => {
@@ -61,8 +67,7 @@ const canBeSubmitted = computed(() => {
         password.value !== '' &&
         email.value !== '' &&
         props.currentSelecting.length > 0 &&
-        fuel.value !== '' &&
-        emailRegex.test(email.value)
+        fuel.value !== ''
 })
 
 // 接收父组件传来的参数
@@ -93,24 +98,38 @@ watch(expectDelete, (course_id) => {
 })
 
 async function submitSelected() {
-    let pathName = location.pathname
-    let data = {
-        username: username.value,
-        password: password.value,
-        email: email.value,
-        courses: props.currentSelecting,
-        fuel: fuel.value
+    if (!emailRegex.test(email.value)) {
+        myMessage('邮箱格式不正确', 'error')
+        return
     }
-    submitting.value = true
-    const response = await bookCourse(pathName, data)
-    if (response.data.code === 1) {
-        myMessage('预约信息提交成功！', 'success')
-        emits('update:openDrawer', false)
-        emits('update:currentSelecting', [])
-    } else {
-        myMessage(response.data.message, 'error')
+    if (!fuelRegex.test(fuel.value)) {
+        myMessage('抢课码格式不正确', 'error')
+        return
     }
-    submitting.value = false
+    await ElMessageBox.confirm('请再次仔细检查当前所有信息是否完全正确，否则可能会影响选课结果噢', '确认要提交嘛？' , {
+        confirmButtonText: '确认提交',
+        cancelButtonText: '再检查检查',
+        type: 'warning'
+    }).then(async () => {
+        let pathName = location.pathname
+        let data = {
+            username: username.value,
+            password: password.value,
+            email: email.value,
+            courses: props.currentSelecting,
+            fuel: fuel.value
+        }
+        submitting.value = true
+        const response = await bookCourse(pathName, data)
+        if (response.data.code === 1) {
+            myMessage('预约信息提交成功！', 'success')
+            emits('update:openDrawer', false)
+            emits('update:currentSelecting', [])
+        } else {
+            myMessage(response.data.message, 'error')
+        }
+        submitting.value = false
+    })
 }
 </script>
 

@@ -52,3 +52,7 @@ export function bookCourse(pathName, data) {
 export function searchProgress(fuel) {
     return requests.get('/user/progress', {params: {fuel: fuel}})
 }
+
+export function querySelectedNumber(course_type) {
+    return requests.get('/selection', {params: {course_type: course_type}})
+}
