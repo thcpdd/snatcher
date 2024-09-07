@@ -17,7 +17,6 @@ async def async_selector_performer(
     """Proxying call and perform the course_selector."""
     submitted_collection = collections['submitted']
     failure_collection = collections['failure']
-    index = 1
 
     async with selector_class(username, fuel_id) as selector:
         fuel_id = BSONObjectId(fuel_id)
@@ -30,7 +29,7 @@ async def async_selector_performer(
                 course_name=course_name,
                 log_key=log_key
             )
-            await selector.update_selector_info(course_name, course_id, log_key, str(index))
+            await selector.update_selector_info(course_name, course_id, log_key)
 
             code, message = await selector.select()
 
@@ -50,6 +49,5 @@ async def async_selector_performer(
                 port=int(selector.port)
             )
             send_email('1834763300@qq.com', username, course_name, False, message)
-            index += 1
         else:
             update_fuel_status(fuel_id, status='unused')

@@ -68,6 +68,7 @@ class BaseCourseSelector:
         self.jxb_ids: Optional[str] = None  # 教学班ids
         self.xkkz_id: Optional[str] = None
         self.fuel_id: Optional[str] = fuel_id or ''
+        self.index: Optional[int] = None
 
     async def __aenter__(self):
         cookie_jar = CookieJar(unsafe=True)
@@ -129,8 +130,12 @@ class CourseSelector(BaseCourseSelector):
         self.port = port
         self.session.cookie_jar.update_cookies(self.cookies, URL(base_url))
 
-    async def update_selector_info(self, course_name: str, course_id: str, logger_key: str, index: str):
+    async def update_selector_info(self, course_name: str, course_id: str, logger_key: str):
         """Updating relative information."""
         self.real_name = course_name
         self.kch_id = course_id
-        await self.logger.update_logger_info(logger_key, self.fuel_id, index)
+        if self.index is None:
+            self.index = 1
+        else:
+            self.index += 1
+        await self.logger.update_logger_info(logger_key, self.fuel_id, str(self.index))
