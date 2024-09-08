@@ -1,9 +1,9 @@
-import asyncio
+from datetime import datetime
 
 from fastapi import APIRouter, Path, Query
 from redis.asyncio import Redis as AIORedis
 
-from .validators import PCValidator, PEValidator, BookPEValidator, BookPCValidator, CourseTypeEnum
+from .validators import PCValidator, PEValidator, BookCourseValidator, CourseTypeEnum
 from backend.response import SnatcherResponse, ResponseCodes
 from snatcher import async_public_choice, async_physical_education
 from snatcher.storage.mongo import get_fuel_status, collections, get_security_key, BSONObjectId
@@ -74,25 +74,35 @@ def search_pc_course(keyword: str):
     return SnatcherResponse(ResponseCodes.OK, {'results': results, 'total': total})
 
 
-@router.post('/pc', summary='预约公选课')
-async def book_pc_course(data: BookPCValidator):
-    message_tuple = check_fuel(data.username, data.fuel)
+@router.post('/book', summary='预约抢课')
+async def book_course(book_data: BookCourseValidator):
+    if datetime.now() < settings.system_opening_time():
+        return SnatcherResponse(ResponseCodes.NOT_IN_VALID_TIME)
+
+    course_type = book_data.course_type
+    if course_type != settings.OPENING_TYPE:
+        return SnatcherResponse(ResponseCodes.NOT_IN_VALID_TIME)
+
+    message_tuple = check_fuel(book_data.username, book_data.fuel)
     if message_tuple[0] != 1:
         return SnatcherResponse(message_tuple)
-    goals = data.packing_data()
-    users = data.model_dump(exclude={'courses'})
-    await async_public_choice(goals, **users)
-    return SnatcherResponse(ResponseCodes.OK)
 
+    match course_type:
+        case 'pc':
+            task_coroutine = async_public_choice
+        case 'pe':
+            task_coroutine = async_physical_education
+        case _:
+            task_coroutine = None
 
-@router.post('/pe', summary='预约体育课')
-async def book_pe_course(data: BookPEValidator):
-    message_tuple = check_fuel(data.username, data.fuel)
-    if message_tuple[0] != 1:
-        return SnatcherResponse(message_tuple)
-    goals = data.packing_data()
-    users = data.model_dump(exclude={'courses'})
-    await async_physical_education(goals, **users)
+    if task_coroutine is None:
+        return SnatcherResponse(ResponseCodes.ILLEGAL_REQUEST)
+
+    goals = book_data.packing_data()
+    users = book_data.model_dump(exclude={'courses', 'course_type'})
+
+    await task_coroutine(goals, **users)
+
     return SnatcherResponse(ResponseCodes.OK)
 
 
@@ -115,3 +125,9 @@ async def query_course_selected(course_type: CourseTypeEnum):
     async with AIORedis(**settings.DATABASES['redis']['public'], decode_responses=True) as conn:
         data = await conn.hgetall(course_type.value + '_course_stock')
     return SnatcherResponse(ResponseCodes.OK, data)
+
+
+@router.get('/system/opening-time', summary='查询系统开放时间')
+def query_system_opening_time():
+    opening_time = settings.system_opening_time().strftime('%Y-%m-%d %H:%M:%S')
+    return SnatcherResponse(ResponseCodes.OK, {'opening_time': opening_time})

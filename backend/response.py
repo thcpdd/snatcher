@@ -9,6 +9,7 @@ class ResponseCodes:
     INVALID_FUEL = (100, '无效的燃料，火箭启动失败')
     FUEL_IS_USING = (105, '燃料正在被使用中……')
     FUEL_WAS_USED = (110, '燃料已被耗尽')
+    NOT_IN_VALID_TIME = (115, '系统暂未开放')
     ILLEGAL_REQUEST = (200, '非法请求')
     INVALID_IDENTITY = (205, '身份无效')
     INVALID_TOKEN = (210, '凭证无效')

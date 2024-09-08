@@ -1,5 +1,6 @@
 <template>
     <div class="table-title"><span>体育课课程信息</span></div>
+    <opening-time/>
     <search-bar @search="content => {courseData = content; totalData = content.length}" :course-type="'pe'"></search-bar>
     <el-collapse class="course-box" accordion>
         <el-collapse-item
@@ -46,6 +47,7 @@ import Drawer from "@/components/Drawer.vue";
 import { getPECourses } from "@/request.js";
 import SearchBar from "@/components/SearchBar.vue";
 import { myMessage } from "@/message.js";
+import OpeningTime from "@/components/OpeningTime.vue"
 
 
 const courseData = ref([])

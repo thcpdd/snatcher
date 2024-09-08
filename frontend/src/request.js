@@ -45,8 +45,8 @@ export async function searchCourse(courseType, searchContent) {
     return searchResult
 }
 
-export function bookCourse(pathName, data) {
-    return requests.post(pathName, data)
+export function bookCourse(data) {
+    return requests.post('/book', data)
 }
 
 export function searchProgress(fuel) {
@@ -55,4 +55,8 @@ export function searchProgress(fuel) {
 
 export function querySelectedNumber(course_type) {
     return requests.get('/selection', {params: {course_type: course_type}})
+}
+
+export function querySystemOpeningTime() {
+    return requests.get('/system/opening-time')
 }

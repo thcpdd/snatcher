@@ -1,5 +1,6 @@
 <template>
     <div class="table-title"><span>公选课课程信息</span></div>
+    <opening-time/>
     <!-- 课程信息表格  -->
     <search-bar @search="content => {courseData = content; totalData = content.length}" :course-type="'pc'"></search-bar>
     <el-collapse class="course-box" accordion>
@@ -51,6 +52,7 @@ import SearchBar from "@/components/SearchBar.vue";
 import { myMessage } from "@/message.js";
 import { getPCCourses, querySelectedNumber } from "@/request.js";
 import SelectedNumberListener from "@/components/SelectedNumberListener.vue";
+import OpeningTime from "@/components/OpeningTime.vue"
 
 const courseData = ref([])
 const currentSelecting = ref([])

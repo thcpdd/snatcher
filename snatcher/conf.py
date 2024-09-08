@@ -81,9 +81,23 @@ class Settings(metaclass=SingletonMetaClass):
     # All request ports(host number).
     PORTS: list[str] = ['5', '6', '7', '8', '9']
 
+    SYSTEM_OPENING_TIME: dict = {
+        'year': 2049,
+        'month': 10,
+        'day': 1,
+        'hour': 9,
+        'minute': 0,
+        'second': 1
+    }
+
+    OPENING_TYPE: str = 'pc'  # pc | pe
+
     def start_time(self) -> datetime:
         """The `START_TIME` convert to datatime object."""
         return datetime.fromtimestamp(datetime(**self.START_TIME).timestamp(), timezone.utc)
+
+    def system_opening_time(self) -> datetime:
+        return datetime(**self.SYSTEM_OPENING_TIME)
 
     def countdown(self) -> int:
         """The countdown time of start time."""

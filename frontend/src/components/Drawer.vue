@@ -117,10 +117,11 @@ async function submitSelected() {
             password: password.value,
             email: email.value,
             courses: props.currentSelecting,
-            fuel: fuel.value
+            fuel: fuel.value,
+            course_type: pathName.slice(1)
         }
         submitting.value = true
-        const response = await bookCourse(pathName, data)
+        const response = await bookCourse(data)
         if (response.data.code === 1) {
             myMessage('预约信息提交成功！', 'success')
             emits('update:openDrawer', false)
