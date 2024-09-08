@@ -27,7 +27,9 @@ class PCValidator(CourseValidator):
 class BookCourseValidator(BaseModel):
     email: EmailStr
     username: str
-    password: str
+    password: Optional[str] = ''
+    cookie: Optional[str] = ''
+    port: Optional[str] = ''
     fuel: str
     courses: list[PEValidator | PCValidator]
     course_type: str

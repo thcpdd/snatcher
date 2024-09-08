@@ -19,22 +19,41 @@
         </div>
         <h3>为了您更好的体验，我们需要收集你的一些信息。</h3>
         <div class="user-info-box">
-            <div class="user-info">
-                <span>&nbsp;&nbsp;&nbsp;学号：</span>
-                <el-input v-model="username" style="width: 65%" placeholder="请输入你的学号"/>
-            </div>
-            <div class="user-info">
-                <span>&nbsp;&nbsp;&nbsp;密码：</span>
-                <el-input v-model="password" style="width: 65%" type="password" :show-password="true" placeholder="请输入你的密码"/>
-            </div>
-            <div class="user-info">
-                <span>&nbsp;&nbsp;&nbsp;邮箱：</span>
-                <el-input v-model="email" style="width: 65%" type="email" placeholder="请输入你的邮箱"/>
-            </div>
-            <div class="user-info">
-                <span>抢课码：</span>
-                <el-input v-model="fuel" style="width: 65%" placeholder="请输入提供给你的抢课码"/>
-            </div>
+            <el-form
+                v-model="form"
+                label-width="auto"
+                style="width: 85%"
+                :label-position="labelPosition"
+            >
+                <el-form-item label="登录方式" required>
+                    <el-radio-group v-model="form.loginMethod">
+                        <el-radio value="1">学号密码</el-radio>
+                        <el-radio value="2">Cookie</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="学号" required>
+                   <el-input v-model="form.username" placeholder="请输入学号"/>
+                </el-form-item>
+
+                <el-form-item v-if="form.loginMethod === '1'" label="密码" required>
+                   <el-input v-model="form.password" placeholder="请输入密码" type="password"/>
+                </el-form-item>
+                <div v-else>
+                    <el-form-item label="Cookie" required>
+                       <el-input v-model="form.cookie" placeholder="请输入Cookie"/>
+                    </el-form-item>
+                    <el-form-item label="主机号" required>
+                       <el-input v-model="form.port" placeholder="请输入主机号"/>
+                    </el-form-item>
+                </div>
+
+                <el-form-item label="邮箱" required>
+                   <el-input v-model="form.email" type="email" placeholder="请输入邮箱"/>
+                </el-form-item>
+                <el-form-item label="抢课码" required>
+                   <el-input v-model="form.fuel" placeholder="请输入提供给你的抢课码"/>
+                </el-form-item>
+            </el-form>
         </div>
         <p>**请确保所填信息完全正确，选课结果将会发送到该邮箱。</p>
         <el-button
@@ -51,23 +70,36 @@ import { myMessage } from "@/message.js";
 import { bookCourse } from "@/request.js";
 import { ElMessageBox } from "element-plus";
 
-const username = ref('')
-const password = ref('')
-const email = ref('')
-const fuel = ref('')
+const form = ref({
+    username: '',
+    password: '',
+    email: '',
+    fuel: '',
+    cookie: '',
+    port: '',
+    loginMethod: '1'
+})
 const submitting = ref(false)
 const expectDelete = ref(null)  // 记录要撤销的课程
+const labelPosition = ref('right')
+
+let isMobile = sessionStorage.getItem('isMobile')
+if (isMobile && isMobile === '1') {
+    labelPosition.value = 'top'
+} else {
+    labelPosition.value = 'right'
+}
 
 let emailRegex = /.+@.+\.com/
 const fuelRegex = /^[A-Za-z0-9/+]{67}=$/
 
 // 判断当前输入是否能提交
 const canBeSubmitted = computed(() => {
-    return username.value !== '' &&
-        password.value !== '' &&
-        email.value !== '' &&
+    return form.value.username !== '' &&
+        (form.value.password !== '' || form.value.cookie !== '' && form.value.port !== '') &&
+        form.value.email !== '' &&
         props.currentSelecting.length > 0 &&
-        fuel.value !== ''
+        form.value.fuel !== ''
 })
 
 // 接收父组件传来的参数
@@ -98,11 +130,11 @@ watch(expectDelete, (course_id) => {
 })
 
 async function submitSelected() {
-    if (!emailRegex.test(email.value)) {
+    if (!emailRegex.test(form.value.email)) {
         myMessage('邮箱格式不正确', 'error')
         return
     }
-    if (!fuelRegex.test(fuel.value)) {
+    if (!fuelRegex.test(form.value.fuel)) {
         myMessage('抢课码格式不正确', 'error')
         return
     }
@@ -113,12 +145,14 @@ async function submitSelected() {
     }).then(async () => {
         let pathName = location.pathname
         let data = {
-            username: username.value,
-            password: password.value,
-            email: email.value,
+            username: form.value.username,
+            password: form.value.password,
+            email: form.value.email,
             courses: props.currentSelecting,
-            fuel: fuel.value,
-            course_type: pathName.slice(1)
+            fuel: form.value.fuel,
+            course_type: pathName.slice(1),
+            cookie: form.value.cookie,
+            port: form.value.port
         }
         submitting.value = true
         const response = await bookCourse(data)
@@ -142,9 +176,6 @@ async function submitSelected() {
     padding-top: 17px;
     padding-bottom: 8px;
     width: 95%;
-}
-.user-info {
-    margin-bottom: 10px;
 }
 .user-info-box {
     border: 1px solid #d3d3d3;

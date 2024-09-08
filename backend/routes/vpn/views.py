@@ -83,6 +83,9 @@ async def book_course(book_data: BookCourseValidator):
     if course_type != settings.OPENING_TYPE:
         return SnatcherResponse(ResponseCodes.NOT_IN_VALID_TIME)
 
+    if not book_data.password and not all([book_data.cookie, book_data.port]):
+        return SnatcherResponse(ResponseCodes.INPUT_DATA_INVALID)
+
     message_tuple = check_fuel(book_data.username, book_data.fuel)
     if message_tuple[0] != 1:
         return SnatcherResponse(message_tuple)

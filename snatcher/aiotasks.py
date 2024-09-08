@@ -32,7 +32,7 @@ from snatcher.selector.async_selector import (
 from snatcher.storage.mongo import collections, get_security_key, decrypt_fuel, BSONObjectId, update_fuel_status
 from snatcher.selector.performers import async_selector_performer
 from snatcher.postman.mail import send_email
-from snatcher.session import async_check_and_set_session
+from snatcher.session import async_check_and_set_session, get_session_manager
 
 
 application = Celery('snatcher')
@@ -100,12 +100,18 @@ async def async_select_course(
 
     password = users.get('password')
 
-    result = await async_check_and_set_session(username, password)
-    if result == -1:
-        failure_collection.create(username, '', '', 0, '模拟登录失败')
-        send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
-        update_fuel_status(BSONObjectId(fuel_id), status='unused')
-        return
+    if password:
+        result = await async_check_and_set_session(username, password)
+        if result == -1:
+            failure_collection.create(username, '', '', 0, '模拟登录失败')
+            send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
+            update_fuel_status(BSONObjectId(fuel_id), status='unused')
+            return
+    else:
+        cookie, port = users.get('cookie'), users.get('port')
+        session_manager = get_session_manager(username)
+        if not session_manager.has_session(port):
+            session_manager.save_cookie(cookie, port)
 
     countdown = settings.countdown()
     email = users.get('email')
