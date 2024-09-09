@@ -21,13 +21,13 @@
 
 <script setup>
 import router from "@/router/index.js";
-import { onMounted } from "vue";
+import { onMounted, inject } from "vue";
 
 let width = window.innerWidth;
 function setFontSize(selector, rate) {
     document.querySelector(selector).style.fontSize = width / rate + "px";
 }
-onMounted(() => {
+onMounted(async () => {
     // 重新调整移动端的字体大小
     if (sessionStorage.getItem("isMobile")) {
         setFontSize(".t1-font", 10);
@@ -39,6 +39,8 @@ onMounted(() => {
         // setFontSize(".tc2", 20)
         // setFontSize(".bt1-font", 18)
     }
+    const prepare = inject('prepare')
+    await prepare()
 })
 </script>
 
@@ -79,50 +81,5 @@ onMounted(() => {
     margin-top: 2%;
     font-size: 150%;
     font-weight: bold;
-}
-
-.frontend-technology {
-    background: linear-gradient(0deg, #d7f3fa 35%, #a2ccff);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    overflow: auto;
-}
-.tc1-font {
-    font-size: 320%;
-    font-weight: bolder;
-    color: #42b883;
-}
-.tc2 {
-    font-weight: bold;
-    margin-top: 14px;
-    font-size: 120%;
-}
-
-.backend-technology {
-    height: 100vh;
-    background-color: #e4f3f6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: auto;
-    flex-direction: column;
-}
-.bt1-font {
-    font-size: 320%;
-    font-weight: bolder;
-    color: #42b883;
-}
-.logo-image {
-    margin-top: 1.5%;
-}
-.next-page {
-    position: absolute;
-    text-align: center;
-    text-decoration: none;
-    font-size: 180%;
-    color: black;
 }
 </style>

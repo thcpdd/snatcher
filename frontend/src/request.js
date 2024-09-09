@@ -34,11 +34,11 @@ export function getPCCourses(page) {
 export async function searchCourse(courseType, searchContent) {
     let searchResult = []
     if (courseType === 'pe') {
-        await requests.get(`/pe/?keyword=${searchContent}`).then(response => {
+        await requests.get('/pe', {params: {keyword: searchContent}}).then(response => {
             searchResult = response.data.data['results']
         })
     } else {
-        await requests.get(`/pc/?keyword=${searchContent}`).then(response => {
+        await requests.get('/pc', {params: {keyword: searchContent}}).then(response => {
             searchResult = response.data.data['results']
         })
     }

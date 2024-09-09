@@ -112,7 +112,7 @@ class Settings(metaclass=SingletonMetaClass):
             else:
                 mongodb_config_file = 'mongodb'
             with open(mongodb_config_file) as f:
-                mongodb_uri = f.read()
+                mongodb_uri = f.read().strip()
             self.DATABASES['mongodb']['uri'] = mongodb_uri
         return mongodb_uri
 
