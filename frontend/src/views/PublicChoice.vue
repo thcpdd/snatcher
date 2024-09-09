@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Paginator from "@/components/Paginator.vue";
 import Drawer from "@/components/Drawer.vue";
 import SearchBar from "@/components/SearchBar.vue";
@@ -82,8 +82,6 @@ const updateCourseData = async (page) => {
 }
 
 onMounted(async () => {
-    const prepare = inject('prepare')
-    await prepare()
     await updateCourseData(1)
     await listener()
     timer = setInterval(listener, 1000 * 60 * 5)  // 5 minutes

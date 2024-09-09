@@ -21,7 +21,7 @@
 
 <script setup>
 import router from "@/router/index.js";
-import { onMounted, inject } from "vue";
+import { onMounted } from "vue";
 
 let width = window.innerWidth;
 function setFontSize(selector, rate) {
@@ -35,12 +35,7 @@ onMounted(async () => {
         setFontSize(".t3", 27);
         let dom = document.getElementsByClassName('index-content')[0]
         dom.style.lineHeight = '47px'
-        // setFontSize(".tc1-font", 13)
-        // setFontSize(".tc2", 20)
-        // setFontSize(".bt1-font", 18)
     }
-    const prepare = inject('prepare')
-    await prepare()
 })
 </script>
 

@@ -3,7 +3,7 @@ import NProgress from 'nprogress'
 
 
 export const requests = axios.create({
-    baseURL: "http://127.0.0.1:8000/vpn",  // 本地环境需要写上详细的URL，生产环境不用写。
+    baseURL: "http://127.0.0.1:8000/vpn",
 })
 
 requests.interceptors.request.use(config => {
