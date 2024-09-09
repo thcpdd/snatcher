@@ -7,7 +7,7 @@ import { ref } from "vue";
 import { querySystemOpeningTime } from "@/request.js";
 
 const openingTime = ref('')
-const promise = querySystemOpeningTime()
+const promise = querySystemOpeningTime(location.pathname.slice(1))
 promise.then((response) => {
     openingTime.value = response.data.data['opening_time']
 })

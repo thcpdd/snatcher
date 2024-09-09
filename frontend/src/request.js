@@ -57,6 +57,6 @@ export function querySelectedNumber(course_type) {
     return requests.get('/selection', {params: {course_type: course_type}})
 }
 
-export function querySystemOpeningTime() {
-    return requests.get('/system/opening-time')
+export function querySystemOpeningTime(course_type) {
+    return requests.get('/system/opening-time', {params: {course_type: course_type}})
 }
