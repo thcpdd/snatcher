@@ -76,11 +76,8 @@ def search_pc_course(keyword: str):
 
 @router.post('/book', summary='预约抢课')
 async def book_course(book_data: BookCourseValidator):
-    if datetime.now() < settings.system_opening_time():
-        return SnatcherResponse(ResponseCodes.NOT_IN_VALID_TIME)
-
     course_type = book_data.course_type
-    if course_type != settings.OPENING_TYPE:
+    if datetime.now() < settings.system_opening_time(course_type):
         return SnatcherResponse(ResponseCodes.NOT_IN_VALID_TIME)
 
     if not book_data.password and not all([book_data.cookie, book_data.port]):
@@ -131,6 +128,6 @@ async def query_course_selected(course_type: CourseTypeEnum):
 
 
 @router.get('/system/opening-time', summary='查询系统开放时间')
-def query_system_opening_time():
-    opening_time = settings.system_opening_time().strftime('%Y-%m-%d %H:%M:%S')
+def query_system_opening_time(course_type: str):
+    opening_time = settings.system_opening_time(course_type).strftime('%Y-%m-%d %H:%M:%S')
     return SnatcherResponse(ResponseCodes.OK, {'opening_time': opening_time})
