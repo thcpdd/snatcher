@@ -36,7 +36,7 @@ from snatcher.session import async_check_and_set_session, get_session_manager
 
 
 application = Celery('snatcher')
-application.conf.result_backend = 'redis://127.0.0.1:6379/1'
+# application.conf.result_backend = 'redis://127.0.0.1:6379/1'
 
 
 @application.task(
@@ -49,7 +49,7 @@ async def async_physical_education_task(
     username: str,
     email: str,
     fuel_id: str,
-    goals: list[tuple[str, str]]
+    goals: list[tuple[str, str, str]]
 ):
     await async_selector_performer(AsyncPESelector, username, email, fuel_id, goals)
 
@@ -64,14 +64,14 @@ async def async_public_choice_task(
     username: str,
     email: str,
     fuel_id: str,
-    goals: list[tuple[str, str]]
+    goals: list[tuple[str, str, str]]
 ):
     await async_selector_performer(AsyncPCSelector, username, email, fuel_id, goals)
 
 
 @application.task(name='select_course')
 async def async_select_course(
-    goals: list[tuple[str, str]],
+    goals: list[tuple[str, str, str]],
     course_type: str,
     **users
 ):

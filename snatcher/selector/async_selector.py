@@ -18,23 +18,27 @@ class AsynchronousCourseSelector(CourseSelector):
 
         response = await self.session.post(self.jxb_ids_api, data=self.get_jxb_ids_data)
 
-        code, message = 1, ''
-
         try:
-            json_data = await response.json()
-            self.jxb_ids = json_data[0]['do_jxb_id']
-        except IndexError:
-            message = '表单数据异常'
+            do_jxb_id_list = await response.json()
         except ContentTypeError:
-            message = 'json解码失败'
-        except TypeError:
-            message = '非法请求'
+            return 0, 'json解码失败'
 
-        if message:
-            await self.logger.set('step-3', message=message)
-            code = 0
+        if isinstance(do_jxb_id_list, str):  # '0'
+            return 0, '非法请求'
 
-        return code, message
+        if not do_jxb_id_list:  # []
+            return 0, '表单数据异常'
+
+        if len(do_jxb_id_list) == 1:
+            self.jxb_ids = do_jxb_id_list[0]['do_jxb_id']
+        else:
+            for do_jxb_id in do_jxb_id_list:
+                if do_jxb_id['jxb_id'] == self.jxb_id:
+                    self.jxb_ids = do_jxb_id['do_jxb_id']
+                    break
+            else:
+                return 0, '未找到相应教学班'
+        return 1, ''
 
     async def prepare_for_selecting(self):
         await self.logger.set('step-1', 1)
@@ -53,7 +57,7 @@ class AsynchronousCourseSelector(CourseSelector):
 
         code, message = await self.set_jxb_ids()
         if code == 0:
-            await self.logger.set('step-3', 0)
+            await self.logger.set('step-3', message=message)
             return 0, message
         await self.logger.set('step-3', 1)
         return 1, ''

@@ -14,7 +14,7 @@ from snatcher.aiotasks import async_select_course, application
 
 
 async def async_physical_education(
-    goals: list[tuple[str, str]],
+    goals: list[tuple[str, str, str]],
     **users
 ):
     async with application.setup():
@@ -22,7 +22,7 @@ async def async_physical_education(
 
 
 async def async_public_choice(
-    goals: list[tuple[str, str]],
+    goals: list[tuple[str, str, str]],
     **users
 ):
     async with application.setup():

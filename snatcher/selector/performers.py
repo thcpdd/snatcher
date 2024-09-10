@@ -12,7 +12,7 @@ async def async_selector_performer(
     username: str,
     email: str,
     fuel_id: str,
-    goals: list[tuple[str, str]],
+    goals: list[tuple[str, str, str]],
 ):
     """Proxying call and perform the course_selector."""
     submitted_collection = collections['submitted']
@@ -21,7 +21,7 @@ async def async_selector_performer(
     async with selector_class(username, fuel_id) as selector:
         fuel_id = BSONObjectId(fuel_id)
 
-        for course_name, course_id in goals:
+        for course_name, course_id, jxb_id in goals:
             log_key = username + '-' + course_name
             row_id = submitted_collection.create(
                 username=username,
@@ -29,7 +29,7 @@ async def async_selector_performer(
                 course_name=course_name,
                 log_key=log_key
             )
-            await selector.update_selector_info(course_name, course_id, log_key)
+            await selector.update_selector_info(course_name, course_id, jxb_id, log_key)
 
             code, message = await selector.select()
 

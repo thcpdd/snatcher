@@ -34,5 +34,5 @@ class BookCourseValidator(BaseModel):
     courses: list[PEValidator | PCValidator]
     course_type: str
 
-    def packing_data(self) -> list[tuple[str, str]]:
-        return [(course.course_name, course.course_id) for course in self.courses]
+    def packing_data(self) -> list[tuple[str, str, str]]:
+        return [(course.course_name, course.course_id, course.jxb_id) for course in self.courses]
