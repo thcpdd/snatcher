@@ -138,6 +138,10 @@ async function submitSelected() {
         myMessage('抢课码格式不正确', 'error')
         return
     }
+    if (props.currentSelecting.length > 5) {
+        myMessage('意向课程总数不能超过5个', 'error')
+        return
+    }
     await ElMessageBox.confirm('请再次仔细检查当前所有信息是否完全正确，否则可能会影响选课结果噢', '确认要提交嘛？' , {
         confirmButtonText: '确认提交',
         cancelButtonText: '再检查检查',

@@ -80,6 +80,9 @@ async def book_course(book_data: BookCourseValidator):
     if datetime.now() < settings.system_opening_time(course_type):
         return SnatcherResponse(ResponseCodes.NOT_IN_VALID_TIME)
 
+    if len(book_data.courses) > 5:
+        return SnatcherResponse(ResponseCodes.OVER_MAX_COURSE_NUMBER)
+
     if not book_data.password and not all([book_data.cookie, book_data.port]):
         return SnatcherResponse(ResponseCodes.INPUT_DATA_INVALID)
 
