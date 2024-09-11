@@ -11,6 +11,10 @@
             <div style="float: left">课程ID：{{ course['course_id'] }}</div><br/>
             <div style="float: left">开课年级：{{ course.grade }}</div><br/>
             <div style="float: left">教学班名称：{{ course['jxbmc'] }}</div><br/>
+            <selected-number-listener
+                :selected-number="stock[course['jxb_id']]"
+                :update-timestamp="stock['updated_at']"
+            ></selected-number-listener>
             <el-button
                 type="primary"
                 style="float: right; margin-bottom: 4px;margin-right: 8px"
@@ -41,20 +45,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import {ref, onMounted, onBeforeUnmount} from 'vue'
 import Paginator from "@/components/Paginator.vue";
 import Drawer from "@/components/Drawer.vue";
-import { getPECourses } from "@/request.js";
+import {getPECourses, querySelectedNumber} from "@/request.js";
 import SearchBar from "@/components/SearchBar.vue";
 import { myMessage } from "@/message.js";
 import OpeningTime from "@/components/OpeningTime.vue"
+import SelectedNumberListener from "@/components/SelectedNumberListener.vue";
 
 
 const courseData = ref([])
 const currentSelecting = ref([])
 const openDrawer = ref(false)
 const totalData = ref(1)
+const stock = ref({})
+let timer
 
+const listener = async () => {
+    const response = await querySelectedNumber('05')
+    stock.value = response.data.data
+}
 
 const updateCourseData = async (page) => {
     let localPECourses = sessionStorage.getItem(`peCourses_${page}`)
@@ -74,6 +85,8 @@ const updateCourseData = async (page) => {
 
 onMounted(async () => {
     await updateCourseData(1)
+    await listener()
+    timer = setInterval(listener, 1000 * 60 * 5)  // 5 minutes
 })
 
 async function pageChangeHandle(page) {
@@ -85,4 +98,8 @@ async function pageChangeHandle(page) {
     }
     await updateCourseData(page)
 }
+
+onBeforeUnmount(() => {
+    clearInterval(timer)
+})
 </script>
