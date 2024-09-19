@@ -6,6 +6,8 @@ Usage:
 """
 from datetime import datetime, timezone
 
+from arq.connections import RedisSettings
+
 
 class SingletonMetaClass(type):
     def __call__(cls, *args, **kwargs):
@@ -83,15 +85,7 @@ class Settings(metaclass=SingletonMetaClass):
 
     SYSTEM_OPENING_TIME: dict = {
         'pc': {
-            'year': 2049,
-            'month': 10,
-            'day': 1,
-            'hour': 15,
-            'minute': 0,
-            'second': 0
-        },
-        'pe': {
-            'year': 2049,
+            'year': 1049,
             'month': 10,
             'day': 1,
             'hour': 15,
@@ -99,6 +93,8 @@ class Settings(metaclass=SingletonMetaClass):
             'second': 0
         }
     }
+
+    ARQ_REDIS_SETTINGS = RedisSettings(host='127.0.0.1', database=1)
 
     def start_time(self) -> datetime:
         """The `START_TIME` convert to datatime object."""

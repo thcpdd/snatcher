@@ -8,10 +8,12 @@ from fastapi import (
     WebSocket,
     Query,
     Path,
-    Body
+    Body,
+    Request
 )
 from starlette.websockets import WebSocketDisconnect
 from redis.asyncio.client import PubSub
+from arq import ArqRedis
 
 from .validators import (
     SubmittedValidator,
@@ -32,7 +34,6 @@ from snatcher.storage.cache import (
 )
 from snatcher.conf import settings
 from snatcher.storage.mongo import collections
-from snatcher.aiotasks import application, query_selected_number_task
 
 
 router = APIRouter(prefix='/manage', tags=['后台管理'])
@@ -172,14 +173,15 @@ async def monitor_logs_change(websocket: WebSocket, token: str = Query(default='
 
 @router.post('/task/selection', summary='发送已选择课程人数任务', dependencies=[Depends(identity_validator)])
 async def send_query_selected_number_task(
+    request: Request,
     course_type: CourseTypeEnum = Body(),
     username: str = Body(),
     cookie: str = Body(),
     port: str = Body(),
     frequency: int = Body()
 ):
-    async with application.setup():
-        await query_selected_number_task.delay(course_type.value, username, cookie, port, frequency)
+    arq_redis: ArqRedis = getattr(request.state, 'arq-redis')
+    await arq_redis.enqueue_job('query_selected_number_task', course_type.value, username, cookie, port, frequency)
     return SnatcherResponse(ResponseCodes.OK)
 
 

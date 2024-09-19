@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter, Path, Query, Request
 from redis.asyncio import Redis as AIORedis
+from arq import ArqRedis
 
 from .validators import PCValidator, PEValidator, BookCourseValidator, CourseTypeEnum
 from backend.response import SnatcherResponse, ResponseCodes
-from snatcher import async_public_choice, async_physical_education
 from snatcher.storage.mongo import get_fuel_status, collections, get_security_key, BSONObjectId
 from snatcher.utils.hashlib import decrypt_fuel
 from snatcher.storage.cache import export_progress
@@ -75,7 +75,7 @@ def search_pc_course(keyword: str):
 
 
 @router.post('/book', summary='预约抢课')
-async def book_course(book_data: BookCourseValidator):
+async def book_course(request: Request, book_data: BookCourseValidator):
     course_type = book_data.course_type
     if datetime.now() < settings.system_opening_time(course_type):
         return SnatcherResponse(ResponseCodes.NOT_IN_VALID_TIME)
@@ -90,21 +90,11 @@ async def book_course(book_data: BookCourseValidator):
     if message_tuple[0] != 1:
         return SnatcherResponse(message_tuple)
 
-    match course_type:
-        case 'pc':
-            task_coroutine = async_public_choice
-        case 'pe':
-            task_coroutine = async_physical_education
-        case _:
-            task_coroutine = None
-
-    if task_coroutine is None:
-        return SnatcherResponse(ResponseCodes.ILLEGAL_REQUEST)
-
     goals = book_data.packing_data()
     users = book_data.model_dump(exclude={'courses', 'course_type'})
 
-    await task_coroutine(goals, **users)
+    arq_redis: ArqRedis = getattr(request.state, 'arq-redis')
+    await arq_redis.enqueue_job('select_course', goals, **users)
 
     return SnatcherResponse(ResponseCodes.OK)
 

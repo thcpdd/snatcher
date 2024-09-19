@@ -20,14 +20,12 @@ import time
 
 import aiohttp
 from aiohttp.client_exceptions import ContentTypeError
-from aio_celery import Celery
-from aio_celery.annotated_task import AnnotatedTask
 from redis.asyncio import Redis as AIORedis
+from arq import ArqRedis
 
 from snatcher.conf import settings
 from snatcher.selector.async_selector import (
     AsynchronousPublicChoiceCourseSelector as AsyncPCSelector,
-    AsynchronousPhysicalEducationCourseSelector as AsyncPESelector
 )
 from snatcher.storage.mongo import collections, get_security_key, decrypt_fuel, BSONObjectId, update_fuel_status
 from snatcher.selector.performers import async_selector_performer
@@ -35,63 +33,27 @@ from snatcher.postman.mail import send_email
 from snatcher.session import async_check_and_set_session, get_session_manager
 
 
-application = Celery('snatcher')
-# application.conf.result_backend = 'redis://127.0.0.1:6379/1'
-
-
-@application.task(
-    name='pe_task',
-    autoretry_for=(Exception,),
-    max_retries=2,
-    default_retry_delay=5
-)
-async def async_physical_education_task(
+async def public_choice_task(
+    _: dict,
     username: str,
     email: str,
     fuel_id: str,
     goals: list[tuple[str, str, str]]
 ):
-    await async_selector_performer(AsyncPESelector, username, email, fuel_id, goals)
+    try:
+        await async_selector_performer(AsyncPCSelector, username, email, fuel_id, goals)
+    except (Exception, asyncio.CancelledError) as exception:
+        print(exception)
 
 
-@application.task(
-    name='pc_task',
-    autoretry_for=(Exception,),
-    max_retries=2,
-    default_retry_delay=5
-)
-async def async_public_choice_task(
-    username: str,
-    email: str,
-    fuel_id: str,
-    goals: list[tuple[str, str, str]]
-):
-    await async_selector_performer(AsyncPCSelector, username, email, fuel_id, goals)
-
-
-@application.task(name='select_course')
-async def async_select_course(
+async def select_course(
+    context: dict,
     goals: list[tuple[str, str, str]],
-    course_type: str,
     **users
 ):
-    task: AnnotatedTask | None
-
-    match course_type:  # The version of Python >= 3.10
-        case 'PC':
-            task = async_public_choice_task
-        case 'PE':
-            task = async_physical_education_task
-        case _:
-            task = None
-
     username = users.get('username')
 
     failure_collection = collections['failure']
-
-    if task is None:
-        failure_collection.create(username, '', '', 0, '选择了不支持的课程类型')
-        return
 
     fuel = users.get('fuel')
     key = get_security_key('fuel')
@@ -116,15 +78,20 @@ async def async_select_course(
     countdown = settings.countdown()
     email = users.get('email')
 
-    await task.apply_async(
-        args=(username, email, fuel_id, goals),
-        countdown=countdown,
-        task_id=f'{username}-{int(time.time())}'
+    arq_redis: ArqRedis = context['redis']
+    await arq_redis.enqueue_job(
+        'public_choice_task',
+        username,
+        email,
+        fuel_id,
+        goals,
+        _job_id=f'{username}-{int(time.time())}',
+        _defer_by=countdown
     )
 
 
-@application.task(name='query_selected_number')
 async def query_selected_number_task(
+    _: dict,
     course_type: str,
     username: str,
     cookie: str,
@@ -187,3 +154,15 @@ async def query_selected_number_task(
                 await conn.hset(name, 'updated_at', str(time.time()))
 
                 await asyncio.sleep(60 * frequency)
+
+
+class WorkerSettings:
+    """
+    取消任务完成时的保存：注释 arq.worker 第 696 行
+    取消任务失败时的保存：注释 arq.worker 第 719 行
+    """
+    functions = [public_choice_task, select_course, query_selected_number_task]
+    redis_settings = settings.ARQ_REDIS_SETTINGS
+    max_jobs = 1000
+    job_timeout = 60 * 60 * 2
+    allow_abort_jobs = True

@@ -42,7 +42,7 @@ Usage:
             verify_code='your_verify_code'
         ))
 """
-from .api import (
-    async_public_choice as async_public_choice,
-    async_physical_education as async_physical_education
-)
+# from .api import (
+#     async_public_choice as async_public_choice,
+#     async_physical_education as async_physical_education
+# )
