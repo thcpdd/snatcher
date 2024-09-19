@@ -15,13 +15,14 @@ Asyncio Celery Tasks:
     4. The `async_select_course` task:
         Providing an interface for outer caller.
 """
+import traceback
 import asyncio
 import time
 
 import aiohttp
 from aiohttp.client_exceptions import ContentTypeError
 from redis.asyncio import Redis as AIORedis
-from arq import ArqRedis
+from arq import ArqRedis, Retry
 
 from snatcher.conf import settings
 from snatcher.selector.async_selector import (
@@ -42,8 +43,11 @@ async def public_choice_task(
 ):
     try:
         await async_selector_performer(AsyncPCSelector, username, email, fuel_id, goals)
-    except (Exception, asyncio.CancelledError) as exception:
-        print(exception)
+    except Exception:
+        print('Unexpected error during selecting course. Detail stack information:')
+        traceback.print_exc()
+        update_fuel_status(BSONObjectId(fuel_id), 'unused')
+        raise Retry(5)
 
 
 async def select_course(
@@ -166,3 +170,4 @@ class WorkerSettings:
     max_jobs = 1000
     job_timeout = 60 * 60 * 2
     allow_abort_jobs = True
+    max_tries = 3
