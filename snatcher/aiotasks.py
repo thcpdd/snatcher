@@ -70,7 +70,7 @@ async def select_course(
         result = await async_check_and_set_session(username, password)
         if result == -1:
             failure_collection.create(username, '', '', 0, '模拟登录失败')
-            send_email('1834763300@qq.com', username, '', False, '模拟登录失败')
+            send_email('1834763300@qq.com', username, '', success=False, failed_reason='模拟登录失败')
             update_fuel_status(BSONObjectId(fuel_id), status='unused')
             return
     else:
