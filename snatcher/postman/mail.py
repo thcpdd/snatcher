@@ -76,6 +76,8 @@ def send_email(
     receiver_email: str,
     username: str,
     course_name: str,
+    total: int = -1,
+    current: int = -1,
     success: bool = True,
     failed_reason: str = None
 ):
@@ -83,8 +85,9 @@ def send_email(
         subject = '恭喜你，选课成功！!'
         content = get_success_content(username, course_name)
     else:
+        progress = f'%d / %d' % (current, total)
         subject = '选课失败通知'
-        content = "学号为 %s 的意向课程 <%s> 选课失败，原因：%s" % (username, course_name, failed_reason)
+        content = "学号为 %s 的意向课程 <%s> 选课失败，原因：%s。进度：%s" % (username, course_name, failed_reason, progress)
 
     try:
         EmailSender(receiver_email, subject, content).send()
