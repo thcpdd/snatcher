@@ -3,7 +3,7 @@
     <div class="index-content">
         <div class="t1">
             <span class="t1-font">
-                Snatcher<br/>基于定时任务队列的
+                Snatcher<br/>基于延时任务队列的
             </span>
         </div>
         <div class="t2"><span class="t2-font">Python Spider Program</span></div>
@@ -41,8 +41,12 @@ onMounted(async () => {
 
 <style>
 @font-face {
-    font-family: "fangzhen";
-    src: url("/方正艺黑简体_0.ttf");
+    font-family: "fangzhen";  /* font-spider */
+    src: url("/fzyihei.ttf");
+}
+@font-face {
+    font-family: "SUB";
+    src: url("/Segoe UI Black.ttf");
 }
 .index-content {
     background: linear-gradient(0deg, #d3f2fa 20%, #c4cefa);
@@ -69,7 +73,7 @@ onMounted(async () => {
 .t2-font {
     font-size: 300%;
     font-weight: bold;
-    font-family: "Segoe UI Black", monospace;
+    font-family: "SUB", monospace;
     color: #2a2929;
 }
 .t3 {
