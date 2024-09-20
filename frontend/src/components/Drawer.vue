@@ -13,7 +13,7 @@
                 <el-button
                     type="danger"
                     size="small"
-                    @click="expectDelete = course.course_id"
+                    @click="expectDelete = course['jxb_id']"
                 >撤销</el-button>
             </p>
         </div>
@@ -111,14 +111,14 @@ const props = defineProps({
 const emits = defineEmits(['update:openDrawer', 'update:currentSelecting'])
 
 // 监听用户点击“撤销”按钮
-watch(expectDelete, (course_id) => {
+watch(expectDelete, (jxb_id) => {
     let newCurrentSelecting = []
     // 防止递归调用
-    if (course_id === null) {
+    if (jxb_id === null) {
         return
     }
     props.currentSelecting.forEach((course) => {
-        if (course.course_id !== course_id) {
+        if (course['jxb_id'] !== jxb_id) {
             newCurrentSelecting.push(course)
         }
     })
@@ -148,6 +148,7 @@ async function submitSelected() {
         type: 'warning'
     }).then(async () => {
         let pathName = location.pathname
+        submitting.value = true
         grecaptcha.ready(async () => {
             grecaptcha.execute('6Ldd-UkqAAAAALc2zYyefNF1GtkleLSCsT2DENWm', {action: 'submit'}).then(async token => {
                 let data = {
@@ -161,7 +162,6 @@ async function submitSelected() {
                     port: form.value.port,
                     token: token
                 }
-                submitting.value = true
                 const response = await bookCourse(data)
                 if (response.data.code === 1) {
                     myMessage('预约信息提交成功！', 'success')
