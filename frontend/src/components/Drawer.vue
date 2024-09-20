@@ -129,6 +129,16 @@ watch(expectDelete, (course_id) => {
     expectDelete.value = null
 })
 
+const get_robot_token = () => {
+    let _token
+    grecaptcha.ready(() => {
+        grecaptcha.execute('6Ldd-UkqAAAAALc2zYyefNF1GtkleLSCsT2DENWm', {action: 'submit'}).then((token) => {
+            _token = token
+        })
+    })
+    return _token
+}
+
 async function submitSelected() {
     if (!emailRegex.test(form.value.email)) {
         myMessage('邮箱格式不正确', 'error')
@@ -148,6 +158,7 @@ async function submitSelected() {
         type: 'warning'
     }).then(async () => {
         let pathName = location.pathname
+        let token = get_robot_token()
         let data = {
             username: form.value.username,
             password: form.value.password,
@@ -156,7 +167,8 @@ async function submitSelected() {
             fuel: form.value.fuel,
             course_type: pathName.slice(1),
             cookie: form.value.cookie,
-            port: form.value.port
+            port: form.value.port,
+            token: token
         }
         submitting.value = true
         const response = await bookCourse(data)
@@ -164,6 +176,8 @@ async function submitSelected() {
             myMessage('预约信息提交成功！', 'success')
             emits('update:openDrawer', false)
             emits('update:currentSelecting', [])
+        } else if (response.data.code === 2.5) {
+            myMessage('人机验证失败', 'error')
         } else {
             myMessage(response.data.message, 'error')
         }

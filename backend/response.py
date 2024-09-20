@@ -12,6 +12,7 @@ class ResponseCodes:
     FUEL_WAS_USED = (110, '燃料已被耗尽')
     NOT_IN_VALID_TIME = (115, '系统暂未开放')
     OVER_MAX_COURSE_NUMBER = (120, '意向课程总数不能超过5个')
+    ROBOT_VERIFIED_FAILED = (2.5, '人坤警告！')
     ILLEGAL_REQUEST = (200, '非法请求')
     INVALID_IDENTITY = (205, '身份无效')
     INVALID_TOKEN = (210, '凭证无效')

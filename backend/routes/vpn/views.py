@@ -6,6 +6,7 @@ from arq import ArqRedis
 
 from .validators import PCValidator, PEValidator, BookCourseValidator, CourseTypeEnum
 from backend.response import SnatcherResponse, ResponseCodes
+from backend.utils.recaptcha import robot_verification
 from snatcher.storage.mongo import get_fuel_status, collections, get_security_key, BSONObjectId
 from snatcher.utils.hashlib import decrypt_fuel
 from snatcher.storage.cache import export_progress
@@ -76,9 +77,16 @@ def search_pc_course(keyword: str):
 
 @router.post('/book', summary='预约抢课')
 async def book_course(request: Request, book_data: BookCourseValidator):
+    robot_verified = await robot_verification(book_data.token)
+    if not robot_verified:
+        return SnatcherResponse(ResponseCodes.ROBOT_VERIFIED_FAILED)
+
     course_type = book_data.course_type
     if datetime.now() < settings.system_opening_time(course_type):
         return SnatcherResponse(ResponseCodes.NOT_IN_VALID_TIME)
+
+    if not book_data.courses:
+        return SnatcherResponse(ResponseCodes.INPUT_DATA_INVALID)
 
     if len(book_data.courses) > 5:
         return SnatcherResponse(ResponseCodes.OVER_MAX_COURSE_NUMBER)
@@ -91,7 +99,7 @@ async def book_course(request: Request, book_data: BookCourseValidator):
         return SnatcherResponse(message_tuple)
 
     goals = book_data.packing_data()
-    users = book_data.model_dump(exclude={'courses', 'course_type'})
+    users = book_data.model_dump(exclude={'courses', 'course_type', 'token'})
 
     arq_redis: ArqRedis = getattr(request.state, 'arq-redis')
     await arq_redis.enqueue_job('select_course', goals, **users)
