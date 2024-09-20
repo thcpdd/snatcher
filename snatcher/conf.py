@@ -85,7 +85,7 @@ class Settings(metaclass=SingletonMetaClass):
 
     SYSTEM_OPENING_TIME: dict = {
         'pc': {
-            'year': 1049,
+            'year': 2049,
             'month': 10,
             'day': 1,
             'hour': 15,
