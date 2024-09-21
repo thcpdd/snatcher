@@ -12,8 +12,9 @@
         <el-sub-menu>
             <template #title>👉预约抢课</template>
             <el-menu-item index="/pc">公选课</el-menu-item>
-            <el-menu-item index="/pe">体育课</el-menu-item>
+<!--            <el-menu-item index="/pe">体育课</el-menu-item>-->
             <el-menu-item index="/progress">选课进度查询</el-menu-item>
+            <el-menu-item @click="openKnowledgeLibrary">抢课之谜🔍</el-menu-item>
         </el-sub-menu>
         <img src="https://q.qlogo.cn/headimg_dl?dst_uin=1834763300&spec=640&img_type=jpg" class="avatar" alt="avatar">
     </el-menu>
@@ -32,6 +33,10 @@ const imageUrl = () => {
         return '/logo.png'
     }
     return '/snatcher.svg'
+}
+
+const openKnowledgeLibrary = _ => {
+    window.open('https://docs.thcpdd.com/#/snatcher/preface')
 }
 </script>
 
