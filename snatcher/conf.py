@@ -73,12 +73,14 @@ class Settings(metaclass=SingletonMetaClass):
 
     # The email configurations.
     EMAIL_CONFIG: dict = {
-        'email_from': 'rainbow59216@foxmail.com',  # your email address
-        'name': '智能抢课系统-邮箱小助手',  # your name
-        'verify_code': 'updgvszsuymydajg',  # your email verify code
-        'host': 'smtp.qq.com',  # current email host
-        'port': 465  # current email port
+        'sender': 'rainbow59216@foxmail.com',
+        'name': '智能抢课系统-邮箱小助手',
+        'password': 'updgvszsuymydajg',
+        'host': 'smtp.qq.com',
+        'port': 465
     }
+
+    USE_TENCENT_CLOUD_MAIL_SERVICE = True
 
     # All request ports(host number).
     PORTS: list[str] = ['5', '6', '7', '8', '9']

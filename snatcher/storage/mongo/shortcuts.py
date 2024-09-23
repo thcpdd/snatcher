@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from snatcher.utils.hashlib import decrypt_fuel
 from .base import MongoDBCollections, BSONObjectId
 
@@ -5,6 +7,7 @@ from .base import MongoDBCollections, BSONObjectId
 collections = MongoDBCollections()
 
 
+@lru_cache()
 def get_security_key(purpose: str):
     security_collection = collections['security']
     return security_collection.query_one(purpose)
