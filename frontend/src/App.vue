@@ -32,7 +32,7 @@ const imageUrl = () => {
         sessionStorage.setItem('isMobile', '1')
         return '/logo.png'
     }
-    return '/snatcher.svg'
+    return '/snatcher.png'
 }
 
 const openKnowledgeLibrary = _ => {

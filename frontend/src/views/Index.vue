@@ -14,7 +14,7 @@
                        @click="router.push('/pc')"
                        size="large"
                        class="to-book"
-            >开始预约抢课 &gt;&gt;&gt;</el-button>
+            >开始预约抢课</el-button>
         </div>
     </div>
 </template>
@@ -33,8 +33,11 @@ onMounted(async () => {
         setFontSize(".t1-font", 10);
         setFontSize(".t2-font", 17);
         setFontSize(".t3", 27);
-        let dom = document.getElementsByClassName('index-content')[0]
-        dom.style.lineHeight = '47px'
+        let node = document.getElementsByClassName('index-content')[0]
+        node.style.lineHeight = '47px'
+        node = document.querySelector('.to-book')
+        node.style.fontSize = '50%'
+        node.style.height = '32px'
     }
 })
 </script>

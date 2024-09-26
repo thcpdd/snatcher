@@ -2,7 +2,7 @@
     <div class="table-title"><span>体育课课程信息</span></div>
     <opening-time/>
     <search-bar @search="content => {courseData = content; totalData = content.length}" :course-type="'pe'"></search-bar>
-    <el-collapse class="course-box" accordion>
+    <el-collapse v-if="totalData !== 0" class="course-box" accordion>
         <el-collapse-item
             v-for="course in courseData"
             :title="course.course_name"
@@ -23,6 +23,7 @@
             >添加</el-button>
         </el-collapse-item>
     </el-collapse>
+    <el-empty v-else description="未查询到相关课程"></el-empty>
     <!-- 翻页 -->
     <paginator @update:current-page="pageChangeHandle" :total-data="totalData"></paginator>
     <!--  打开对话框  -->
