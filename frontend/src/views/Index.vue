@@ -10,7 +10,7 @@
         <div class="t3"><span>选择课程-填写相关信息-提交-预约抢课成功</span></div>
         <div style="margin-top: 3%">
             <el-button type="primary"
-                       style="width: max-content;font-weight: bolder;font-size: 100%"
+                       style="width: max-content;font-weight: bolder"
                        @click="router.push('/pc')"
                        size="large"
                        class="to-book"
@@ -36,7 +36,6 @@ onMounted(async () => {
         let node = document.getElementsByClassName('index-content')[0]
         node.style.lineHeight = '47px'
         node = document.querySelector('.to-book')
-        node.style.fontSize = '50%'
         node.style.height = '32px'
     }
 })
