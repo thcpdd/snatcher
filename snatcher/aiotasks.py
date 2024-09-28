@@ -25,22 +25,31 @@ from redis.asyncio import Redis as AIORedis
 from arq import ArqRedis, Retry
 
 from snatcher.conf import settings
-from snatcher.selector.async_selector import AsyncPCSelector
+from snatcher.selector.async_selector import AsyncPCSelector, AsyncPESelector
 from snatcher.storage.mongo import collections, get_security_key, decrypt_fuel, BSONObjectId, update_fuel_status
 from snatcher.selector.performers import async_selector_performer
 from snatcher.postman.mail import send_email
 from snatcher.session import async_check_and_set_session, get_session_manager
 
 
-async def public_choice_task(
+async def select_course_task(
     _: dict,
+    course_type: str,
     username: str,
     email: str,
     fuel_id: str,
     goals: list[tuple[str, str, str]]
 ):
+    selector_class = None
+
+    match course_type:
+        case 'pc':
+            selector_class = AsyncPCSelector
+        case 'pe':
+            selector_class = AsyncPESelector
+
     try:
-        await async_selector_performer(AsyncPCSelector, username, email, fuel_id, goals)
+        await async_selector_performer(selector_class, username, email, fuel_id, goals)
     except Exception:
         print('Unexpected error during selecting course. Detail stack information:')
         traceback.print_exc()
@@ -50,6 +59,7 @@ async def public_choice_task(
 
 async def select_course(
     context: dict,
+    course_type: str,
     goals: list[tuple[str, str, str]],
     **users
 ):
@@ -82,7 +92,8 @@ async def select_course(
 
     arq_redis: ArqRedis = context['redis']
     await arq_redis.enqueue_job(
-        'public_choice_task',
+        'select_course_task',
+        course_type,
         username,
         email,
         fuel_id,
@@ -163,7 +174,7 @@ class WorkerSettings:
     取消任务完成时的保存：注释 arq.worker 第 696 行
     取消任务失败时的保存：注释 arq.worker 第 719 行
     """
-    functions = [public_choice_task, select_course, query_selected_number_task]
+    functions = [select_course_task, select_course, query_selected_number_task]
     redis_settings = settings.ARQ_REDIS_SETTINGS
     max_jobs = 1000
     job_timeout = 60 * 60 * 2

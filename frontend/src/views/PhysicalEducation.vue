@@ -11,10 +11,6 @@
             <div style="float: left">课程ID：{{ course['course_id'] }}</div><br/>
             <div style="float: left">开课年级：{{ course.grade }}</div><br/>
             <div style="float: left">教学班名称：{{ course['jxbmc'] }}</div><br/>
-            <selected-number-listener
-                :selected-number="stock[course['jxb_id']]"
-                :update-timestamp="stock['updated_at']"
-            ></selected-number-listener>
             <el-button
                 type="primary"
                 style="float: right; margin-bottom: 4px;margin-right: 8px"
@@ -53,7 +49,6 @@ import {getPECourses, querySelectedNumber} from "@/request.js";
 import SearchBar from "@/components/SearchBar.vue";
 import { myMessage } from "@/message.js";
 import OpeningTime from "@/components/OpeningTime.vue"
-import SelectedNumberListener from "@/components/SelectedNumberListener.vue";
 
 
 const courseData = ref([])

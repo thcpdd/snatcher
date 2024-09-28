@@ -5,6 +5,7 @@ Usage:
     from snatcher.conf import settings
 """
 from datetime import datetime, timezone
+from functools import lru_cache
 
 from arq.connections import RedisSettings
 
@@ -93,15 +94,25 @@ class Settings(metaclass=SingletonMetaClass):
             'hour': 15,
             'minute': 0,
             'second': 0
+        },
+        'pe': {
+            'year': 2049,
+            'month': 10,
+            'day': 1,
+            'hour': 15,
+            'minute': 0,
+            'second': 0
         }
     }
 
     ARQ_REDIS_SETTINGS = RedisSettings(host='127.0.0.1', database=1)
 
+    @lru_cache()
     def start_time(self) -> datetime:
         """The `START_TIME` convert to datatime object."""
         return datetime.fromtimestamp(datetime(**self.START_TIME).timestamp(), timezone.utc)
 
+    @lru_cache()
     def system_opening_time(self, course_type: str) -> datetime:
         opening_time = self.SYSTEM_OPENING_TIME.get(course_type)
         if opening_time is None:

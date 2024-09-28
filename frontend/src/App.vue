@@ -12,7 +12,7 @@
         <el-sub-menu>
             <template #title>👉预约抢课</template>
             <el-menu-item index="/pc">公选课</el-menu-item>
-<!--            <el-menu-item index="/pe">体育课</el-menu-item>-->
+            <el-menu-item index="/pe">体育课</el-menu-item>
             <el-menu-item index="/progress">选课进度查询</el-menu-item>
             <el-menu-item @click="openKnowledgeLibrary">抢课之谜🔍</el-menu-item>
         </el-sub-menu>

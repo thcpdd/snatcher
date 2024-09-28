@@ -102,7 +102,7 @@ async def book_course(request: Request, book_data: BookCourseValidator):
     users = book_data.model_dump(exclude={'courses', 'course_type', 'token'})
 
     arq_redis: ArqRedis = getattr(request.state, 'arq-redis')
-    await arq_redis.enqueue_job('select_course', goals, **users)
+    await arq_redis.enqueue_job('select_course', course_type, goals, **users)
 
     return SnatcherResponse(ResponseCodes.OK)
 
