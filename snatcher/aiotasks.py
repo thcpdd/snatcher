@@ -25,9 +25,7 @@ from redis.asyncio import Redis as AIORedis
 from arq import ArqRedis, Retry
 
 from snatcher.conf import settings
-from snatcher.selector.async_selector import (
-    AsynchronousPublicChoiceCourseSelector as AsyncPCSelector,
-)
+from snatcher.selector.async_selector import AsyncPCSelector
 from snatcher.storage.mongo import collections, get_security_key, decrypt_fuel, BSONObjectId, update_fuel_status
 from snatcher.selector.performers import async_selector_performer
 from snatcher.postman.mail import send_email

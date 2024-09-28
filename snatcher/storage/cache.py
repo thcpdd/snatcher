@@ -77,20 +77,6 @@ class AsyncRuntimeLogger:
         self.fuel_id = ''
         self.index = ''
         self.count = 1
-        self.messages = {
-            'step-1': {
-                1: '课程ID设置成功',
-                0: '课程ID设置失败'
-            },
-            'step-3': {
-                1: '教学班ID设置成功',
-                0: '教学班ID设置失败'
-            },
-            'step-2': {
-                1: 'xkkz_id设置成功',
-                0: 'xkkz_id设置失败'
-            },
-        }
 
     async def __aenter__(self):
         return self
@@ -113,9 +99,7 @@ class AsyncRuntimeLogger:
         return name + '-' + str(self.count)
 
     @publish_message
-    async def set(self, name: str, success: int = None, message: str = '') -> str:
-        if success is not None:
-            message = self.messages[name][success]
+    async def set(self, name: str, message: str = '') -> str:
         await self._connection.hset(self.key, self.wrapper(name), message)
         return message
 
@@ -132,6 +116,24 @@ class AsyncRuntimeLogger:
     async def close(self):
         """You must call this before function was garbage collected."""
         await self._connection.aclose()
+
+
+def logging(func):
+    step_mapping = {
+        'set_kch_id': '1',
+        'set_xkkz_id': '2',
+        'set_jxb_ids': '3',
+        'select_course': '4'
+    }
+
+    async def _record(*args, **kwargs):
+        curr_step = step_mapping[func.__name__]
+        code, message = await func(*args, **kwargs)
+        selector = args[0]
+        logger: AsyncRuntimeLogger = getattr(selector, 'logger')
+        await logger.set(curr_step, message)
+        return code, message
+    return _record
 
 
 def runtime_logs_generator():
@@ -215,10 +217,12 @@ def export_progress(fuel_id: str, username: str):
             goals.append(course_name)
             if 'retry' in cache_log:
                 cache_log.pop('retry')
+            if 'error' in cache_log:
+                cache_log.pop('error')
             index = int(cache_log.pop('index')) - 1
             sorted_keys = sorted(cache_log.keys(), reverse=True)
             split_list = sorted_keys[0].split('-')
-            last_step, count = int(split_list[1]), int(split_list[2])
+            last_step, count = int(split_list[0]), int(split_list[1])
             if last_step == 4 and cache_log[sorted_keys[0]] != '选课成功':
                 last_step = 3
             progress[index] = [last_step, count]

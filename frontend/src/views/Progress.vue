@@ -1,16 +1,16 @@
 <template>
     <div class="table-title"><span>选课进度查询（测试版）</span></div>
     <div class="search-bar">
-        <el-input v-model="fuel" style="width: 60%" type="password" placeholder="输入抢课码搜索"/>
+        <el-input v-model="fuel" style="width: 60%" type="password" placeholder="输入抢课码查询"/>
         <el-button
             type="primary"
             :disabled="fuel === ''"
             style="margin-left: 5px"
             @click="searchHandle"
-        >搜索</el-button>
+        >查询</el-button>
     </div>
     <div v-if="goals.length === 0">
-        <el-empty description="在上方搜索栏中搜索以显示选课进度"/>
+        <el-empty description="输入抢课码并点击查询按钮以显示选课进度"/>
     </div>
     <div v-else class="progress-content">
         <div class="progress-detail">
@@ -32,7 +32,7 @@
                         <el-step title="初始化请求" description="表示系统已经开始选课"/>
                         <el-step title="关键步骤1" description="系统正在获取请求参数1"/>
                         <el-step title="关键步骤2" description="系统正在获取请求参数2"/>
-                        <el-step title="选课请求" description="成功即表示选课成功"/>
+                        <el-step title="选课请求" description="蓝色即表示选课成功"/>
                     </el-steps>
                     <span style="font-weight: bold;font-size: medium">尝试次数：{{ progress[index][1] }}</span>
                 </el-collapse-item>

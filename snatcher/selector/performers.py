@@ -4,11 +4,11 @@ Course selector performers here:
 """
 from snatcher.storage.mongo import collections, BSONObjectId, update_fuel_status
 from snatcher.postman.mail import send_email
-from .async_selector import AsynchronousCourseSelector
+from .async_selector import AsyncCourseSelector
 
 
 async def async_selector_performer(
-    selector_class: type[AsynchronousCourseSelector],
+    selector_class: type[AsyncCourseSelector],
     username: str,
     email: str,
     fuel_id: str,
@@ -54,7 +54,7 @@ async def async_selector_performer(
                 username,
                 course_name,
                 total=total,
-                current=selector.index,
+                current=selector.index - 1,
                 success=False,
                 failed_reason=message
             )
