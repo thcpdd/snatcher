@@ -161,14 +161,16 @@ def runtime_logs_generator():
             username, course_name = _key.split('-')
             log.setdefault('course_name', course_name)
             log.setdefault('username', username)
-            if retry := cache_log.get('retry'):
-                log.setdefault('retry', retry)
-                cache_log.pop('retry')
+            if 'retry' in cache_log:
+                log['retry'] = cache_log.pop('retry')
+            if 'error' in cache_log:
+                log['error'] = cache_log.pop('error')
+            cache_log.pop('index')
+            cache_log.pop('fuel_id')
             keys = sorted(cache_log.keys(), reverse=True)
             for key in keys:
                 k = key.rsplit('-', maxsplit=1)[0]
-                if k not in log:
-                    log.setdefault(k, cache_log[key])
+                log.setdefault(k, cache_log[key])
             yield log
 
 
