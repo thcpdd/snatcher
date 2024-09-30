@@ -1,19 +1,7 @@
 """
-Asyncio Celery Tasks:
-    You can launch an async celery worker usage:
-        aio_celery worker snatcher.aiotasks:application --concurrency=12
+Arq task queue settings.
 
-    1. The `application` object:
-        It is an async celery instance.
-
-    2. The `async_physical_education_task` task.
-        It will send a 'PE' async task to async celery task queue.
-
-    3. The `async_public_choice_task` task.
-        It will send a 'PC' async task to async celery task queue.
-
-    4. The `async_select_course` task:
-        Providing an interface for outer caller.
+Startup queue command: arq snatcher.aiotasks.WorkerSettings
 """
 import traceback
 import asyncio

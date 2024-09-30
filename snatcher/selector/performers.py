@@ -71,6 +71,15 @@ async def async_selector_performer(
 
 
 class SimpleSelectorPerformer:
+    """
+    A mini snatcher system.
+
+    It includes complete course selector call logic and print log automatically.
+
+    Usage:
+        performer = SimpleSelectorPerformer(*args, **kwargs)
+        performer.perform()
+    """
     def __init__(
         self,
         username: str,
@@ -86,7 +95,7 @@ class SimpleSelectorPerformer:
 
     async def select_course(self):
         success = await async_check_and_set_session(self.username, self.password)
-        if not success:
+        if success == -1:
             print('登录失败，请检查学号密码是否正确')
             raise asyncio.CancelledError
         async with self.selector_class(self.username) as selector:

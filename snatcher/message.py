@@ -1,3 +1,6 @@
+"""
+Some codes and messages of the select course result.
+"""
 MessageType = tuple[int, str]
 
 

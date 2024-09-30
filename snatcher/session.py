@@ -1,25 +1,5 @@
 """
-The module of user's session:
-    1. The `SessionManager` class:
-        It provides some methods for controlling user session.
-
-    2. The `get_session_manager` function:
-        Return a session manager of appointing username.
-
-    3. The `AsyncSessionSetter` class:
-        You can set a session by this class.
-
-        Usage:
-            import asyncio
-
-            setter = AsyncSessionSetter(your_username, your_password, base_url, port)
-            cookies, port = asyncio.run(setter.set_session())
-
-    4. The `async_set_session` function:
-        A shortcuts for setting the session, but it's a coroutine, could not call directly.
-
-    5. The `async_check_and_set_session` function:
-        An async way to check and set session.
+The module of user's session.
 """
 import base64
 from functools import lru_cache
@@ -36,11 +16,23 @@ from snatcher.conf import settings
 
 
 class SessionManager:
+    """
+    A manager of username session.
+
+    It manages all cookies of a username and `xkkz_id` of grade.
+
+    You should create it by `get_session_manager` function, rather than create it directly.
+    """
     def __init__(self, username: str):
         self.username = username
         self._session_cache = Redis(**settings.DATABASES['redis']['session'], decode_responses=True)
 
     def get(self, port: str) -> str:
+        """
+        Give a host number and then return a cookie string.
+
+        If the cookie is not existence, return a null string.
+        """
         res = self._session_cache.hget(self.username, port)
         if res is not None:
             return res
@@ -80,10 +72,21 @@ class SessionManager:
 
 @lru_cache()
 def get_session_manager(username: str):
+    """
+    Create a session manager and return it.
+
+    It will save the manager instance in the cache.
+    """
     return SessionManager(username)
 
 
 class AsyncSessionSetter:
+    """
+    A setter of a username session.
+
+    It's  an async context manager.
+    This can effectively control the creation and release of resources.
+    """
     def __init__(self, username: str, password: str):
         self.username = username
         self.password = password
@@ -112,7 +115,7 @@ class AsyncSessionSetter:
         cipher = PKCS1_v1_5.new(rsa_key)
         return base64.b64encode(cipher.encrypt(self.password.encode())).decode()
 
-    async def set_session(self, base_url: str, port: str):
+    async def set_session(self, base_url: str, port: str) -> tuple[str, str]:
         """
         默认ClientSession使用的是严格模式的 aiohttp.CookieJar. RFC 2109，
         明确的禁止接受url和ip地址产生的cookie，只能接受 DNS 解析IP产生的cookie。
@@ -156,11 +159,13 @@ async def async_set_session(username: str, password: str):
         manager.save_cookie(cookie, port)
 
 
-async def async_check_and_set_session(username: str, password: str):
+async def async_check_and_set_session(username: str, password: str) -> int:
     """
-    :param username:
-    :param password:
-    :return: success or not (-1 not success) (1 success)
+    Checking and setting the session for a user.
+
+    Only when the username not has sessions, it will set session.
+
+    It will return 1 when set successful, else return -1.
     """
     manager = get_session_manager(username)
     if manager.has_sessions():

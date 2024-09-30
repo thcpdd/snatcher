@@ -10,9 +10,6 @@ from snatcher.conf import settings
 CHANNEL_NAME = 'logs-change'
 
 
-# -------------------------------------------------------------- #
-# Some functions for achieving to publish messages into channel. #
-# -------------------------------------------------------------- #
 def publish_message(func):
     """
     Publishing a message into `logs-change` channel.
@@ -49,9 +46,6 @@ def parse_message(message: str) -> dict:
     }
 
 
-# --------------------------------------------------------- #
-# Some functions or classes for controlling runtime logger. #
-# --------------------------------------------------------- #
 class AsyncRuntimeLogger:
     """
     Writing runtime logs into Redis and publishing message into channel.
@@ -146,11 +140,12 @@ def runtime_logs_generator():
     :return: A generator of {
         'course_name': '',
         'username': '',
-        'step-1': '',
-        'step-2': '',
-        'step-3': '',
-        'step-4': '',
-        'retry': retry_times
+        '1': '',
+        '2': '',
+        '3': '',
+        '4': '',
+        'retry': 'retry_times',
+        'error': 'runtime error'
     }
     """
     _db_info = settings.DATABASES['redis']['log']

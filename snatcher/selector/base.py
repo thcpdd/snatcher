@@ -1,20 +1,5 @@
 """
 The course selector base module.
-    1. The `BaseCourseSelector` class:
-        The base class of all course selector
-        -- `set_xkkz_id` method:
-            Setting 'xkkz' id. Must be rewritten.
-        -- `set_jxb_ids` method:
-            Setting 'jxb' id. Must be rewritten.
-        -- `prepare_for_selecting` method:
-            It will be called before sending a request. Must be rewritten.
-        -- `simulate_request` method:
-            The specific logic of selecting course. Must be rewritten.
-        -- `select` method:
-            A method for outer caller. Must be rewritten.
-
-    2. The `CourseSelector` class:
-        The father class of course selector.
 """
 from yarl import URL
 
@@ -27,6 +12,14 @@ from snatcher.message import Messages, MessageType
 
 
 class BaseCourseSelector:
+    """
+    An asynchronous context manager.
+
+    Usage:
+        async with BaseCourseSelector('username') as selector:
+             await selector.update_selector_info(*args, **kwargs)
+             await selector.select()
+    """
     # 开课类型代码，公选课 10，体育课 05，主修课程 01（英语、思政类），特殊课程 09，其他特殊课程 11
     course_type: str = ''
     term: int = settings.TERM
@@ -83,6 +76,7 @@ class BaseCourseSelector:
 
     @logging
     async def set_kch_id(self) -> MessageType:
+        """Set course number ID"""
         return Messages.KCH_ID_SUCCESS
 
     @logging
@@ -97,16 +91,19 @@ class BaseCourseSelector:
 
     @logging
     async def select_course(self) -> MessageType:
+        """Simulate request and perform select course logic."""
         raise NotImplementedError
 
     async def _select(self) -> MessageType:
-        """One by one call: set_xkkz_id, set_jxb_ids."""
+        """One by one call: set_xkkz_id, set_xkkz_id, set_jxb_ids, select_course."""
         raise NotImplementedError
 
     def _construct_jxb_ids_params(self):
+        """In subclass achieve."""
         raise NotImplementedError
 
     def _set_jxb_ids(self, do_jxb_id_list: list[dict]) -> MessageType:
+        """In subclass achieve."""
         raise NotImplementedError
 
     async def select(self) -> MessageType:

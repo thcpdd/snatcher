@@ -81,11 +81,16 @@ class Settings(metaclass=SingletonMetaClass):
         'port': 465
     }
 
+    # Value is True:
+    #   Sending email by 'tencent cloud service' when select course successful.
+    # Value is False:
+    #   Sending email by 'SMTP' when select course successful.
     USE_TENCENT_CLOUD_MAIL_SERVICE = True
 
     # All request ports(host number).
     PORTS: list[str] = ['5', '6', '7', '8', '9']
 
+    # It determines the time for booking courses.
     SYSTEM_OPENING_TIME: dict = {
         'pc': {
             'year': 2049,
@@ -105,6 +110,7 @@ class Settings(metaclass=SingletonMetaClass):
         }
     }
 
+    # Task queue redis settings.
     ARQ_REDIS_SETTINGS = RedisSettings(host='127.0.0.1', database=1)
 
     @lru_cache()
@@ -125,7 +131,7 @@ class Settings(metaclass=SingletonMetaClass):
             return 0
         return (self.start_time() - datetime.now(timezone.utc)).seconds
 
-    def get_mongodb_uri(self):
+    def get_mongodb_uri(self) -> str:
         if not (mongodb_uri := self.DATABASES['mongodb']['uri']):
             if self.DEVELOPMENT_ENVIRONMENT:
                 mongodb_config_file = 'mongodb_dev'
