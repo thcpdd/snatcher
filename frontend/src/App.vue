@@ -1,6 +1,6 @@
 <template>
     <el-menu
-            :default-active="defaultPage"
+            :default-active="$route.path"
             class="el-menu-demo"
             mode="horizontal"
             :ellipsis="false"
@@ -13,6 +13,8 @@
             <template #title>👉预约抢课</template>
             <el-menu-item index="/pc">公选课</el-menu-item>
             <el-menu-item index="/pe">体育课</el-menu-item>
+            <el-menu-item index="/progress">选课进度查询</el-menu-item>
+            <el-menu-item @click="openKnowledgeLibrary">抢课之谜🔍</el-menu-item>
         </el-sub-menu>
         <img src="https://q.qlogo.cn/headimg_dl?dst_uin=1834763300&spec=640&img_type=jpg" class="avatar" alt="avatar">
     </el-menu>
@@ -22,35 +24,20 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
-import {RouterView} from 'vue-router'
-import {onMounted} from "vue";
-import {requests} from "@/request.js";
+import { RouterView } from 'vue-router'
 
-const defaultPage = ref('/')
 const imageUrl = () => {
     let isMobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
     if (isMobile) {
         sessionStorage.setItem('isMobile', '1')
         return '/logo.png'
     }
-    return '/snatcher.svg'
+    return '/snatcher.png'
 }
 
-onMounted(async () => {
-    // 动态设置 axios 的 baseUrl，以适应不同的部署环境。
-    if (!requests.defaults.baseURL) {
-        let url = sessionStorage.getItem('url')
-        if (!url) {
-             await requests.get('https://rainbow.hi.cn/snatcherapi').then((res) => {
-                url = res.data.url
-                sessionStorage.setItem('url', url)
-            })
-        }
-        requests.defaults.baseURL = url
-    }
-})
-
+const openKnowledgeLibrary = _ => {
+    window.open('https://docs.thcpdd.com/#/snatcher/preface')
+}
 </script>
 
 <style>
@@ -79,5 +66,20 @@ body, html {
     height: 80%;
     margin-top: 8px;
     margin-right: 10px;
+}
+/* 隐藏垂直滚动条 */
+body::-webkit-scrollbar {
+    width: 0;  /* 设置为0，完全隐藏滚动条 */
+    /*height: 0; !* 同样适用于水平滚动条 *!*/
+}
+
+/* 隐藏滚动条的轨道 */
+body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 隐藏滚动条的滑块 */
+body::-webkit-scrollbar-thumb {
+    background: transparent;
 }
 </style>

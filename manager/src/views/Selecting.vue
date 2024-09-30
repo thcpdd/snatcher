@@ -18,10 +18,11 @@
         >
             <el-table-column prop="username" label="学号" align="center"/>
             <el-table-column prop="course_name" label="课程名" align="center"/>
-            <el-table-column prop="step-1" label="kch_id" align="center"/>
-            <el-table-column prop="step-2" label="xkkz_id" align="center"/>
-            <el-table-column prop="step-3" label="do_jxb_ids" align="center"/>
-            <el-table-column prop="step-4" label="选课请求" align="center"/>
+            <el-table-column prop="1" label="kch_id" align="center"/>
+            <el-table-column prop="2" label="xkkz_id" align="center"/>
+            <el-table-column prop="3" label="do_jxb_ids" align="center"/>
+            <el-table-column prop="4" label="选课请求" align="center"/>
+            <el-table-column prop="error" label="运行时异常" align="center"/>
             <el-table-column prop="retry" label="重试次数" align="center"/>
         </el-table>
     </div>

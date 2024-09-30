@@ -4,8 +4,10 @@ The project settings.
 Usage:
     from snatcher.conf import settings
 """
-import json
 from datetime import datetime, timezone
+from functools import lru_cache
+
+from arq.connections import RedisSettings
 
 
 class SingletonMetaClass(type):
@@ -15,15 +17,13 @@ class SingletonMetaClass(type):
             setattr(cls, '_instance', _instance)
         else:
             _instance = getattr(cls, '_instance')
-
-        # Loading the MySQL configuration.
-        with open('./mysqlconf.json', encoding='utf8') as fp:
-            _instance.DATABASES['mysql'].update(json.load(fp))
-
         return _instance
 
 
 class Settings(metaclass=SingletonMetaClass):
+    # Is it a development environment.
+    DEVELOPMENT_ENVIRONMENT = True
+
     # Database configurations.
     DATABASES: dict = {
         'redis': {
@@ -40,7 +40,9 @@ class Settings(metaclass=SingletonMetaClass):
                 'host': '127.0.0.1'
             }
         },
-        'mysql': {}
+        'mongodb': {
+            'uri': ''
+        }
     }
 
     # Global request timeout(except at setting session), unit is second.
@@ -72,25 +74,73 @@ class Settings(metaclass=SingletonMetaClass):
 
     # The email configurations.
     EMAIL_CONFIG: dict = {
-        'email_from': 'rainbow59216@foxmail.com',  # your email address
-        'name': '智能抢课系统-邮箱小助手',  # your name
-        'verify_code': 'updgvszsuymydajg',  # your email verify code
-        'host': 'smtp.qq.com',  # current email host
-        'port': 465  # current email port
+        'sender': 'rainbow59216@foxmail.com',
+        'name': '智能抢课系统-邮箱小助手',
+        'password': 'updgvszsuymydajg',
+        'host': 'smtp.qq.com',
+        'port': 465
     }
+
+    # Value is True:
+    #   Sending email by 'tencent cloud service' when select course successful.
+    # Value is False:
+    #   Sending email by 'SMTP' when select course successful.
+    USE_TENCENT_CLOUD_MAIL_SERVICE = True
 
     # All request ports(host number).
     PORTS: list[str] = ['5', '6', '7', '8', '9']
 
+    # It determines the time for booking courses.
+    SYSTEM_OPENING_TIME: dict = {
+        'pc': {
+            'year': 2049,
+            'month': 10,
+            'day': 1,
+            'hour': 15,
+            'minute': 0,
+            'second': 0
+        },
+        'pe': {
+            'year': 2049,
+            'month': 10,
+            'day': 1,
+            'hour': 15,
+            'minute': 0,
+            'second': 0
+        }
+    }
+
+    # Task queue redis settings.
+    ARQ_REDIS_SETTINGS = RedisSettings(host='127.0.0.1', database=1)
+
+    @lru_cache()
     def start_time(self) -> datetime:
         """The `START_TIME` convert to datatime object."""
         return datetime.fromtimestamp(datetime(**self.START_TIME).timestamp(), timezone.utc)
+
+    @lru_cache()
+    def system_opening_time(self, course_type: str) -> datetime:
+        opening_time = self.SYSTEM_OPENING_TIME.get(course_type)
+        if opening_time is None:
+            return datetime(year=2049, month=10, day=1, hour=15)
+        return datetime(**opening_time)
 
     def countdown(self) -> int:
         """The countdown time of start time."""
         if self.start_time() <= datetime.now(timezone.utc):
             return 0
         return (self.start_time() - datetime.now(timezone.utc)).seconds
+
+    def get_mongodb_uri(self) -> str:
+        if not (mongodb_uri := self.DATABASES['mongodb']['uri']):
+            if self.DEVELOPMENT_ENVIRONMENT:
+                mongodb_config_file = 'mongodb_dev'
+            else:
+                mongodb_config_file = 'mongodb'
+            with open(mongodb_config_file) as f:
+                mongodb_uri = f.read().strip()
+            self.DATABASES['mongodb']['uri'] = mongodb_uri
+        return mongodb_uri
 
 
 settings = Settings()

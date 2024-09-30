@@ -1,41 +1,15 @@
 """
 Some operations of Redis here.
 """
-from typing import Generator
-
 from redis import Redis
 from redis.asyncio import Redis as AIORedis
 
 from snatcher.conf import settings
 
 
-USING_CODES_NAME = 'using-codes'
 CHANNEL_NAME = 'logs-change'
 
 
-# Creating a global variable for controlling the public cache.
-public_cache = Redis(**settings.DATABASES['redis']['public'], decode_responses=True)
-
-
-# ------------------------------------------------ #
-# Some functions for controlling all verify codes. #
-# ------------------------------------------------ #
-def mark_code_is_using(verify_code: str):
-    public_cache.sadd(USING_CODES_NAME, verify_code)
-
-
-def remove_code_is_using(verify_code: str):
-    public_cache.srem(USING_CODES_NAME, verify_code)
-
-
-def judge_code_is_using(verify_code: str) -> int:
-    """if 1 is using, else not using"""
-    return public_cache.sismember(USING_CODES_NAME, verify_code)
-
-
-# -------------------------------------------------------------- #
-# Some functions for achieving to publish messages into channel. #
-# -------------------------------------------------------------- #
 def publish_message(func):
     """
     Publishing a message into `logs-change` channel.
@@ -72,9 +46,6 @@ def parse_message(message: str) -> dict:
     }
 
 
-# --------------------------------------------------------- #
-# Some functions or classes for controlling runtime logger. #
-# --------------------------------------------------------- #
 class AsyncRuntimeLogger:
     """
     Writing runtime logs into Redis and publishing message into channel.
@@ -93,25 +64,13 @@ class AsyncRuntimeLogger:
                 ...  # your operations
                 await logger.close()  # It is must !!!
     """
-    def __init__(self, key: str):
+    def __init__(self):
         _db_info = settings.DATABASES['redis']['log']
         self._connection = AIORedis(**_db_info)
-        self.key = key
+        self.key = 'runtime-log'
+        self.fuel_id = ''
+        self.index = ''
         self.count = 1
-        self.messages = {
-            'step-1': {
-                1: '课程ID设置成功',
-                0: '课程ID设置失败'
-            },
-            'step-3': {
-                1: '教学班ID设置成功',
-                0: '教学班ID设置失败'
-            },
-            'step-2': {
-                1: 'xkkz_id设置成功',
-                0: 'xkkz_id设置失败'
-            },
-        }
 
     async def __aenter__(self):
         return self
@@ -119,13 +78,22 @@ class AsyncRuntimeLogger:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
 
+    async def update_logger_info(self, logger_key: str, fuel_id: str = '', index: str = ''):
+        exists = await self._connection.exists(logger_key)
+        if exists:
+            await self._connection.delete(logger_key)
+        await self._connection.hset(logger_key, 'fuel_id', fuel_id)
+        await self._connection.hset(logger_key, 'index', index)
+        self.key = logger_key
+        self.fuel_id = fuel_id
+        self.index = index
+        self.count = 1
+
     def wrapper(self, name: str):
         return name + '-' + str(self.count)
 
     @publish_message
-    async def set(self, name: str, success: int = None, message: str = '') -> str:
-        if success is not None:
-            message = self.messages[name][success]
+    async def set(self, name: str, message: str = '') -> str:
         await self._connection.hset(self.key, self.wrapper(name), message)
         return message
 
@@ -144,7 +112,25 @@ class AsyncRuntimeLogger:
         await self._connection.aclose()
 
 
-def runtime_logs_generator() -> Generator[dict]:
+def logging(func):
+    step_mapping = {
+        'set_kch_id': '1',
+        'set_xkkz_id': '2',
+        'set_jxb_ids': '3',
+        'select_course': '4'
+    }
+
+    async def _record(*args, **kwargs):
+        curr_step = step_mapping[func.__name__]
+        code, message = await func(*args, **kwargs)
+        selector = args[0]
+        logger: AsyncRuntimeLogger = getattr(selector, 'logger')
+        await logger.set(curr_step, message)
+        return code, message
+    return _record
+
+
+def runtime_logs_generator():
     """
     Yielding all runtime logs.
 
@@ -154,28 +140,91 @@ def runtime_logs_generator() -> Generator[dict]:
     :return: A generator of {
         'course_name': '',
         'username': '',
-        'step-1': '',
-        'step-2': '',
-        'step-3': '',
-        'step-4': '',
-        'retry': retry_times
+        '1': '',
+        '2': '',
+        '3': '',
+        '4': '',
+        'retry': 'retry_times',
+        'error': 'runtime error'
     }
     """
     _db_info = settings.DATABASES['redis']['log']
-    conn = Redis(**_db_info, decode_responses=True)
-    for _key in conn.keys():
-        cache_log = conn.hgetall(_key)
-        log = {}
-        username, course_name = _key.split('-')
-        log.setdefault('course_name', course_name)
-        log.setdefault('username', username)
-        if retry := cache_log.get('retry'):
-            log.setdefault('retry', retry)
-            cache_log.pop('retry')
-        keys = sorted(cache_log.keys(), reverse=True)
-        for key in keys:
-            k = key.rsplit('-', maxsplit=1)[0]
-            if k not in log:
+    with Redis(**_db_info, decode_responses=True) as conn:
+        for _key in conn.keys():
+            cache_log = conn.hgetall(_key)
+            log = {}
+            username, course_name = _key.split('-')
+            log.setdefault('course_name', course_name)
+            log.setdefault('username', username)
+            if 'retry' in cache_log:
+                log['retry'] = cache_log.pop('retry')
+            if 'error' in cache_log:
+                log['error'] = cache_log.pop('error')
+            cache_log.pop('index')
+            cache_log.pop('fuel_id')
+            keys = sorted(cache_log.keys(), reverse=True)
+            for key in keys:
+                k = key.rsplit('-', maxsplit=1)[0]
                 log.setdefault(k, cache_log[key])
-        yield log
-    conn.close()
+            yield log
+
+
+def export_progress(fuel_id: str, username: str):
+    """
+    user_log = {
+        'username': '2204425143',
+        'goals': ['中医药膳与食疗养生', '西方礼仪', '花卉赏析'],
+        'progress': [[2, 3], [2, 3], [3, 1]]  # [ 最后一次进度, 尝试次数 ]
+    }
+    """
+    user_log = {
+        'username': username,
+        'goals': [],
+        'progress': []
+    }
+
+    _db_info = settings.DATABASES['redis']['log']
+
+    with Redis(**_db_info, decode_responses=True) as conn:
+        keys: list = conn.keys(username + '-*')
+
+        if not keys:
+            return user_log
+
+        cache_logs = []
+
+        for key in keys:
+            cache_log = conn.hgetall(key)
+            if cache_log['fuel_id'] == fuel_id:
+                course_name = key.split('-')[-1]
+                cache_log['course_name'] = course_name
+                cache_log.pop('fuel_id')
+                cache_logs.append(cache_log)
+
+        if not cache_logs:
+            return user_log
+
+        cache_logs = sorted(cache_logs, key=lambda v: v['index'])
+
+        goals = []
+        progress = [[] for _ in range(len(cache_logs))]
+
+        for cache_log in cache_logs:
+            course_name = cache_log.pop('course_name')
+            goals.append(course_name)
+            if 'retry' in cache_log:
+                cache_log.pop('retry')
+            if 'error' in cache_log:
+                cache_log.pop('error')
+            index = int(cache_log.pop('index')) - 1
+            sorted_keys = sorted(cache_log.keys(), reverse=True)
+            split_list = sorted_keys[0].split('-')
+            last_step, count = int(split_list[0]), int(split_list[1])
+            if last_step == 4 and cache_log[sorted_keys[0]] != '选课成功':
+                last_step = 3
+            progress[index] = [last_step, count]
+
+        user_log['progress'] = progress
+        user_log['goals'] = goals
+
+    return user_log

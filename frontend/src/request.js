@@ -3,7 +3,7 @@ import NProgress from 'nprogress'
 
 
 export const requests = axios.create({
-    baseURL: "",  // 本地环境需要写上详细的URL，生产环境不用写。
+    baseURL: "http://127.0.0.1:8000/vpn",
 })
 
 requests.interceptors.request.use(config => {
@@ -22,70 +22,41 @@ requests.interceptors.response.use(response => {
     return Promise.reject(error)
 })
 
-export async function getPECoursesCount() {
-    let localPECount = sessionStorage.getItem('peCount')
-    if (!localPECount) {
-        await requests.get('/pe/count').then((response) => {
-            sessionStorage.setItem('peCount', response.data)
-            localPECount = response.data
-        })
-    }
-    return Number(localPECount);
+
+export function getPECourses(page) {
+    return requests.get(`/pe/${page}`)
 }
 
-export async function getPCCoursesCount() {
-    let localPCCount = sessionStorage.getItem('pcCount')
-    if (!localPCCount) {
-        await requests.get('/pc/count').then((response) => {
-            sessionStorage.setItem('pcCount', response.data)
-            localPCCount = response.data
-        })
-    }
-    return Number(localPCCount);
-}
-
-export async function getPECourses(page) {
-    let localPECourses = sessionStorage.getItem(`peCourses_${page}`)
-    if (!localPECourses) {
-        await requests.get(`/pe/${page}`).then((response) => {
-            sessionStorage.setItem(`peCourses_${page}`, JSON.stringify(response.data))
-            localPECourses = response.data
-        })
-    } else {
-        localPECourses = JSON.parse(localPECourses)
-    }
-    return localPECourses;
-}
-
-export async function getPCCourses(page) {
-    let localPCCourses = sessionStorage.getItem(`pcCourses_${page}`)
-    if (!localPCCourses) {
-        await requests.get(`/pc/${page}`).then((response) => {
-            sessionStorage.setItem(`pcCourses_${page}`, JSON.stringify(response.data))
-            localPCCourses = response.data
-        })
-    } else {
-        localPCCourses = JSON.parse(localPCCourses)
-    }
-    return localPCCourses;
+export function getPCCourses(page) {
+    return requests.get(`/pc/${page}`)
 }
 
 export async function searchCourse(courseType, searchContent) {
     let searchResult = []
     if (courseType === 'pe') {
-        await requests.get(`/pe/?keyword=${searchContent}`).then(response => {
-            searchResult = response.data
+        await requests.get('/pe', {params: {keyword: searchContent}}).then(response => {
+            searchResult = response.data.data['results']
         })
     } else {
-        await requests.get(`/pc/?keyword=${searchContent}`).then(response => {
-            searchResult = response.data
+        await requests.get('/pc', {params: {keyword: searchContent}}).then(response => {
+            searchResult = response.data.data['results']
         })
     }
     return searchResult
 }
 
-export async function bookCourse(pathName, data) {
-    return await requests.post(pathName, data).then(response => {
-        return response.data
-    })
+export function bookCourse(data) {
+    return requests.post('/book', data)
+}
+
+export function searchProgress(fuel) {
+    return requests.get('/user/progress', {params: {fuel: fuel}})
+}
+
+export function querySelectedNumber(course_type) {
+    return requests.get('/selection', {params: {course_type: course_type}})
+}
+
+export function querySystemOpeningTime(course_type) {
+    return requests.get('/system/opening-time', {params: {course_type: course_type}})
 }

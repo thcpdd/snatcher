@@ -8,7 +8,7 @@
         .main {
             background-color: #f8f8f8;
             text-align: center;
-            padding-bottom: 28px;
+            padding-bottom: 5px;
         }
         .content {
             border: solid 1px #E3E9ED;
@@ -51,19 +51,23 @@
 </head>
 <body>
     <div class="main">
-<!--        <div class="logo"><img src="./snatcher-low-quality.png" alt="logo"></div>-->
-        <div class="logo"><img src="cid:snatcher" alt="logo"></div>
+        <div class="logo"><img src="https://snatcher.thcpdd.com/snatcher-low-quality.png" alt="logo"></div>
         <div class="content">
             <div class="title"><span>选课成功通知</span></div>
             <div class="detail">
-                <span>学号为 <b>{{ username }}</b> 的同学，你好：</span><br/><br/>
-                <span>恭喜你，选课成功！您的意向课程《<b>{{ course_name }}</b>》已经被“智能抢课系统-抢课小助手”抢到啦！</span><br/><br/>
-                <span>感谢您对我们的支持与信任，期待您的继续使用，祝您生活愉快！</span><br/><br/>
-                <span>智能抢课系统：
-                    <a href="https://snatcher.rainbow.hi.cn" style="color: #4faff3">https://snatcher.rainbow.hi.cn</a>
+                <span>学号为 <b>{{username}}</b> 的同学，你好：</span><br/><br/>
+                <span>恭喜你，选课成功！您的意向课程《<b>{{course_name}}</b>》已经被“智能抢课系统-抢课小助手”抢到啦！</span><br/><br/>
+                <span style="font-style: italic">
+                    <b style="color: #4faff3">抢课小助手</b> 是一个基于延时任务队列的多任务爬虫程序。整个系统由 <b>asyncio事件循环</b> 驱动，
+                    使其能够在多个任务间快速切换、调度和并发执行。这将有利于帮助你更快的选到意向课程！
                 </span><br/><br/>
-                <span style="text-decoration: underline"><b>[本邮件由系统自动发送，请勿直接回复]</b></span>
+                <span>最后，感谢您本次对我们的支持与信任，期待您的继续使用，祝您生活愉快！</span><br/><br/>
             </div>
+        </div>
+        <div style="line-height: 13px;font-size: 13px">
+            <p><b>本邮件由系统自动发送，请勿直接回复</b></p>
+            <p style="color: #999">Copyright © 2023 - 2024 Rainbow.</p>
+            <p style="color: #999">All Rights Reserved. 智能抢课系统 版权所有</p>
         </div>
     </div>
 </body>
