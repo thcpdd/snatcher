@@ -36,7 +36,7 @@ const imageUrl = () => {
 }
 
 const openKnowledgeLibrary = _ => {
-    window.open('https://docs.thcpdd.com/#/snatcher/preface')
+    window.open('https://docs.thcpdd.com/#/select-course/preface')
 }
 </script>
 
