@@ -14,6 +14,7 @@ from fastapi import (
 from starlette.websockets import WebSocketDisconnect
 from redis.asyncio.client import PubSub
 from arq import ArqRedis
+from arq.jobs import Job
 
 from .validators import (
     SubmittedValidator,
@@ -33,7 +34,7 @@ from snatcher.storage.cache import (
     parse_message
 )
 from snatcher.conf import settings
-from snatcher.storage.mongo import collections
+from snatcher.storage.mongo import collections, decrypt_fuel, update_fuel_status, BSONObjectId
 
 
 router = APIRouter(prefix='/manage', tags=['后台管理'])
@@ -190,3 +191,21 @@ async def stop_query_selected_number_task(course_type: CourseTypeEnum = Body(emb
     async with AIORedis(**settings.DATABASES['redis']['public']) as conn:
         await conn.set(course_type.value + '_stop', '1')
     return SnatcherResponse(ResponseCodes.OK)
+
+
+@router.delete('/task/select-course', summary='取消选课', dependencies=[Depends(identity_validator)])
+async def abort_select_course(
+    request: Request,
+    username: str = Body(),
+    fuel: str = Body(pattern=r'^[A-Za-z0-9/+]{67}=$')
+):
+    arq_redis: ArqRedis = getattr(request.state, 'arq-redis')
+    key = get_security_key('fuel')
+    fuel_id = decrypt_fuel(fuel, key)
+    job_id = username + '-' + fuel_id
+    job = Job(job_id=job_id, redis=arq_redis)
+    result = await job.abort()
+    if result:
+        update_fuel_status(BSONObjectId(fuel_id), 'unused')
+        return SnatcherResponse(ResponseCodes.TASK_CANCELED_SUCCESS)
+    return SnatcherResponse(ResponseCodes.TASK_CANCELED_FAILED)

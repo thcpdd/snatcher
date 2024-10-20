@@ -18,6 +18,8 @@ class ResponseCodes:
     INVALID_TOKEN = (210, '凭证无效')
     LOGIN_FAILED = (215, '登录失败')
     LOGIN_SUCCESS = (220, '登录成功')
+    TASK_CANCELED_SUCCESS = (225, '任务取消成功')
+    TASK_CANCELED_FAILED = (230, '任务取消失败')
 
 
 def tuple2dict(message_tuple: tuple[int, str]):

@@ -86,7 +86,7 @@ async def select_course(
         email,
         fuel_id,
         goals,
-        _job_id=f'{username}-{int(time.time())}',
+        _job_id=username + '-' + fuel_id,
         _defer_by=countdown
     )
 
