@@ -66,6 +66,9 @@ class SessionManager:
         port = choice(self._session_cache.hkeys(self.username))
         return self.get(port), port
 
+    def clear(self):
+        self._session_cache.delete(self.username)
+
     def close(self):
         self._session_cache.close()
 

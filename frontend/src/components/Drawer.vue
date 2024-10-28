@@ -36,7 +36,7 @@
                 </el-form-item>
 
                 <el-form-item v-if="form.loginMethod === '1'" label="密码" required>
-                   <el-input v-model="form.password" placeholder="请输入密码" type="password"/>
+                   <el-input v-model="form.password" placeholder="请输入密码" type="password" show-password/>
                 </el-form-item>
                 <div v-else>
                     <el-form-item label="Cookie" required>
