@@ -60,7 +60,7 @@ class Settings(metaclass=SingletonMetaClass):
 
     # Study term period.
     # The first half of the term is 1, the second half of the term is 2.
-    PERIOD: int = 1
+    PERIOD: int = 2
 
     # Selecting course start time.
     START_TIME: dict = {

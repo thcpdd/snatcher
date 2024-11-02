@@ -90,6 +90,8 @@ class AsyncRuntimeLogger:
         self.count = 1
 
     def wrapper(self, name: str):
+        if name == 'error':
+            return name
         return name + '-' + str(self.count)
 
     @publish_message

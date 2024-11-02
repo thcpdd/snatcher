@@ -21,7 +21,7 @@ from snatcher.session import async_check_and_set_session, get_session_manager
 
 
 async def select_course_task(
-    _: dict,
+    context: dict,
     course_type: str,
     username: str,
     email: str,
@@ -41,7 +41,8 @@ async def select_course_task(
     except Exception:
         print('Unexpected error during selecting course. Detail stack information:')
         traceback.print_exc()
-        update_fuel_status(BSONObjectId(fuel_id), 'unused')
+        if context['job_try'] >= 3:
+            update_fuel_status(BSONObjectId(fuel_id), 'unused')
         raise Retry(5)
 
 

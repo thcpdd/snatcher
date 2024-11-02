@@ -10,7 +10,7 @@ class Messages:
     XKKZ_ID_SUCCESS = (1, 'xkkz_id成功')
     XKKZ_ID_FAILED = (0, 'xkkz_id失败')
     JXB_IDS_SUCCESS = (1, 'jxb_ids成功')
-    JXB_IDS_FAILED = (1, 'jxb_ids失败')
+    JXB_IDS_FAILED = (0, 'jxb_ids失败')
     SELECT_COURSE_SUCCESSFUL = (1, '选课成功')
     SELECT_COURSE_ERROR = (0, '选课异常')
     FORM_DATA_ERROR = (0, '表单数据异常')

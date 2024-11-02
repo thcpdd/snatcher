@@ -16,8 +16,8 @@ Some tools to get course data in this module:
 """
 import re
 
-import requests
-from requests.exceptions import JSONDecodeError
+import aiohttp
+from aiohttp.client_exceptions import ContentTypeError
 
 from snatcher.conf import settings
 from snatcher.storage.mongo import collections
@@ -49,7 +49,7 @@ class ParseStudentID:
         return self.major_id + self.student_class
 
 
-def update_data(port: str, cookie: str, grade: int = None):
+async def update_data(port: str, cookie: str, grade: int = None):
     study_year = settings.SELECT_COURSE_YEAR
     term = settings.TERM
 
@@ -61,17 +61,6 @@ def update_data(port: str, cookie: str, grade: int = None):
         'kklxdm': '',
         'kspage': 1,  # kspage: 1, after: jspage + 1
         'jspage': 500,  # jspage(Every page size, as far as possible is max): 10, after: jspage + 10
-        # 对于体育课来说下面是必须的，但是有就行了。
-        'zyfx_id': 'wfx',
-        'bh_id': '0425221',
-        'xbm': 1,
-        'xslbdm': 'wlb',
-        'mzm': '13',
-        'xz': 4,
-        'ccdm': 3,
-        'xsbj': 4,
-        'xqh_id': 3,
-        'jg_id': '206',
     }
     headers = {
         'Cookie': 'JSESSIONID=%s' % cookie
@@ -80,15 +69,28 @@ def update_data(port: str, cookie: str, grade: int = None):
         collection = collections['pe']
         data['njdm_id'] = grade  # add a must field
         data['kklxdm'] = '05'
+        data.update({
+            'zyfx_id': 'wfx',
+            'bh_id': '0425221',
+            'xbm': 1,
+            'xslbdm': 'wlb',
+            'mzm': '13',
+            'xz': 4,
+            'ccdm': 3,
+            'xsbj': 4,
+            'xqh_id': 3,
+            'jg_id': '206',
+        })
     else:
         collection = collections['pc']
         data['kklxdm'] = '10'
 
-    response = requests.post(url, data=data, headers=headers)
+    async with aiohttp.ClientSession() as session:
+        response = await session.post(url, data=data, headers=headers)
 
     try:
-        json_data_list = response.json()
-    except JSONDecodeError:
+        json_data_list = await response.json()
+    except ContentTypeError:
         print(response.text)
         return
 
@@ -116,9 +118,9 @@ def update_data(port: str, cookie: str, grade: int = None):
             )
 
 
-def update_pc_data(port: str, cookie: str):
-    update_data(port, cookie)
+async def update_pc_data(port: str, cookie: str):
+    await update_data(port, cookie)
 
 
-def update_pe_data(port: str, cookie: str, grade: int):
-    update_data(port, cookie, grade)
+async def update_pe_data(port: str, cookie: str, grade: int):
+    await update_data(port, cookie, grade)
